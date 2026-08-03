@@ -4,12 +4,11 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Scissors } from 'lucide-react';
 
 const NAV_LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Barbers', href: '#barbers' },
-  { label: 'Gallery', href: '#gallery' },
+  { label: 'Signature Cuts', href: '#services' },
+  { label: 'The VIP Experience', href: '#experience' },
+  { label: 'The Artists', href: '#barbers' },
   { label: 'Booking', href: '#booking' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Visit', href: '#contact' },
 ];
 
 export default function Header() {
@@ -32,7 +31,7 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-ink-950/85 backdrop-blur-xl border-b border-white/5 py-3'
+          ? 'bg-brand-bg/90 backdrop-blur-xl border-b border-brand-border py-3'
           : 'bg-transparent py-5'
       }`}
     >
@@ -42,7 +41,7 @@ export default function Header() {
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS home"
         >
-          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-1 ring-gold/40">
+          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-1 ring-brand-accent/40">
             <img
               src="/images/VIP_FADES_LOGO.jpeg"
               alt="VIP FADES logo"
@@ -50,10 +49,10 @@ export default function Header() {
             />
           </div>
           <div className="hidden flex-col leading-none sm:flex">
-            <span className="font-serif text-lg font-semibold tracking-wide text-warm">
+            <span className="font-serif text-lg font-semibold tracking-wide text-brand-textPrimary">
               VIP FADES
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-gold/80">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-brand-accent">
               by Anas
             </span>
           </div>
@@ -64,7 +63,7 @@ export default function Header() {
             <button
               key={l.href}
               onClick={() => handleNav(l.href)}
-              className="text-[13px] font-medium uppercase tracking-[0.18em] text-warm/70 transition-colors hover:text-gold"
+              className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary transition-colors hover:text-brand-textPrimary after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-brand-accent after:transition-all after:duration-300 hover:after:w-full"
             >
               {l.label}
             </button>
@@ -74,14 +73,14 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => handleNav('#booking')}
-            className="hidden items-center gap-2 rounded-full bg-gold px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-ink-950 transition-all hover:bg-gold-light sm:flex"
+            className="hidden items-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-textPrimary transition-all hover:bg-brand-hover border border-brand-accent/20 sm:flex"
           >
             <Scissors className="h-4 w-4" />
             Book Appointment
           </button>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-warm lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary lg:hidden"
             aria-label="Toggle menu"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -92,7 +91,7 @@ export default function Header() {
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${
-          open ? 'max-h-96' : 'max-h-0'
+          open ? 'max-h-96 bg-brand-bg/95 border-b border-brand-border' : 'max-h-0'
         }`}
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 pb-6 pt-4">
@@ -100,14 +99,14 @@ export default function Header() {
             <button
               key={l.href}
               onClick={() => handleNav(l.href)}
-              className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-warm/80 transition-colors hover:bg-white/5 hover:text-gold"
+              className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-textPrimary"
             >
               {l.label}
             </button>
           ))}
           <button
             onClick={() => handleNav('#booking')}
-            className="mt-2 flex items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-ink-950"
+            className="mt-2 flex items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-brand-textPrimary border border-brand-accent/20 hover:bg-brand-hover transition-all"
           >
             <Scissors className="h-4 w-4" />
             Book Appointment

@@ -4,8 +4,9 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import ShopExperience from '@/components/ShopExperience';
+import Statistics from '@/components/Statistics';
 import Barbers from '@/components/Barbers';
-import Gallery from '@/components/Gallery';
+import ClientExperiences from '@/components/ClientExperiences';
 import BookingAssistant from '@/components/BookingAssistant';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
@@ -16,13 +17,14 @@ export default function Home() {
   useReveal();
 
   return (
-    <main className="min-h-screen bg-ink-950">
+    <main className="min-h-screen bg-brand-bg">
       <Header />
       <Hero />
       <Services />
       <ShopExperience />
+      <Statistics />
       <Barbers />
-      <Gallery />
+      <ClientExperiences />
       <BookingAssistant />
       <Contact />
       <Footer />

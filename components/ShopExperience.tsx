@@ -1,88 +1,53 @@
 'use client';
 
-import { Sparkles, Users, Clock } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
-import { SectionHeading } from './SectionHeading';
-
-const FEATURES = [
-  {
-    icon: Sparkles,
-    title: 'Premium Experience',
-    text: 'Every detail considered — from the chair to the finish.',
-  },
-  {
-    icon: Users,
-    title: 'Choose Your Barber',
-    text: 'Anas or Abd. Pick the artist who fits your style.',
-  },
-  {
-    icon: Clock,
-    title: 'On-Time Service',
-    text: 'Respect for your schedule, every single visit.',
-  },
-];
 
 export default function ShopExperience() {
   return (
-    <section id="experience" className="section-padding bg-ink-900 px-5 sm:px-8">
+    <section id="experience" className="section-padding bg-brand-bgSecondary px-5 sm:px-8 border-y border-brand-border">
       <div className="mx-auto max-w-6xl">
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-20">
           {/* Image */}
-          <div className="reveal relative order-2 lg:order-1">
-            <div className="relative overflow-hidden rounded-[1.75rem]">
+          <div className="reveal relative lg:col-span-7">
+            <div className="relative overflow-hidden rounded-2xl border border-brand-border">
               <img
                 src="/images/IN-SHOP_PIC.jpeg"
                 alt="VIP FADES clean shop interior"
-                className="aspect-[4/5] w-full object-cover sm:aspect-square"
+                className="aspect-[4/5] w-full object-cover sm:aspect-[16/10] lg:aspect-[4/3] transform hover:scale-[1.02] transition-transform duration-700"
               />
-              <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/40 to-transparent" />
             </div>
             {/* accent badge */}
-            <div className="absolute -bottom-5 -right-3 hidden rounded-2xl border border-gold/30 bg-ink-950/90 px-5 py-4 backdrop-blur sm:block">
-              <p className="font-serif text-3xl text-gold">100%</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-warm/60">
-                Client Focus
+            <div className="absolute -bottom-5 -right-3 hidden rounded-xl border border-brand-border bg-brand-bg/90 px-5 py-4 backdrop-blur sm:block">
+              <p className="font-serif text-3xl text-brand-textPrimary font-light">100%</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-brand-textSecondary">
+                Precision Focused
               </p>
             </div>
           </div>
 
           {/* Text */}
-          <div className="order-1 lg:order-2">
-            <SectionHeading
-              eyebrow="The Experience"
-              title="More Than a Haircut"
-              description="Step into a space designed for calm, precision and detail. Premium finishes, a relaxed atmosphere, and barbers who treat every cut like a craft."
-              align="left"
-              light
-            />
-
-            <div className="mt-10 space-y-6">
-              {FEATURES.map((f, i) => (
-                <div
-                  key={f.title}
-                  className={`reveal reveal-delay-${i + 2} flex gap-4`}
-                >
-                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/5">
-                    <f.icon className="h-5 w-5 text-gold" />
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-xl text-warm">{f.title}</h3>
-                    <p className="mt-1 text-sm font-light text-ink-200">
-                      {f.text}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="reveal reveal-delay-5 mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-300">
-              <span className="rounded-full border border-white/10 px-4 py-1.5">
+          <div className="lg:col-span-5 flex flex-col justify-center">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent mb-4 block">
+              The VIP Experience
+            </span>
+            <h2 className="font-serif text-4xl font-light leading-tight text-brand-textPrimary sm:text-5xl lg:text-6xl mb-6">
+              More Than a Haircut
+            </h2>
+            <p className="text-lg font-light leading-relaxed text-brand-textSecondary mb-8">
+              Step into an environment tailored for the modern gentleman. We combine precision craftsmanship with a refined, relaxed atmosphere, making every visit a ritual of self-care.
+            </p>
+            
+            <div className="h-px bg-brand-border w-20 mb-8" />
+            
+            <div className="reveal reveal-delay-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-brand-textSecondary">
+              <span className="rounded-full border border-brand-border px-4 py-1.5 bg-brand-bg/40">
                 {BUSINESS.hours.days}
               </span>
-              <span className="rounded-full border border-white/10 px-4 py-1.5">
+              <span className="rounded-full border border-brand-border px-4 py-1.5 bg-brand-bg/40">
                 {BUSINESS.hours.time}
               </span>
-              <span className="rounded-full border border-gold/30 px-4 py-1.5 text-gold">
+              <span className="rounded-full border border-brand-accent/30 px-4 py-1.5 text-brand-accent bg-brand-accent/5">
                 {BUSINESS.hours.walkins}
               </span>
             </div>

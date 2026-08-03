@@ -87,7 +87,7 @@ export default function ChatInterface({
   // Welcome
   useEffect(() => {
     pushBot(
-      `Welcome to ${BUSINESS.name}. I'm your booking assistant — here to help you schedule, check prices and availability. What can I do for you?`,
+      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge — here to help you schedule, check prices, and availability. What can I do for you?`,
       { chips: QUICK_ACTIONS.map((q) => q.label) }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -265,24 +265,24 @@ export default function ChatInterface({
     step === 'enterName' ? 'Your name' : step === 'enterPhone' ? 'Phone number' : 'Message…';
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-ink-900">
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-brand-card/45">
       {/* Header bar */}
-      <div className="flex items-center gap-3 border-b border-white/10 bg-ink-800/60 px-5 py-4">
+      <div className="flex items-center gap-3 border-b border-brand-border bg-brand-bgSecondary/60 px-5 py-4">
         <div className="relative">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/15 ring-1 ring-gold/40">
-            <Sparkles className="h-5 w-5 text-gold" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent/10 ring-1 ring-brand-accent/30">
+            <Sparkles className="h-5 w-5 text-brand-accent" />
           </div>
-          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-ink-800" />
+          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-brand-bgSecondary" />
         </div>
         <div className="flex-1">
-          <p className="font-serif text-lg leading-none text-warm">
-            Booking Assistant
+          <p className="font-serif text-lg leading-none text-brand-textPrimary">
+            Grooming Concierge
           </p>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-gold/80">
+          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-brand-accent">
             Online · AI Powered
           </p>
         </div>
-        <Scissors className="h-5 w-5 text-ink-400" />
+        <Scissors className="h-5 w-5 text-brand-textSecondary/60" />
       </div>
 
       {/* Messages */}
@@ -295,25 +295,25 @@ export default function ChatInterface({
         ))}
 
         {typing && (
-          <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm bg-ink-700/60 px-4 py-3 w-fit">
-            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-gold" />
-            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-gold" />
-            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-gold" />
+          <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm bg-brand-bgSecondary px-4 py-3 w-fit">
+            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
+            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
+            <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
           </div>
         )}
       </div>
 
       {/* Quick actions (when idle / menu) */}
       {step === 'welcome' && (
-        <div className="border-t border-white/5 px-4 pb-3 pt-3">
+        <div className="border-t border-brand-border/40 px-4 pb-3 pt-3">
           <div className="grid grid-cols-2 gap-2">
             {QUICK_ACTIONS.map((q) => (
               <button
                 key={q.value}
                 onClick={() => handleChip(q.label)}
-                className="flex items-center gap-2 rounded-xl border border-white/10 bg-ink-800/50 px-3 py-2.5 text-left text-[13px] font-medium text-warm/85 transition-all hover:border-gold/40 hover:bg-gold/5"
+                className="flex items-center gap-2 rounded-xl border border-brand-border bg-brand-bgSecondary/30 px-3 py-2.5 text-left text-[13px] font-medium text-brand-textPrimary/85 transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
               >
-                <q.icon className="h-4 w-4 flex-shrink-0 text-gold" />
+                <q.icon className="h-4 w-4 flex-shrink-0 text-brand-accent" />
                 {q.label}
               </button>
             ))}
@@ -324,17 +324,17 @@ export default function ChatInterface({
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="flex items-center gap-2 border-t border-white/10 bg-ink-800/40 px-4 py-3"
+        className="flex items-center gap-2 border-t border-brand-border bg-brand-bgSecondary/40 px-4 py-3"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={showInput ? inputPlaceholder : 'Message…'}
-          className="flex-1 rounded-full bg-ink-700/50 px-4 py-2.5 text-sm text-warm placeholder:text-ink-400 outline-none ring-1 ring-white/5 focus:ring-gold/40"
+          className="flex-1 rounded-full bg-brand-bg/50 px-4 py-2.5 text-sm text-brand-textPrimary placeholder:text-brand-textSecondary outline-none ring-1 ring-brand-border focus:ring-brand-accent/40"
         />
         <button
           type="submit"
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gold text-ink-950 transition-colors hover:bg-gold-light"
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-accent text-brand-textPrimary hover:bg-brand-hover transition-colors"
           aria-label="Send"
         >
           <Send className="h-4 w-4" />
@@ -360,8 +360,8 @@ function MessageBubble({
         <div
           className={`whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-relaxed ${
             isBot
-              ? 'rounded-tl-sm bg-ink-700/60 text-warm/90'
-              : 'rounded-tr-sm bg-gold text-ink-950 font-medium'
+              ? 'rounded-tl-sm bg-brand-bgSecondary text-brand-textPrimary/90 border border-brand-border/40'
+              : 'rounded-tr-sm bg-brand-accent text-brand-textPrimary font-medium border border-brand-accent/20'
           }`}
         >
           {msg.text}
@@ -374,15 +374,15 @@ function MessageBubble({
               <button
                 key={o.value}
                 onClick={() => onOption(o.value)}
-                className="flex items-center justify-between rounded-xl border border-white/10 bg-ink-800/40 px-4 py-3 text-left transition-all hover:border-gold/40 hover:bg-gold/5"
+                className="flex items-center justify-between rounded-xl border border-brand-border bg-brand-bgSecondary/30 px-4 py-3 text-left transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
               >
                 <span className="flex flex-col">
-                  <span className="text-sm font-medium text-warm">{o.label}</span>
+                  <span className="text-sm font-medium text-brand-textPrimary">{o.label}</span>
                   {o.sub && (
-                    <span className="text-xs font-light text-ink-300">{o.sub}</span>
+                    <span className="text-xs font-light text-brand-textSecondary">{o.sub}</span>
                   )}
                 </span>
-                <span className="text-gold">→</span>
+                <span className="text-brand-accent">→</span>
               </button>
             ))}
           </div>
@@ -395,7 +395,7 @@ function MessageBubble({
               <button
                 key={c}
                 onClick={() => onChip(c)}
-                className="rounded-full border border-gold/30 bg-gold/5 px-3.5 py-1.5 text-xs font-medium text-gold transition-all hover:bg-gold hover:text-ink-950"
+                className="rounded-full border border-brand-accent/30 bg-brand-accent/5 px-3.5 py-1.5 text-xs font-medium text-brand-accent transition-all hover:bg-brand-accent hover:text-brand-textPrimary"
               >
                 {c}
               </button>
@@ -405,7 +405,7 @@ function MessageBubble({
 
         {/* Booking summary card */}
         {msg.booking && (
-          <div className="mt-3 rounded-2xl border border-gold/20 bg-ink-800/60 p-4">
+          <div className="mt-3 rounded-2xl border border-brand-accent/20 bg-brand-bgSecondary p-4">
             <div className="grid grid-cols-2 gap-y-3 text-sm">
               <SummaryItem label="Service" value={msg.booking.service?.name} />
               <SummaryItem label="Barber" value={msg.booking.barber?.name} />
@@ -414,11 +414,11 @@ function MessageBubble({
               <SummaryItem label="Name" value={msg.booking.name} />
               <SummaryItem label="Phone" value={msg.booking.phone} />
             </div>
-            <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3">
-              <span className="text-xs uppercase tracking-[0.18em] text-ink-300">
+            <div className="mt-3 flex items-center justify-between border-t border-brand-border pt-3">
+              <span className="text-xs uppercase tracking-[0.18em] text-brand-textSecondary">
                 Total
               </span>
-              <span className="font-serif text-xl text-gold">
+              <span className="font-serif text-xl text-brand-accent">
                 €{msg.booking.service?.price}
               </span>
             </div>

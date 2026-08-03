@@ -45,8 +45,8 @@
   }
 
   body {
-    background-color: #0a0a0a;
-    color: #f5f0e8;
+    background-color: #070707;
+    color: #F2F2F2;
     font-family: var(--font-inter), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -69,19 +69,19 @@
   }
 
   .text-gold {
-    color: #c9a84c;
+    color: #22344A;
   }
 
   .text-warm {
-    color: #f5f0e8;
+    color: #F2F2F2;
   }
 
   .bg-ink {
-    background-color: #0a0a0a;
+    background-color: #070707;
   }
 
   .border-gold {
-    border-color: #c9a84c;
+    border-color: #2A2A2A;
   }
 
   .section-padding {
@@ -111,14 +111,31 @@
   .gold-divider {
     width: 48px;
     height: 1px;
-    background-color: #c9a84c;
+    background-color: #22344A;
     margin: 0 auto;
   }
 
   .gold-divider-left {
     width: 48px;
     height: 1px;
-    background-color: #c9a84c;
+    background-color: #22344A;
+  }
+
+  @keyframes cinematic-zoom {
+    0% { transform: scale(1.00); }
+    100% { transform: scale(1.03); }
+  }
+
+  .animate-subtle-zoom {
+    animation: cinematic-zoom 22s ease-in-out infinite alternate;
+  }
+
+  /* High-performance subtle film grain overlay */
+  .film-grain {
+    background-image: url('/images/noise.png');
+    background-repeat: repeat;
+    opacity: 0.04;
+    pointer-events: none;
   }
 }
 
@@ -127,14 +144,14 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #070707;
 }
 ::-webkit-scrollbar-thumb {
   background: #2e2e2e;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c9a84c;
+  background: #22344A;
 }
 
 /* Chat message animation */

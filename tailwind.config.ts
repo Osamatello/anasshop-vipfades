@@ -14,6 +14,16 @@ const config: Config = {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       colors: {
+        brand: {
+          bg: '#070707',
+          bgSecondary: '#101010',
+          card: '#171717',
+          border: '#2A2A2A',
+          accent: '#22344A',
+          hover: '#304A66',
+          textPrimary: '#F2F2F2',
+          textSecondary: '#A4A4A4',
+        },
         ink: {
           950: '#0a0a0a',
           900: '#111111',

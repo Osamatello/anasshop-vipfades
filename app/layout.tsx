@@ -1,11 +1,15 @@
 import './globals.css';
 import type { Metadata } from 'next';
 
+const SITE_URL = 'https://anasshop-vipfades-ismb.vercel.app';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+
   title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
 
   description:
-    'VIP FADES BY ANAS offers premium haircuts, fades, beard grooming and modern barbering in Koblenz. Book your appointment online with Anas or Abd.',
+    'VIP FADES BY ANAS offers premium haircuts, clean fades, beard grooming and modern barbering in Koblenz. Book your appointment online with Anas or Abd.',
 
   keywords: [
     'VIP FADES',
@@ -27,16 +31,16 @@ export const metadata: Metadata = {
   ],
 
   creator: 'VIP FADES BY ANAS',
-
   publisher: 'VIP FADES BY ANAS',
 
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
-
-  // Uncomment when your final domain is ready
-  // metadataBase: new URL('https://your-domain.com'),
 
   icons: {
     icon: '/images/vip-favicon.png',
@@ -46,23 +50,22 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: 'website',
-    locale: 'en_GB',
+    locale: 'de_DE',
+    url: SITE_URL,
+    siteName: 'VIP FADES BY ANAS',
 
-    title: 'VIP FADES BY ANAS',
+    title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
 
     description:
-      'Premium barbering, clean fades and beard grooming in Koblenz.',
-
-    // url: 'https://your-domain.com',
-
-    siteName: 'VIP FADES BY ANAS',
+      'Premium cuts, clean fades and beard grooming in Koblenz. Book your appointment online with Anas or Abd.',
 
     images: [
       {
-        url: '/images/og-image.jpg',
+        url: '/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'VIP FADES BY ANAS',
+        alt: 'VIP FADES BY ANAS — Premium Cuts. Clean Fades.',
+        type: 'image/png',
       },
     ],
   },
@@ -70,12 +73,12 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
 
-    title: 'VIP FADES BY ANAS',
+    title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
 
     description:
-      'Premium barbering, clean fades and beard grooming in Koblenz.',
+      'Premium cuts, clean fades and beard grooming in Koblenz.',
 
-    images: ['/images/og-image.jpg'],
+    images: ['/images/og-image.png'],
   },
 };
 

@@ -8,16 +8,19 @@ export const metadata: Metadata = {
   keywords: 'barbershop, Koblenz, fades, haircut, VIP Fades, Anas, premium barbershop',
   icons: {
     icon: [
-      { url: '/images/VIP_FADES_LOGO.jpeg', type: 'image/jpeg' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
     ],
     apple: [
-      { url: '/images/VIP_FADES_LOGO.jpeg', type: 'image/jpeg' },
+      { url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' },
     ],
   },
   openGraph: {
     title: 'VIP FADES BY ANAS',
     description: 'Premium Cuts. Clean Fades. Koblenz.',
-    images: [{ url: '/images/VIP_FADES_LOGO.jpeg' }],
+    images: [{ url: '/images/vip-fades-logo.png' }],
   },
 };
 
@@ -29,9 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/images/VIP_FADES_LOGO.jpeg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/images/VIP_FADES_LOGO.jpeg" />
-        <link rel="shortcut icon" href="/images/VIP_FADES_LOGO.jpeg" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body>{children}</body>
     </html>

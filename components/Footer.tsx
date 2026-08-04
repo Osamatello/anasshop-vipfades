@@ -22,11 +22,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3">
-              <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-brand-accent/40">
+              <div className="relative h-12 w-12">
                 <img
-                  src="/images/VIP_FADES_LOGO.jpeg"
-                  alt="VIP FADES logo"
-                  className="h-full w-full object-cover"
+                  src="/images/vip-fades-logo.png"
+                  alt="VIP FADES BY ANAS logo"
+                  className="h-full w-full object-contain"
                 />
               </div>
               <div className="flex flex-col leading-none">

@@ -1,6 +1,6 @@
 'use client';
 
-import { Phone, Instagram, MapPin, Scissors, ArrowUp } from 'lucide-react';
+import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 
 const NAV = [
@@ -12,107 +12,133 @@ const NAV = [
 ];
 
 export default function Footer() {
-  const go = (href: string) =>
+  const go = (href: string) => {
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    BUSINESS.address,
+  )}`;
 
   return (
-    <footer className="relative overflow-hidden bg-brand-bg px-5 pt-20 pb-10 sm:px-8 border-t border-brand-border">
+    <footer className="relative overflow-hidden border-t border-brand-border bg-brand-bg px-5 pb-10 pt-20 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3">
-              <div className="relative h-14 w-14 flex items-center justify-center rounded-full ring-1 ring-brand-cream/30">
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-3"
+              aria-label="Back to top"
+            >
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm">
                 <img
-                  src="/images/logo_no_background.png"
+                  src="/images/favicon.png"
                   alt="VIP FADES logo"
-                  className="h-full w-full object-contain p-0.5"
+                  className="h-full w-full object-cover"
                 />
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-serif text-xl font-semibold text-brand-textPrimary">
+
+              <div className="flex flex-col items-start leading-none">
+                <span className="font-serif text-xl font-semibold tracking-wide text-brand-textPrimary">
                   VIP FADES
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-brand-cream font-semibold">
-                  by Anas
+
+                <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
+                  BY ANAS
                 </span>
               </div>
-            </div>
-            <p className="mt-5 max-w-xs text-sm font-light leading-relaxed text-brand-textSecondary">
+            </button>
+
+            <p className="mt-5 max-w-xs text-sm font-light leading-relaxed text-brand-textPrimary/80">
               {BUSINESS.tagline} {BUSINESS.description}
             </p>
+
             <div className="mt-6 flex gap-3">
               <a
                 href={`tel:${BUSINESS.phone}`}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textSecondary transition-all hover:border-brand-accent hover:text-brand-accent"
-                aria-label="Call"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
+                aria-label="Call VIP FADES"
               >
                 <Phone className="h-4 w-4" />
               </a>
+
               <a
                 href={BUSINESS.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textSecondary transition-all hover:border-brand-accent hover:text-brand-accent"
-                aria-label="Instagram"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
+                aria-label="Open Instagram"
               >
                 <Instagram className="h-4 w-4" />
               </a>
+
               <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(BUSINESS.address)}`}
+                href={directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textSecondary transition-all hover:border-brand-accent hover:text-brand-accent"
-                aria-label="Map"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
+                aria-label="Open directions"
               >
                 <MapPin className="h-4 w-4" />
               </a>
             </div>
           </div>
 
-          {/* Nav */}
+          {/* Navigation */}
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
               Explore
             </p>
+
             <ul className="mt-5 space-y-3">
-              {NAV.map((n) => (
-                <li key={n.href}>
+              {NAV.map((item) => (
+                <li key={item.href}>
                   <button
-                    onClick={() => go(n.href)}
-                    className="text-sm font-light text-brand-textSecondary transition-colors hover:text-brand-accent"
+                    type="button"
+                    onClick={() => go(item.href)}
+                    className="relative text-sm font-light text-brand-textPrimary/75 transition-colors duration-300 hover:text-brand-cream after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
                   >
-                    {n.label}
+                    {item.label}
                   </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Info */}
+          {/* Visit information */}
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
               Visit
             </p>
-            <p className="mt-5 text-sm font-light leading-relaxed text-brand-textSecondary">
+
+            <p className="mt-5 text-sm font-light leading-relaxed text-brand-textPrimary/80">
               {BUSINESS.address}
             </p>
-            <p className="mt-3 text-sm font-light text-brand-textSecondary">
+
+            <p className="mt-3 text-sm font-light leading-relaxed text-brand-textPrimary/80">
               {BUSINESS.hours.days}
               <br />
               {BUSINESS.hours.time}
             </p>
-            <p className="mt-3 text-sm text-brand-cream font-medium">{BUSINESS.hours.walkins}</p>
+
+            <p className="mt-3 text-sm font-medium text-brand-cream">
+              {BUSINESS.hours.walkins}
+            </p>
           </div>
         </div>
 
+        {/* Bottom bar */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-brand-border pt-8 sm:flex-row">
-          <p className="text-xs font-light text-brand-textSecondary/80">
+          <p className="text-xs font-light text-brand-textPrimary/60">
             © {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.
           </p>
+
           <button
+            type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-brand-textSecondary transition-colors hover:text-brand-accent"
+            className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-brand-cream transition-colors hover:text-brand-textPrimary"
           >
             Back to top
             <ArrowUp className="h-3.5 w-3.5" />

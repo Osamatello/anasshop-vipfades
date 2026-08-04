@@ -1,69 +1,94 @@
 'use client';
 
-import { Phone, MapPin, Clock, Instagram } from 'lucide-react';
+import { Clock, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 
 export default function Contact() {
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    BUSINESS.address,
+  )}`;
+
   return (
-    <section id="contact" className="section-padding bg-brand-bgSecondary px-5 sm:px-8 border-t border-brand-border">
+    <section
+      id="contact"
+      className="section-padding border-t border-brand-border bg-brand-bgSecondary px-5 sm:px-8"
+    >
       <div className="mx-auto max-w-5xl">
+        {/* Section heading */}
         <div className="mb-14 text-center">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream block mb-3">
+          <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
             Visit Us
           </span>
+
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Visit VIP FADES
           </h2>
-          <div className="mt-4 gold-divider" />
-          <p className="mt-6 mx-auto max-w-lg text-base font-light text-brand-textSecondary">
-            Find us in the heart of Koblenz. Walk in during opening hours or secure your slot online.
+
+          <div className="gold-divider mt-4" />
+
+          <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
+            Find us in the heart of Koblenz. Walk in during opening hours or
+            secure your slot online.
           </p>
         </div>
 
+        {/* Contact cards */}
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ContactCard
             icon={MapPin}
             label="Address"
             lines={[BUSINESS.address]}
-            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(BUSINESS.address)}`}
+            href={directionsUrl}
+            external
           />
+
           <ContactCard
             icon={Phone}
             label="Phone"
             lines={[BUSINESS.phoneFormatted]}
             href={`tel:${BUSINESS.phone}`}
           />
+
           <ContactCard
             icon={Clock}
             label="Hours"
-            lines={[BUSINESS.hours.days, BUSINESS.hours.time, BUSINESS.hours.walkins]}
+            lines={[
+              BUSINESS.hours.days,
+              BUSINESS.hours.time,
+              BUSINESS.hours.walkins,
+            ]}
           />
+
           <ContactCard
             icon={Instagram}
             label="Instagram"
             lines={[BUSINESS.instagram]}
             href={BUSINESS.instagramUrl}
+            external
           />
         </div>
 
+        {/* Map */}
         <div className="reveal reveal-delay-4 mt-12 flex flex-col items-center">
-          <div className="w-full overflow-hidden rounded-2xl border border-brand-border shadow-lg">
+          <div className="group w-full overflow-hidden rounded-2xl border border-brand-border shadow-lg transition-all duration-300 hover:border-brand-cream/45 hover:shadow-[0_18px_50px_rgba(232,220,200,0.08)]">
             <iframe
               title="VIP FADES location map"
               src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                BUSINESS.address
+                BUSINESS.address,
               )}&output=embed`}
-              className="h-[300px] w-full grayscale contrast-110 opacity-80 hover:opacity-100 transition-opacity duration-500 sm:h-[380px]"
+              className="h-[300px] w-full grayscale contrast-110 opacity-90 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100 sm:h-[380px]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
+
           <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(BUSINESS.address)}`}
+            href={directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-accent px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-textPrimary transition-all duration-300 hover:bg-brand-hover border border-brand-accent/20"
+            className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
           >
+            <MapPin className="h-4 w-4" />
             Get Directions
           </a>
         </div>
@@ -77,46 +102,53 @@ function ContactCard({
   label,
   lines,
   href,
+  external = false,
 }: {
   icon: React.ElementType;
   label: string;
   lines: string[];
   href?: string;
+  external?: boolean;
 }) {
-  const inner = (
-    <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-6 transition-all duration-300 hover:border-brand-accent/30">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-accent/30 bg-brand-accent/5">
+  const cardContent = (
+    <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/55 hover:shadow-[0_14px_40px_rgba(232,220,200,0.07)]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-cream/30 bg-brand-cream/5 transition-all duration-300 group-hover:border-brand-cream/55 group-hover:bg-brand-cream/10">
         <Icon className="h-5 w-5 text-brand-cream" />
       </div>
-      <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
+
+      <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
         {label}
       </p>
-      <div className="mt-2 space-y-0.5">
-        {lines.map((l, i) => (
+
+      <div className="mt-2 space-y-1">
+        {lines.map((line, index) => (
           <p
-            key={i}
-            className={`text-sm font-light text-brand-textSecondary ${
-              i === 0 ? 'font-medium text-brand-textPrimary' : ''
-            }`}
+            key={`${label}-${index}`}
+            className={
+              index === 0
+                ? 'text-sm font-medium leading-relaxed text-brand-textPrimary'
+                : 'text-sm font-light leading-relaxed text-brand-textPrimary/80'
+            }
           >
-            {l}
+            {line}
           </p>
         ))}
       </div>
     </div>
   );
 
-  if (href) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block h-full"
-      >
-        {inner}
-      </a>
-    );
+  if (!href) {
+    return cardContent;
   }
-  return inner;
+
+  return (
+    <a
+      href={href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      className="block h-full"
+    >
+      {cardContent}
+    </a>
+  );
 }

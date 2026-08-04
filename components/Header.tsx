@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Menu, X, Scissors } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Menu, Scissors, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Signature Cuts', href: '#services' },
@@ -17,96 +17,121 @@ export default function Header() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
+
     onScroll();
     window.addEventListener('scroll', onScroll);
+
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleNav = (href: string) => {
     setOpen(false);
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+
+    document
+      .querySelector(href)
+      ?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? 'bg-brand-bg/90 backdrop-blur-xl border-b border-brand-border py-3'
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${scrolled
+          ? 'border-b border-brand-border bg-brand-bg/90 py-3 backdrop-blur-xl'
           : 'bg-transparent py-5'
-      }`}
+        }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
+        {/* Brand */}
         <button
+          type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS home"
         >
-          <div className="relative h-12 w-12 flex items-center justify-center rounded-full ring-1 ring-brand-cream/30">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm">
             <img
-              src="/images/logo_no_background.png"
+              src="/images/favicon.png"
               alt="VIP FADES logo"
-              className="h-full w-full object-contain p-0.5"
+              className="h-full w-full object-cover"
             />
           </div>
-          <div className="hidden flex-col leading-none sm:flex">
-            <span className="font-serif text-lg font-semibold tracking-wide text-brand-textPrimary">
+
+          <div className="hidden flex-col items-start leading-none sm:flex">
+            <span className="font-serif text-xl font-semibold tracking-wide text-brand-textPrimary">
               VIP FADES
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-brand-cream">
-              by Anas
+
+            <span className="mt-1 text-[10px] uppercase tracking-[0.32em] text-brand-cream">
+              BY ANAS
             </span>
           </div>
         </button>
 
+        {/* Desktop navigation */}
         <nav className="hidden items-center gap-8 lg:flex">
-          {NAV_LINKS.map((l) => (
+          {NAV_LINKS.map((link) => (
             <button
-              key={l.href}
-              onClick={() => handleNav(l.href)}
-              className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary transition-colors hover:text-brand-textPrimary after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 after:bg-brand-accent after:transition-all after:duration-300 hover:after:w-full"
+              type="button"
+              key={link.href}
+              onClick={() => handleNav(link.href)}
+              className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
             >
-              {l.label}
+              {link.label}
             </button>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
+          {/* Desktop booking button */}
           <button
+            type="button"
             onClick={() => handleNav('#booking')}
-            className="hidden items-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-textPrimary transition-all hover:bg-brand-hover border border-brand-accent/20 sm:flex"
+            className="hidden items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary sm:flex"
           >
             <Scissors className="h-4 w-4" />
             Book Appointment
           </button>
+
+          {/* Mobile menu button */}
           <button
-            onClick={() => setOpen((v) => !v)}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary lg:hidden"
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-cream/40 text-brand-cream transition-colors hover:border-brand-cream hover:text-brand-textPrimary lg:hidden"
             aria-label="Toggle menu"
+            aria-expanded={open}
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {open ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
 
       {/* Mobile drawer */}
       <div
-        className={`overflow-hidden transition-all duration-500 lg:hidden ${
-          open ? 'max-h-96 bg-brand-bg/95 border-b border-brand-border' : 'max-h-0'
-        }`}
+        className={`overflow-hidden transition-all duration-500 lg:hidden ${open
+            ? 'max-h-96 border-b border-brand-border bg-brand-bg/95'
+            : 'max-h-0'
+          }`}
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 pb-6 pt-4">
-          {NAV_LINKS.map((l) => (
+          {NAV_LINKS.map((link) => (
             <button
-              key={l.href}
-              onClick={() => handleNav(l.href)}
-              className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-textPrimary"
+              type="button"
+              key={link.href}
+              onClick={() => handleNav(link.href)}
+              className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
             >
-              {l.label}
+              {link.label}
             </button>
           ))}
+
+          {/* Mobile booking button */}
           <button
+            type="button"
             onClick={() => handleNav('#booking')}
-            className="mt-2 flex items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-brand-textPrimary border border-brand-accent/20 hover:bg-brand-hover transition-all"
+            className="mt-2 flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary"
           >
             <Scissors className="h-4 w-4" />
             Book Appointment

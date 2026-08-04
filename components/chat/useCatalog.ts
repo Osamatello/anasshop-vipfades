@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-export type CatalogBarber = {
+import type { Barber, Service } from '@/lib/data';
+
+type CatalogBarberRow = {
     id: string;
     name: string;
     slug: string;
@@ -10,7 +12,7 @@ export type CatalogBarber = {
     is_active: boolean;
 };
 
-export type CatalogService = {
+type CatalogServiceRow = {
     id: string;
     name: string;
     slug: string;
@@ -22,14 +24,42 @@ export type CatalogService = {
 
 type CatalogResponse = {
     success: boolean;
-    barbers?: CatalogBarber[];
-    services?: CatalogService[];
+    barbers?: CatalogBarberRow[];
+    services?: CatalogServiceRow[];
     error?: string;
 };
 
+function mapBarber(barber: CatalogBarberRow): Barber {
+    if (barber.slug === 'anas') {
+        return {
+            id: barber.id,
+            name: barber.name,
+            title: 'Head Barber & Founder',
+            specialty: 'Fades, sharp lines & precision cuts',
+        };
+    }
+
+    return {
+        id: barber.id,
+        name: barber.name,
+        title: 'Senior Barber',
+        specialty: 'Classic cuts, beard sculpting & styling',
+    };
+}
+
+function mapService(service: CatalogServiceRow): Service {
+    return {
+        id: service.id,
+        name: service.name,
+        price: service.price,
+        duration: service.duration_minutes,
+        description: service.description ?? '',
+    };
+}
+
 export function useCatalog() {
-    const [barbers, setBarbers] = useState<CatalogBarber[]>([]);
-    const [services, setServices] = useState<CatalogService[]>([]);
+    const [barbers, setBarbers] = useState<Barber[]>([]);
+    const [services, setServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -55,8 +85,8 @@ export function useCatalog() {
                     throw new Error(data.error || 'Failed to load booking catalog.');
                 }
 
-                setBarbers(data.barbers);
-                setServices(data.services);
+                setBarbers(data.barbers.map(mapBarber));
+                setServices(data.services.map(mapService));
             } catch (catalogError) {
                 const message =
                     catalogError instanceof Error

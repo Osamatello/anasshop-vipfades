@@ -2,48 +2,23 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
-  Calendar,
-  Clock,
   Scissors,
   Send,
   Sparkles,
-  Tag,
-  UserRound,
   X,
 } from 'lucide-react';
 
 import {
-  BARBERS,
   BUSINESS,
-  SERVICES,
-  TIME_SLOTS,
 } from '@/lib/data';
+
+import { QUICK_ACTIONS } from './constants';
+import { useAvailability } from './useAvailability';
+import { useCatalog } from './useCatalog';
+import { nextDays } from './utils';
 
 import type { BookingDraft, Msg, Step } from './types';
 
-
-const QUICK_ACTIONS = [
-  {
-    label: 'Book an appointment',
-    value: 'book',
-    icon: Calendar,
-  },
-  {
-    label: 'View prices',
-    value: 'prices',
-    icon: Tag,
-  },
-  {
-    label: 'Check availability',
-    value: 'availability',
-    icon: Clock,
-  },
-  {
-    label: 'Choose a barber',
-    value: 'barber',
-    icon: UserRound,
-  },
-];
 
 let idCounter = 0;
 
@@ -64,6 +39,22 @@ export default function ChatInterface({
   const [draft, setDraft] = useState<BookingDraft>({});
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+
+  const {
+    slots,
+    loading: availabilityLoading,
+    error: availabilityError,
+    loadAvailability,
+    resetAvailability,
+  } = useAvailability();
+
+  const {
+    barbers,
+    services,
+    loading: catalogLoading,
+    error: catalogError,
+  } = useCatalog();
+
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -119,7 +110,7 @@ export default function ChatInterface({
     pushUser('Book an appointment');
 
     pushBot('Great choice. Select your service.', {
-      options: SERVICES.map((service) => ({
+      options: services.map((service) => ({
         label: service.name,
         value: service.id,
         sub: `€${service.price}${service.duration ? ` · ${service.duration} min` : ''
@@ -132,7 +123,7 @@ export default function ChatInterface({
     pushUser('View prices');
 
     pushBot(
-      `Here's our full menu:\n\n${SERVICES.map(
+      `Here's our full menu:\n\n${services.map(
         (service) =>
           `• ${service.name}: €${service.price}${service.duration ? ` (${service.duration} min)` : ''
           }`,
@@ -151,7 +142,7 @@ export default function ChatInterface({
     pushBot(
       `We're open ${BUSINESS.hours.days}, ${BUSINESS.hours.time}. Here are today's available slots:`,
       {
-        chips: TIME_SLOTS.slice(0, 6),
+        chips: slots.slice(0, 6),
       },
     );
 
@@ -166,7 +157,7 @@ export default function ChatInterface({
     pushUser('Choose a barber');
 
     pushBot('Pick your preferred barber.', {
-      options: BARBERS.map((barber) => ({
+      options: barbers.map((barber) => ({
         label: barber.name,
         value: barber.id,
         sub: barber.title,
@@ -207,7 +198,7 @@ export default function ChatInterface({
       return;
     }
 
-    if (TIME_SLOTS.includes(chip) && step === 'menu') {
+    if (slots.includes(chip) && step === 'menu') {
       setDraft((currentDraft) => ({
         ...currentDraft,
         time: chip,
@@ -225,13 +216,13 @@ export default function ChatInterface({
       return;
     }
 
-    if (TIME_SLOTS.includes(chip) && step === 'pickTime') {
+    if (slots.includes(chip) && step === 'pickTime') {
       pickTime(chip);
     }
   };
 
   const pickService = (id: string) => {
-    const service = SERVICES.find((item) => item.id === id);
+    const service = services.find((item) => item.id === id);
 
     if (!service) {
       return;
@@ -248,7 +239,7 @@ export default function ChatInterface({
     pushBot(
       `${service.name}: €${service.price}. Now choose your barber.`,
       {
-        options: BARBERS.map((barber) => ({
+        options: barbers.map((barber) => ({
           label: barber.name,
           value: barber.id,
           sub: barber.title,
@@ -258,7 +249,7 @@ export default function ChatInterface({
   };
 
   const pickBarber = (id: string) => {
-    const barber = BARBERS.find((item) => item.id === id);
+    const barber = barbers.find((item) => item.id === id);
 
     if (!barber) {
       return;
@@ -273,21 +264,44 @@ export default function ChatInterface({
     setStep('pickDate');
 
     pushBot(`Booked with ${barber.name}. What day works for you?`, {
-      chips: nextDays(4),
+      options: nextDays(4).map((day) => ({
+        label: day.label,
+        value: day.value,
+      })),
     });
   };
 
-  const pickDate = (date: string) => {
-    setDraft((currentDraft) => ({
-      ...currentDraft,
+  const pickDate = async (date: string) => {
+    const currentDraft = {
+      ...draft,
       date,
-    }));
+    };
+
+    setDraft(currentDraft);
 
     pushUser(date);
     setStep('pickTime');
 
+    if (!currentDraft.service || !currentDraft.barber) {
+      pushBot('Please select a service and barber first.');
+      return;
+    }
+
+    const availableSlots = await loadAvailability({
+      barberId: currentDraft.barber.id,
+      serviceId: currentDraft.service.id,
+      date,
+    });
+
+    if (availableSlots.length === 0) {
+      pushBot(
+        'No available appointments for this day. Please choose another date.',
+      );
+      return;
+    }
+
     pushBot(`${date}: here are the available times:`, {
-      chips: TIME_SLOTS.slice(0, 8),
+      chips: availableSlots,
     });
   };
 
@@ -365,6 +379,11 @@ export default function ChatInterface({
 
     if (step === 'pickBarber' || step === 'pickBarberPre') {
       pickBarber(value);
+      return;
+    }
+
+    if (step === 'pickDate') {
+      pickDate(value);
     }
   };
 
@@ -634,29 +653,4 @@ function SummaryItem({
       </p>
     </div>
   );
-}
-
-function nextDays(numberOfDays: number): string[] {
-  const output: string[] = [];
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const now = new Date();
-
-  for (let index = 1; index <= numberOfDays + 4; index += 1) {
-    const date = new Date(now);
-    date.setDate(now.getDate() + index);
-
-    const dayOfWeek = date.getDay();
-
-    if (dayOfWeek >= 1 && dayOfWeek <= 4) {
-      output.push(
-        `${days[dayOfWeek]} ${date.getDate()}/${date.getMonth() + 1}`,
-      );
-
-      if (output.length >= numberOfDays) {
-        break;
-      }
-    }
-  }
-
-  return output;
 }

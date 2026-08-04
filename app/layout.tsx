@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   description:
     'Precision barbering, modern style and a premium experience in Koblenz. Book your appointment with Anas or Abd.',
   keywords: 'barbershop, Koblenz, fades, haircut, VIP Fades, Anas, premium barbershop',
+  icons: {
+    icon: [
+      { url: '/images/VIP_FADES_LOGO.jpeg', type: 'image/jpeg' },
+    ],
+    apple: [
+      { url: '/images/VIP_FADES_LOGO.jpeg', type: 'image/jpeg' },
+    ],
+  },
   openGraph: {
     title: 'VIP FADES BY ANAS',
     description: 'Premium Cuts. Clean Fades. Koblenz.',
@@ -20,6 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/images/VIP_FADES_LOGO.jpeg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/images/VIP_FADES_LOGO.jpeg" />
+        <link rel="shortcut icon" href="/images/VIP_FADES_LOGO.jpeg" />
+      </head>
       <body>{children}</body>
     </html>
   );

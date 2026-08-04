@@ -25,7 +25,7 @@ export default function BookingAssistant() {
           <div className="mt-6 h-px w-12 bg-brand-accent" />
           <p className="mt-6 max-w-xl text-base font-light leading-relaxed text-brand-textSecondary sm:text-lg">
             Chat with our digital concierge to book an appointment, check prices, see
-            availability, and choose your barber — all in one place.
+            availability, and choose your barber, all in one place.
           </p>
         </div>
 

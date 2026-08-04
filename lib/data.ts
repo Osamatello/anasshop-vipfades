@@ -9,8 +9,8 @@ export const BUSINESS = {
   instagram: "@vipfades.kob",
   instagramUrl: "https://instagram.com/vipfades.kob",
   hours: {
-    days: "Monday – Thursday",
-    time: "10:00 – 19:00",
+    days: "Monday to Thursday",
+    time: "10:00 to 19:00",
     walkins: "Walk-ins welcome",
   },
 };

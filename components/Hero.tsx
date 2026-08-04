@@ -9,13 +9,14 @@ export default function Hero() {
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
         <img
-          src="/images/VIP_FADES_PIC.jpeg"
+          src="/images/ChatGPT_Image_Aug_4,_2026,_09_39_47_AM.png"
           alt="VIP FADES barbershop interior"
           className="h-full w-full object-cover animate-subtle-zoom"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/70 via-brand-bg/40 to-brand-bg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/85 via-transparent to-brand-bg/40" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,#070707_95%)] opacity-85" />
+        {/* Stronger overlays for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/85 via-brand-bg/60 to-brand-bg" />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/50 to-brand-bg/55" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#070707_90%)] opacity-90" />
         <div className="absolute inset-0 film-grain" />
       </div>
 
@@ -32,7 +33,7 @@ export default function Hero() {
           <h1 className="font-serif text-5xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
             {BUSINESS.tagline.split('.')[0]}.
             <br />
-            <span className="text-brand-accent">{BUSINESS.tagline.split('.')[1]}.</span>
+            <span className="text-[#C8D8E8]">{BUSINESS.tagline.split('.')[1]}.</span>
           </h1>
 
           <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textSecondary sm:text-xl">
@@ -57,7 +58,7 @@ export default function Hero() {
                   .querySelector('#services')
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="flex items-center justify-center gap-2 rounded-full border border-brand-border bg-brand-bgSecondary/30 px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-textPrimary backdrop-blur-sm transition-all hover:border-brand-accent hover:text-brand-textPrimary"
+              className="flex items-center justify-center gap-2 rounded-full border border-brand-textSecondary/60 bg-brand-bgSecondary/70 px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-textPrimary backdrop-blur-sm transition-all hover:border-brand-accent hover:bg-brand-accent/20"
             >
               Explore Services
             </button>

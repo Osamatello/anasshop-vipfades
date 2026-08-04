@@ -7,9 +7,9 @@ import {
   Clock,
   UserRound,
   Send,
-  Check,
   Scissors,
   Sparkles,
+  X,
 } from 'lucide-react';
 import {
   SERVICES,
@@ -64,8 +64,10 @@ const nid = () => ++idc;
 
 export default function ChatInterface({
   onBooked,
+  onClose,
 }: {
   onBooked?: (b: BookingDraft) => void;
+  onClose?: () => void;
 }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [step, setStep] = useState<Step>('welcome');
@@ -84,10 +86,9 @@ export default function ChatInterface({
   const pushUser = (text: string) =>
     setMessages((m) => [...m, { id: nid(), role: 'user', text }]);
 
-  // Welcome
   useEffect(() => {
     pushBot(
-      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge — here to help you schedule, check prices, and availability. What can I do for you?`,
+      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge, here to help you schedule, check prices, and availability. What can I do for you?`,
       { chips: QUICK_ACTIONS.map((q) => q.label) }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,7 +117,7 @@ export default function ChatInterface({
     pushUser('View prices');
     pushBot(
       `Here's our full menu:\n\n${SERVICES.map(
-        (s) => `• ${s.name} — €${s.price}${s.duration ? ` (${s.duration} min)` : ''}`
+        (s) => `• ${s.name}: €${s.price}${s.duration ? ` (${s.duration} min)` : ''}`
       ).join('\n')}\n\nWould you like to book?`,
       { chips: ['Book now', 'Choose a barber'] }
     );
@@ -156,13 +157,11 @@ export default function ChatInterface({
     if (chip === 'Confirm booking') return confirmBooking();
     if (chip === 'Start over' || chip === 'Book another') return restart();
 
-    // time chip from availability
-    if (TIME_SLOTS.includes(chip)) {
+    if (TIME_SLOTS.includes(chip) && step === 'menu') {
       setDraft((d) => ({ ...d, time: chip }));
       return startBooking();
     }
 
-    // date chip
     if (/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s/.test(chip) && step === 'pickDate') {
       return pickDate(chip);
     }
@@ -176,7 +175,7 @@ export default function ChatInterface({
     setDraft((d) => ({ ...d, service: svc }));
     pushUser(svc.name);
     setStep('pickBarber');
-    pushBot(`${svc.name} — €${svc.price}. Now choose your barber.`, {
+    pushBot(`${svc.name}: €${svc.price}. Now choose your barber.`, {
       options: BARBERS.map((b) => ({ label: b.name, value: b.id, sub: b.title })),
     });
   };
@@ -195,7 +194,7 @@ export default function ChatInterface({
     setDraft((d) => ({ ...d, date }));
     pushUser(date);
     setStep('pickTime');
-    pushBot(`${date} — here are the available times:`, {
+    pushBot(`${date}: here are the available times:`, {
       chips: TIME_SLOTS.slice(0, 8),
     });
   };
@@ -256,7 +255,6 @@ export default function ChatInterface({
     setInput('');
     if (step === 'enterName') return submitName(v);
     if (step === 'enterPhone') return submitPhone(v);
-    // free text fallback
     handleChip(v);
   };
 
@@ -265,14 +263,14 @@ export default function ChatInterface({
     step === 'enterName' ? 'Your name' : step === 'enterPhone' ? 'Phone number' : 'Message…';
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-brand-card/45">
-      {/* Header bar */}
-      <div className="flex items-center gap-3 border-b border-brand-border bg-brand-bgSecondary/60 px-5 py-4">
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-[#111214]">
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-brand-border bg-[#0e0f11] px-5 py-4">
         <div className="relative">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent/10 ring-1 ring-brand-accent/30">
             <Sparkles className="h-5 w-5 text-brand-accent" />
           </div>
-          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-brand-bgSecondary" />
+          <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-[#0e0f11]" />
         </div>
         <div className="flex-1">
           <p className="font-serif text-lg leading-none text-brand-textPrimary">
@@ -282,7 +280,18 @@ export default function ChatInterface({
             Online · AI Powered
           </p>
         </div>
-        <Scissors className="h-5 w-5 text-brand-textSecondary/60" />
+        <div className="flex items-center gap-2">
+          <Scissors className="h-5 w-5 text-brand-textSecondary/60" />
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-border text-brand-textSecondary transition-colors hover:border-brand-accent hover:text-brand-accent"
+              aria-label="Close chat"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
@@ -295,7 +304,7 @@ export default function ChatInterface({
         ))}
 
         {typing && (
-          <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm bg-brand-bgSecondary px-4 py-3 w-fit">
+          <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm bg-[#1a1b1e] px-4 py-3 w-fit">
             <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
             <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
             <span className="typing-dot h-1.5 w-1.5 rounded-full bg-brand-accent" />
@@ -303,7 +312,7 @@ export default function ChatInterface({
         )}
       </div>
 
-      {/* Quick actions (when idle / menu) */}
+      {/* Quick actions (when idle) */}
       {step === 'welcome' && (
         <div className="border-t border-brand-border/40 px-4 pb-3 pt-3">
           <div className="grid grid-cols-2 gap-2">
@@ -311,7 +320,7 @@ export default function ChatInterface({
               <button
                 key={q.value}
                 onClick={() => handleChip(q.label)}
-                className="flex items-center gap-2 rounded-xl border border-brand-border bg-brand-bgSecondary/30 px-3 py-2.5 text-left text-[13px] font-medium text-brand-textPrimary/85 transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
+                className="flex items-center gap-2 rounded-xl border border-brand-border bg-[#1a1b1e] px-3 py-2.5 text-left text-[13px] font-medium text-brand-textPrimary/85 transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
               >
                 <q.icon className="h-4 w-4 flex-shrink-0 text-brand-accent" />
                 {q.label}
@@ -324,13 +333,13 @@ export default function ChatInterface({
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="flex items-center gap-2 border-t border-brand-border bg-brand-bgSecondary/40 px-4 py-3"
+        className="flex items-center gap-2 border-t border-brand-border bg-[#0e0f11] px-4 py-3"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={showInput ? inputPlaceholder : 'Message…'}
-          className="flex-1 rounded-full bg-brand-bg/50 px-4 py-2.5 text-sm text-brand-textPrimary placeholder:text-brand-textSecondary outline-none ring-1 ring-brand-border focus:ring-brand-accent/40"
+          className="flex-1 rounded-full bg-[#1a1b1e] px-4 py-2.5 text-sm text-brand-textPrimary placeholder:text-brand-textSecondary outline-none ring-1 ring-brand-border focus:ring-brand-accent/40"
         />
         <button
           type="submit"
@@ -356,25 +365,24 @@ function MessageBubble({
   const isBot = msg.role === 'bot';
   return (
     <div className={`flex ${isBot ? 'justify-start' : 'justify-end'} message-in`}>
-      <div className={`max-w-[85%] ${isBot ? '' : ''}`}>
+      <div className="max-w-[85%]">
         <div
           className={`whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-relaxed ${
             isBot
-              ? 'rounded-tl-sm bg-brand-bgSecondary text-brand-textPrimary/90 border border-brand-border/40'
+              ? 'rounded-tl-sm bg-[#1a1b1e] text-brand-textPrimary/95 border border-brand-border/50'
               : 'rounded-tr-sm bg-brand-accent text-brand-textPrimary font-medium border border-brand-accent/20'
           }`}
         >
           {msg.text}
         </div>
 
-        {/* Option cards */}
         {msg.options && (
           <div className="mt-3 grid gap-2">
             {msg.options.map((o) => (
               <button
                 key={o.value}
                 onClick={() => onOption(o.value)}
-                className="flex items-center justify-between rounded-xl border border-brand-border bg-brand-bgSecondary/30 px-4 py-3 text-left transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
+                className="flex items-center justify-between rounded-xl border border-brand-border bg-[#1a1b1e] px-4 py-3 text-left transition-all hover:border-brand-accent/40 hover:bg-brand-accent/5"
               >
                 <span className="flex flex-col">
                   <span className="text-sm font-medium text-brand-textPrimary">{o.label}</span>
@@ -388,7 +396,6 @@ function MessageBubble({
           </div>
         )}
 
-        {/* Chip row */}
         {msg.chips && (
           <div className="mt-3 flex flex-wrap gap-2">
             {msg.chips.map((c) => (
@@ -403,9 +410,8 @@ function MessageBubble({
           </div>
         )}
 
-        {/* Booking summary card */}
         {msg.booking && (
-          <div className="mt-3 rounded-2xl border border-brand-accent/20 bg-brand-bgSecondary p-4">
+          <div className="mt-3 rounded-2xl border border-brand-accent/20 bg-[#1a1b1e] p-4">
             <div className="grid grid-cols-2 gap-y-3 text-sm">
               <SummaryItem label="Service" value={msg.booking.service?.name} />
               <SummaryItem label="Barber" value={msg.booking.barber?.name} />
@@ -432,8 +438,8 @@ function MessageBubble({
 function SummaryItem({ label, value }: { label: string; value?: string }) {
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-[0.18em] text-ink-400">{label}</p>
-      <p className="mt-0.5 font-medium text-warm">{value || '—'}</p>
+      <p className="text-[10px] uppercase tracking-[0.18em] text-brand-textSecondary">{label}</p>
+      <p className="mt-0.5 font-medium text-brand-textPrimary">{value || '—'}</p>
     </div>
   );
 }
@@ -446,7 +452,6 @@ function nextDays(n: number): string[] {
     const d = new Date(now);
     d.setDate(now.getDate() + i);
     const dow = d.getDay();
-    // Mon–Thu only (1–4)
     if (dow >= 1 && dow <= 4) {
       out.push(`${days[dow]} ${d.getDate()}/${d.getMonth() + 1}`);
       if (out.length >= n) break;

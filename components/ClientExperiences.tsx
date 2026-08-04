@@ -2,9 +2,35 @@
 
 import { Star } from 'lucide-react';
 
-export default function ClientExperiences() {
-  const placeholders = [1, 2, 3];
+// Placeholder reviews — replace with real Google Reviews when available
+const PLACEHOLDER_REVIEWS = [
+  {
+    id: 1,
+    rating: 5,
+    text: 'Absolutely clean fade and a great atmosphere. The attention to detail is unmatched. Highly recommended for anyone who takes their look seriously.',
+    name: 'Sample Client 01',
+    date: 'July 2025',
+    initials: 'SC',
+  },
+  {
+    id: 2,
+    rating: 5,
+    text: 'Premium experience from start to finish. The barber took time to understand exactly what I wanted and delivered perfectly. Will be back every week.',
+    name: 'Sample Client 02',
+    date: 'July 2025',
+    initials: 'SC',
+  },
+  {
+    id: 3,
+    rating: 5,
+    text: 'Best barbershop in Koblenz. The shop looks incredible and the haircut quality is on another level. Booking through the website was seamless.',
+    name: 'Sample Client 03',
+    date: 'June 2025',
+    initials: 'SC',
+  },
+];
 
+export default function ClientExperiences() {
   return (
     <section className="section-padding bg-brand-bgSecondary px-5 sm:px-8">
       <div className="mx-auto max-w-6xl">
@@ -17,40 +43,37 @@ export default function ClientExperiences() {
           </h2>
           <div className="mt-4 gold-divider" />
           <p className="mt-6 mx-auto max-w-lg text-base font-light text-brand-textSecondary">
-            Factual reviews and client feedback from our verified booking platform.
+            What our clients say about the VIP FADES experience.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {placeholders.map((id) => (
+          {PLACEHOLDER_REVIEWS.map((review) => (
             <div
-              key={id}
-              className="reveal p-7 rounded-xl border border-brand-border bg-brand-card/25 flex flex-col justify-between h-56"
+              key={review.id}
+              className="reveal p-7 rounded-xl border border-brand-border bg-brand-card/25 flex flex-col justify-between"
             >
               <div>
-                {/* Star rating placeholder */}
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-brand-accent/30 fill-brand-accent/5 stroke-[1.5]" />
+                <div className="flex gap-1 mb-5">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="h-4 w-4 text-brand-accent fill-brand-accent stroke-[1.5]"
+                    />
                   ))}
                 </div>
-
-                {/* Skeleton lines representing review text */}
-                <div className="space-y-2.5">
-                  <div className="h-2 w-full bg-brand-border/40 rounded-full" />
-                  <div className="h-2 w-11/12 bg-brand-border/40 rounded-full" />
-                  <div className="h-2 w-4/5 bg-brand-border/40 rounded-full" />
-                </div>
+                <p className="text-sm font-light leading-relaxed text-brand-textSecondary">
+                  "{review.text}"
+                </p>
               </div>
 
-              {/* Author placeholder */}
-              <div className="flex items-center gap-3 pt-6 border-t border-brand-border/30">
-                <div className="h-8 w-8 rounded-full border border-brand-border/60 bg-brand-bgSecondary/50 flex items-center justify-center text-[10px] tracking-tighter text-brand-textSecondary font-mono">
-                  VIP
+              <div className="flex items-center gap-3 pt-6 border-t border-brand-border/30 mt-6">
+                <div className="h-9 w-9 rounded-full border border-brand-border/60 bg-brand-bgSecondary/80 flex items-center justify-center text-[10px] tracking-tighter text-brand-accent font-semibold">
+                  {review.initials}
                 </div>
-                <div className="space-y-1.5 flex-1">
-                  <div className="h-2 w-16 bg-brand-border/50 rounded-full" />
-                  <div className="h-1.5 w-10 bg-brand-border/30 rounded-full" />
+                <div>
+                  <p className="text-sm font-medium text-brand-textPrimary">{review.name}</p>
+                  <p className="text-[11px] text-brand-textSecondary/70">{review.date}</p>
                 </div>
               </div>
             </div>

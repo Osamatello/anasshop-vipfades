@@ -20,7 +20,7 @@ export default function ShopExperience() {
             {/* accent badge */}
             <div className="absolute -bottom-5 -right-3 hidden rounded-xl border border-brand-border bg-brand-bg/90 px-5 py-4 backdrop-blur sm:block">
               <p className="font-serif text-3xl text-brand-textPrimary font-light">100%</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-brand-textSecondary">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-brand-cream">
                 Precision Focused
               </p>
             </div>
@@ -28,7 +28,7 @@ export default function ShopExperience() {
 
           {/* Text */}
           <div className="lg:col-span-5 flex flex-col justify-center">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent mb-4 block">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream mb-4 block">
               The VIP Experience
             </span>
             <h2 className="font-serif text-4xl font-light leading-tight text-brand-textPrimary sm:text-5xl lg:text-6xl mb-6">
@@ -47,7 +47,7 @@ export default function ShopExperience() {
               <span className="rounded-full border border-brand-border px-4 py-1.5 bg-brand-bg/40">
                 {BUSINESS.hours.time}
               </span>
-              <span className="rounded-full border border-brand-accent/30 px-4 py-1.5 text-brand-accent bg-brand-accent/5">
+              <span className="rounded-full border border-brand-cream/30 px-4 py-1.5 text-brand-cream bg-brand-cream/5">
                 {BUSINESS.hours.walkins}
               </span>
             </div>

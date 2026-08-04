@@ -67,12 +67,12 @@ export default function Hero() {
           {/* Info row */}
           <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textSecondary/80">
             <span className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-brand-accent" />
+              <Clock className="h-4 w-4 text-brand-cream" />
               {BUSINESS.hours.time}
             </span>
             <span className="hidden h-4 w-px bg-brand-border sm:block" />
             <span className="flex items-center gap-2 text-sm">
-              <Phone className="h-4 w-4 text-brand-accent" />
+              <Phone className="h-4 w-4 text-brand-cream" />
               {BUSINESS.phoneFormatted}
             </span>
           </div>

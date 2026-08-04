@@ -111,14 +111,14 @@
   .gold-divider {
     width: 48px;
     height: 1px;
-    background-color: #22344A;
+    background-color: #E8DCC8;
     margin: 0 auto;
   }
 
   .gold-divider-left {
     width: 48px;
     height: 1px;
-    background-color: #22344A;
+    background-color: #E8DCC8;
   }
 
   @keyframes cinematic-zoom {

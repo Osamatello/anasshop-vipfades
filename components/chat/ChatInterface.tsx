@@ -263,12 +263,12 @@ export default function ChatInterface({
     step === 'enterName' ? 'Your name' : step === 'enterPhone' ? 'Phone number' : 'Message…';
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-[#111214]">
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-[#111214]/95 backdrop-blur-md">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-brand-border bg-[#0e0f11] px-5 py-4">
         <div className="relative">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-accent/10 ring-1 ring-brand-accent/30">
-            <Sparkles className="h-5 w-5 text-brand-accent" />
+            <Sparkles className="h-5 w-5 text-brand-cream" />
           </div>
           <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-[#0e0f11]" />
         </div>
@@ -276,12 +276,12 @@ export default function ChatInterface({
           <p className="font-serif text-lg leading-none text-brand-textPrimary">
             Grooming Concierge
           </p>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-brand-accent">
+          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-brand-cream font-medium">
             Online · AI Powered
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Scissors className="h-5 w-5 text-brand-textSecondary/60" />
+          <Scissors className="h-5 w-5 text-brand-cream/70" />
           {onClose && (
             <button
               onClick={onClose}

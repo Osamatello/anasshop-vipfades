@@ -23,6 +23,7 @@ const config: Config = {
           hover: '#304A66',
           textPrimary: '#F2F2F2',
           textSecondary: '#A4A4A4',
+          cream: '#E8DCC8',
         },
         ink: {
           950: '#0a0a0a',

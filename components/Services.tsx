@@ -8,7 +8,7 @@ export default function Services() {
     <section id="services" className="section-padding bg-brand-bg px-5 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 text-center">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent block mb-3">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream block mb-3">
             The Menu
           </span>
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
@@ -62,7 +62,7 @@ function ServiceCard({ service: s, index: i }: { service: Service; index: number
         </div>
         {s.duration && (
           <span className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-light text-brand-textSecondary">
-            <Clock className="h-3 w-3 text-brand-accent/70" />
+            <Clock className="h-3 w-3 text-brand-cream/80" />
             {s.duration} min
           </span>
         )}

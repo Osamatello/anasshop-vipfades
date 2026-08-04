@@ -22,18 +22,18 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3">
-              <div className="relative h-12 w-12 overflow-hidden rounded-full ring-1 ring-brand-accent/40">
+              <div className="relative h-14 w-14 flex items-center justify-center rounded-full ring-1 ring-brand-cream/30">
                 <img
-                  src="/images/VIP_FADES_LOGO.jpeg"
+                  src="/images/logo_no_background.png"
                   alt="VIP FADES logo"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain p-0.5"
                 />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="font-serif text-xl font-semibold text-brand-textPrimary">
                   VIP FADES
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-brand-accent font-semibold">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-brand-cream font-semibold">
                   by Anas
                 </span>
               </div>
@@ -72,7 +72,7 @@ export default function Footer() {
 
           {/* Nav */}
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-accent font-semibold">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
               Explore
             </p>
             <ul className="mt-5 space-y-3">
@@ -91,7 +91,7 @@ export default function Footer() {
 
           {/* Info */}
           <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-accent font-semibold">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
               Visit
             </p>
             <p className="mt-5 text-sm font-light leading-relaxed text-brand-textSecondary">
@@ -102,7 +102,7 @@ export default function Footer() {
               <br />
               {BUSINESS.hours.time}
             </p>
-            <p className="mt-3 text-sm text-brand-accent font-medium">{BUSINESS.hours.walkins}</p>
+            <p className="mt-3 text-sm text-brand-cream font-medium">{BUSINESS.hours.walkins}</p>
           </div>
         </div>
 

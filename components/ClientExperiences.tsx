@@ -35,7 +35,7 @@ export default function ClientExperiences() {
     <section className="section-padding bg-brand-bgSecondary px-5 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 text-center">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent block mb-3">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream block mb-3">
             Reviews
           </span>
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
@@ -58,7 +58,7 @@ export default function ClientExperiences() {
                   {Array.from({ length: review.rating }).map((_, i) => (
                     <Star
                       key={i}
-                      className="h-4 w-4 text-brand-accent fill-brand-accent stroke-[1.5]"
+                      className="h-4 w-4 text-brand-cream fill-brand-cream stroke-[1.5]"
                     />
                   ))}
                 </div>
@@ -68,12 +68,12 @@ export default function ClientExperiences() {
               </div>
 
               <div className="flex items-center gap-3 pt-6 border-t border-brand-border/30 mt-6">
-                <div className="h-9 w-9 rounded-full border border-brand-border/60 bg-brand-bgSecondary/80 flex items-center justify-center text-[10px] tracking-tighter text-brand-accent font-semibold">
+                <div className="h-9 w-9 rounded-full border border-brand-cream/40 bg-brand-bgSecondary/80 flex items-center justify-center text-[10px] tracking-tighter text-brand-cream font-semibold">
                   {review.initials}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-brand-textPrimary">{review.name}</p>
-                  <p className="text-[11px] text-brand-textSecondary/70">{review.date}</p>
+                  <p className="text-[11px] text-brand-cream/80">{review.date}</p>
                 </div>
               </div>
             </div>

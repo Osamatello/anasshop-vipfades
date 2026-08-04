@@ -8,7 +8,7 @@ export default function Contact() {
     <section id="contact" className="section-padding bg-brand-bgSecondary px-5 sm:px-8 border-t border-brand-border">
       <div className="mx-auto max-w-5xl">
         <div className="mb-14 text-center">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent block mb-3">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream block mb-3">
             Visit Us
           </span>
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
@@ -86,9 +86,9 @@ function ContactCard({
   const inner = (
     <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-6 transition-all duration-300 hover:border-brand-accent/30">
       <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-accent/30 bg-brand-accent/5">
-        <Icon className="h-5 w-5 text-brand-accent" />
+        <Icon className="h-5 w-5 text-brand-cream" />
       </div>
-      <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-brand-accent font-semibold">
+      <p className="mt-5 text-[11px] uppercase tracking-[0.22em] text-brand-cream font-semibold">
         {label}
       </p>
       <div className="mt-2 space-y-0.5">

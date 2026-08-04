@@ -41,18 +41,18 @@ export default function Header() {
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS home"
         >
-          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-1 ring-brand-accent/40">
+          <div className="relative h-12 w-12 flex items-center justify-center rounded-full ring-1 ring-brand-cream/30">
             <img
-              src="/images/VIP_FADES_LOGO.jpeg"
+              src="/images/logo_no_background.png"
               alt="VIP FADES logo"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain p-0.5"
             />
           </div>
           <div className="hidden flex-col leading-none sm:flex">
             <span className="font-serif text-lg font-semibold tracking-wide text-brand-textPrimary">
               VIP FADES
             </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-brand-accent">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-brand-cream">
               by Anas
             </span>
           </div>

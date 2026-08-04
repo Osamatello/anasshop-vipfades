@@ -8,7 +8,7 @@ export default function Barbers() {
     <section id="barbers" className="section-padding bg-brand-bg px-5 sm:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 text-center">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-accent block mb-3">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream block mb-3">
             The Team
           </span>
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
@@ -49,7 +49,7 @@ function BarberCard({ barber, index }: { barber: Barber; index: number }) {
         </div>
         <div>
           <h3 className="font-serif text-3xl font-light text-brand-textPrimary">{barber.name}</h3>
-          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-brand-accent font-medium">
+          <p className="mt-1 text-xs uppercase tracking-[0.2em] text-brand-cream font-medium">
             {barber.title}
           </p>
         </div>
@@ -69,7 +69,7 @@ function BarberCard({ barber, index }: { barber: Barber; index: number }) {
             key={feat}
             className="flex items-center gap-3 text-sm font-light text-brand-textSecondary"
           >
-            <Check className="h-4 w-4 flex-shrink-0 text-brand-accent" />
+            <Check className="h-4 w-4 flex-shrink-0 text-brand-cream" />
             {feat}
           </li>
         ))}

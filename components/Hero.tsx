@@ -33,7 +33,7 @@ export default function Hero() {
           <h1 className="font-serif text-5xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
             {BUSINESS.tagline.split('.')[0]}.
             <br />
-            <span className="text-[#C8D8E8]">{BUSINESS.tagline.split('.')[1]}.</span>
+            <span className="text-[#E8DCC8]">{BUSINESS.tagline.split('.')[1]}.</span>
           </h1>
 
           <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textSecondary sm:text-xl">
@@ -65,7 +65,7 @@ export default function Hero() {
           </div>
 
           {/* Info row */}
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textSecondary/80">
+          <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
             <span className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-brand-accent" />
               {BUSINESS.hours.time}

@@ -17,46 +17,10 @@ import {
   BUSINESS,
   SERVICES,
   TIME_SLOTS,
-  type Barber,
-  type Service,
 } from '@/lib/data';
 
-type Role = 'bot' | 'user';
+import type { BookingDraft, Msg, Step } from './types';
 
-type Msg = {
-  id: number;
-  role: Role;
-  text: string;
-  chips?: string[];
-  options?: {
-    label: string;
-    value: string;
-    sub?: string;
-  }[];
-  booking?: BookingDraft;
-};
-
-type BookingDraft = {
-  service?: Service;
-  barber?: Barber;
-  date?: string;
-  time?: string;
-  name?: string;
-  phone?: string;
-};
-
-type Step =
-  | 'welcome'
-  | 'menu'
-  | 'pickService'
-  | 'pickBarber'
-  | 'pickBarberPre'
-  | 'pickDate'
-  | 'pickTime'
-  | 'enterName'
-  | 'enterPhone'
-  | 'confirm'
-  | 'done';
 
 const QUICK_ACTIONS = [
   {
@@ -565,8 +529,8 @@ function MessageBubble({
       <div className="max-w-[85%]">
         <div
           className={`whitespace-pre-line rounded-2xl border px-4 py-3 text-sm leading-relaxed ${isBot
-              ? 'rounded-tl-sm border-brand-border/50 bg-[#1a1b1e] text-brand-textPrimary/95'
-              : 'rounded-tr-sm border-brand-cream/30 bg-brand-cream font-medium text-brand-bg'
+            ? 'rounded-tl-sm border-brand-border/50 bg-[#1a1b1e] text-brand-textPrimary/95'
+            : 'rounded-tr-sm border-brand-cream/30 bg-brand-cream font-medium text-brand-bg'
             }`}
         >
           {msg.text}

@@ -20,6 +20,23 @@ function minutesToTime(totalMinutes: number): string {
         .padStart(2, "0")}`;
 }
 
+function isSameDay(date: string): boolean {
+    const today = new Date();
+    const selectedDate = new Date(`${date}T12:00:00`);
+
+    return (
+        today.getFullYear() === selectedDate.getFullYear() &&
+        today.getMonth() === selectedDate.getMonth() &&
+        today.getDate() === selectedDate.getDate()
+    );
+}
+
+function getCurrentMinutes(): number {
+    const now = new Date();
+
+    return now.getHours() * 60 + now.getMinutes();
+}
+
 function periodsOverlap(
     startOne: number,
     endOne: number,
@@ -69,6 +86,11 @@ export async function getAvailableSlots(
 
     const dayOfWeek = javascriptDay === 0 ? 7 : javascriptDay;
 
+    // Booking is only available Monday - Thursday
+    if (dayOfWeek < 1 || dayOfWeek > 4) {
+        return [];
+    }
+
     const [service, businessHours, bookings, blockedTimes] = await Promise.all([
         getServiceById(serviceId),
         getBusinessHoursByDay(dayOfWeek),
@@ -89,6 +111,25 @@ export async function getAvailableSlots(
     return possibleSlots.filter((slot) => {
         const slotStart = timeToMinutes(slot);
         const slotEnd = slotStart + service.duration_minutes;
+
+        // Same-day booking rules
+        if (isSameDay(bookingDate)) {
+            const currentMinutes = getCurrentMinutes();
+
+            // Remove past times
+            if (slotStart <= currentMinutes) {
+                return false;
+            }
+
+            // Make sure service can finish before closing time
+            const closingMinutes = timeToMinutes(
+                businessHours.close_time
+            );
+
+            if (slotEnd > closingMinutes) {
+                return false;
+            }
+        }
 
         const overlapsBooking = bookings.some((booking) => {
             const bookingStart = timeToMinutes(booking.start_time);
@@ -111,10 +152,12 @@ export async function getAvailableSlots(
             const blockedEndDate = new Date(blockedTime.end_at);
 
             const blockedStart =
-                blockedStartDate.getHours() * 60 + blockedStartDate.getMinutes();
+                blockedStartDate.getHours() * 60 +
+                blockedStartDate.getMinutes();
 
             const blockedEnd =
-                blockedEndDate.getHours() * 60 + blockedEndDate.getMinutes();
+                blockedEndDate.getHours() * 60 +
+                blockedEndDate.getMinutes();
 
             return periodsOverlap(
                 slotStart,

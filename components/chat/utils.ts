@@ -18,17 +18,23 @@ export function nextDays(numberOfDays: number): AvailableDate[] {
 
     const now = new Date();
 
-    for (let index = 1; index <= numberOfDays + 4; index += 1) {
+    // Start from today, not tomorrow
+    for (let index = 0; index <= numberOfDays + 5; index += 1) {
         const date = new Date(now);
 
         date.setDate(now.getDate() + index);
 
         const dayOfWeek = date.getDay();
 
+        // Booking only Monday - Thursday
         if (dayOfWeek >= 1 && dayOfWeek <= 4) {
             const label = `${days[dayOfWeek]} ${date.getDate()}/${date.getMonth() + 1}`;
 
-            const value = date.toISOString().split('T')[0];
+            const value = [
+                date.getFullYear(),
+                String(date.getMonth() + 1).padStart(2, '0'),
+                String(date.getDate()).padStart(2, '0'),
+            ].join('-');
 
             output.push({
                 label,

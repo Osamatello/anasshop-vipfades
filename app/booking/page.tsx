@@ -1,19 +1,18 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import {
-    ArrowLeft,
     Clock3,
-    LockKeyhole,
     MapPin,
     Phone,
 } from 'lucide-react';
 
+import Header from '@/components/Header';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { BUSINESS } from '@/lib/data';
 
 export default function BookingPage() {
     return (
         <main className="relative min-h-screen overflow-hidden bg-[#070707] text-brand-textPrimary">
+            <Header />
+
             {/* Global moving atmosphere */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
                 <div className="global-glow-one absolute -left-[20%] top-[5%] h-[850px] w-[850px] rounded-full bg-brand-cream/[0.065] blur-[180px]" />
@@ -25,78 +24,9 @@ export default function BookingPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,220,200,0.035),transparent_35%)]" />
             </div>
 
-            <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
-                {/* Premium top bar */}
-                <header className="relative mb-0 grid min-h-[92px] grid-cols-3 items-center border border-brand-border/70 border-b-brand-cream/20 bg-[#080808]/80 px-5 backdrop-blur-xl sm:px-7 lg:px-10">
-                    {/* Back */}
-                    <div className="flex justify-start">
-                        <Link
-                            href="/"
-                            className="group inline-flex items-center gap-2 text-xs text-brand-textSecondary transition-colors duration-300 hover:text-brand-cream sm:text-sm"
-                        >
-                            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-                            <span className="hidden sm:inline">
-                                Back to VIP FADES
-                            </span>
-                            <span className="sm:hidden">
-                                Back
-                            </span>
-                        </Link>
-                    </div>
-
-                    {/* Center brand */}
-                    <Link
-                        href="/"
-                        className="group relative flex flex-col items-center justify-center"
-                        aria-label="VIP FADES home"
-                    >
-                        <div className="absolute left-1/2 top-1/2 h-16 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-cream/[0.06] blur-2xl transition-all duration-500 group-hover:bg-brand-cream/[0.10]" />
-
-                        <div className="relative flex items-center gap-3">
-                            <Image
-                                src="/images/favicon.png"
-                                alt="VIP FADES"
-                                width={48}
-                                height={48}
-                                priority
-                                className="h-11 w-11 rounded-full object-cover sm:h-12 sm:w-12"
-                            />
-
-                            <div className="hidden flex-col sm:flex">
-                                <span className="font-serif text-lg font-light leading-none tracking-[0.08em] text-brand-textPrimary">
-                                    VIP FADES
-                                </span>
-
-                                <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.32em] text-brand-cream/80">
-                                    BY ANAS
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="brand-line absolute -bottom-3 left-1/2 h-px bg-gradient-to-r from-transparent via-brand-cream to-transparent" />
-                    </Link>
-
-                    {/* Private booking */}
-                    <div className="flex justify-end">
-                        <div className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-brand-cream/75 sm:text-[10px] sm:tracking-[0.28em]">
-                            <span className="hidden sm:inline">
-                                Private Online Booking
-                            </span>
-
-                            <span className="sm:hidden">
-                                Booking
-                            </span>
-
-                            <LockKeyhole className="h-3.5 w-3.5" />
-                        </div>
-                    </div>
-
-                    {/* Moving top light */}
-                    <div className="top-light pointer-events-none absolute bottom-0 left-0 h-px w-48 bg-gradient-to-r from-transparent via-brand-cream to-transparent" />
-                </header>
-
+            <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 pb-5 pt-28 sm:px-6 sm:pb-6 sm:pt-32 lg:px-8 lg:pb-8 lg:pt-32">
                 {/* Split booking experience */}
-                <section className="relative grid min-h-[calc(100vh-150px)] overflow-hidden rounded-b-[28px] border-x border-b border-brand-border/70 bg-[#090909]/95 backdrop-blur-sm lg:grid-cols-[38%_62%]">
+                <section className="relative grid min-h-[calc(100vh-150px)] overflow-hidden rounded-[28px] border border-brand-border/70 bg-[#090909]/95 backdrop-blur-sm lg:grid-cols-[38%_62%]">
                     {/* Large moving gold atmosphere across page */}
                     <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
                         <div className="gold-wave gold-wave-one absolute left-[-22%] top-[-10%] h-[900px] w-[900px] rounded-[50%] border border-brand-cream/[0.10]" />
@@ -404,31 +334,6 @@ export default function BookingPage() {
                     }
                 }
 
-                @keyframes topLightMove {
-                    from {
-                        transform: translateX(-250px);
-                    }
-
-                    to {
-                        transform: translateX(1450px);
-                    }
-                }
-
-                @keyframes brandLinePulse {
-                    0%,
-                    100% {
-                        width: 70px;
-                        opacity: 0.3;
-                        transform: translateX(-50%);
-                    }
-
-                    50% {
-                        width: 130px;
-                        opacity: 1;
-                        transform: translateX(-50%);
-                    }
-                }
-
                 @keyframes rightGlow {
                     0%,
                     100% {
@@ -506,14 +411,6 @@ export default function BookingPage() {
                     animation: bookingAccentPulse 4s ease-in-out infinite;
                 }
 
-                .top-light {
-                    animation: topLightMove 9s linear infinite;
-                }
-
-                .brand-line {
-                    animation: brandLinePulse 4s ease-in-out infinite;
-                }
-
                 .right-glow {
                     animation: rightGlow 18s ease-in-out infinite;
                 }
@@ -538,8 +435,6 @@ export default function BookingPage() {
                     .ribbon-glow-two,
                     .divider-glow,
                     .booking-accent,
-                    .top-light,
-                    .brand-line,
                     .right-glow,
                     .right-glow-two,
                     .chat-top-light {
@@ -548,11 +443,6 @@ export default function BookingPage() {
 
                     .booking-accent {
                         width: 3.5rem;
-                    }
-
-                    .brand-line {
-                        width: 80px;
-                        transform: translateX(-50%);
                     }
                 }
             `}</style>

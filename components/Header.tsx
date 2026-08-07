@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Menu, Scissors, X } from 'lucide-react';
 
@@ -15,6 +15,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -36,9 +37,30 @@ export default function Header() {
       return;
     }
 
-    document
-      .querySelector(href)
-      ?.scrollIntoView({ behavior: 'smooth' });
+    if (pathname === '/') {
+      document
+        .querySelector(href)
+        ?.scrollIntoView({ behavior: 'smooth' });
+
+      return;
+    }
+
+    router.push(`/${href}`);
+  };
+
+  const handleBrandClick = () => {
+    setOpen(false);
+
+    if (pathname === '/') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+
+      return;
+    }
+
+    router.push('/');
   };
 
   return (
@@ -52,12 +74,7 @@ export default function Header() {
         {/* Brand */}
         <button
           type="button"
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth',
-            })
-          }
+          onClick={handleBrandClick}
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS home"
         >

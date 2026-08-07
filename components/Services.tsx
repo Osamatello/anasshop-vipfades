@@ -10,7 +10,10 @@ export default function Services() {
   ];
 
   return (
-    <section className="pt-24 pb-24 sm:pt-28 sm:pb-28 lg:pt-32 lg:pb-36">
+    <section
+      id="services"
+      className="pt-24 pb-24 sm:pt-28 sm:pb-28 lg:pt-32 lg:pb-36"
+    >
       <div className="mx-auto max-w-7xl px-5">
         <div className="text-center">
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { ArrowDown, Clock, Phone, Scissors } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 
@@ -55,14 +56,16 @@ export default function Hero() {
 
           {/* CTAs */}
           <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={() => scrollToSection('#booking')}
+            <Link
+              href="/booking"
               className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
             >
               <Scissors className="h-4 w-4" />
               Book Appointment
-            </button>
+            </Link>
+
+            <Scissors className="h-4 w-4" />
+
 
             <button
               type="button"
@@ -102,6 +105,6 @@ export default function Hero() {
       >
         <ArrowDown className="h-5 w-5 animate-bounce" />
       </button>
-    </section>
+    </section >
   );
 }

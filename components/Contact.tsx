@@ -20,15 +20,21 @@ export default function Contact() {
             Visit Us
           </span>
 
-          <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
-            Visit VIP FADES
+          <h2 className="font-serif font-light tracking-tight">
+            <span className="block text-3xl text-brand-textPrimary sm:text-4xl lg:text-5xl">
+              Visit
+            </span>
+
+            <span className="mt-2 block text-5xl text-brand-cream sm:text-6xl lg:text-7xl">
+              VIP FADES
+            </span>
+
+            <span className="mx-auto mt-5 block h-px w-16 bg-brand-cream/70" />
           </h2>
 
-          <div className="gold-divider mt-4" />
-
-          <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Find us in the heart of Koblenz. Walk in during opening hours or
-            secure your slot online.
+          <p className="mx-auto mt-8 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
+            Visit us in the heart of Koblenz. Walk in any day or book your
+            appointment online Monday to Thursday.
           </p>
         </div>
 
@@ -51,18 +57,21 @@ export default function Contact() {
 
           <ContactCard
             icon={Clock}
-            label="Hours"
+            label="Online Appointments"
             lines={[
-              BUSINESS.hours.days,
-              BUSINESS.hours.time,
-              BUSINESS.hours.walkins,
+              'Monday to Thursday',
+              '10:00 – 19:00',
+              'Walk-ins Welcome Every Day',
             ]}
           />
 
           <ContactCard
             icon={Instagram}
             label="Instagram"
-            lines={[BUSINESS.instagram]}
+            lines={[
+              BUSINESS.instagram,
+              'Follow our latest cuts',
+            ]}
             href={BUSINESS.instagramUrl}
             external
           />

@@ -1,17 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Menu, Scissors, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Signature Cuts', href: '#services' },
   { label: 'The VIP Experience', href: '#experience' },
   { label: 'The Artists', href: '#barbers' },
-  { label: 'Booking', href: '#booking' },
+  { label: 'Booking', href: '/booking' },
   { label: 'Visit', href: '#contact' },
 ];
 
 export default function Header() {
+  const router = useRouter();
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -27,6 +31,11 @@ export default function Header() {
   const handleNav = (href: string) => {
     setOpen(false);
 
+    if (href.startsWith('/')) {
+      router.push(href);
+      return;
+    }
+
     document
       .querySelector(href)
       ?.scrollIntoView({ behavior: 'smooth' });
@@ -39,24 +48,30 @@ export default function Header() {
           : 'bg-transparent py-5'
         }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5">
         {/* Brand */}
         <button
           type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            })
+          }
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS home"
         >
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm">
-            <img
-              src="/images/favicon.png"
-              alt="VIP FADES logo"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <Image
+            src="/images/favicon.png"
+            alt="VIP FADES"
+            width={48}
+            height={48}
+            priority
+            className="h-12 w-12 rounded-full object-cover"
+          />
 
-          <div className="hidden flex-col items-start leading-none sm:flex">
-            <span className="font-serif text-xl font-semibold tracking-wide text-brand-textPrimary">
+          <div className="flex flex-col items-start">
+            <span className="font-serif text-[22px] font-semibold leading-none tracking-[0.04em] text-brand-textPrimary">
               VIP FADES
             </span>
 
@@ -84,7 +99,7 @@ export default function Header() {
           {/* Desktop booking button */}
           <button
             type="button"
-            onClick={() => handleNav('#booking')}
+            onClick={() => handleNav('/booking')}
             className="hidden items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary sm:flex"
           >
             <Scissors className="h-4 w-4" />
@@ -130,7 +145,7 @@ export default function Header() {
           {/* Mobile booking button */}
           <button
             type="button"
-            onClick={() => handleNav('#booking')}
+            onClick={() => handleNav('/booking')}
             className="mt-2 flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary"
           >
             <Scissors className="h-4 w-4" />

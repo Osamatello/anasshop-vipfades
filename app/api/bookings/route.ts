@@ -7,6 +7,11 @@ import {
 
 import { getServiceById } from "@/lib/supabase/services";
 
+import {
+    validateCustomerName,
+    validatePhoneNumber,
+} from "@/lib/validation/booking";
+
 
 function timeToMinutes(time: string): number {
     const [hours, minutes] = time
@@ -61,17 +66,51 @@ export async function POST(request: NextRequest) {
 
 
         if (
-            !barberId ||
-            !serviceId ||
-            !customerName ||
-            !customerPhone ||
-            !bookingDate ||
-            !startTime
+            typeof barberId !== "string" ||
+            typeof serviceId !== "string" ||
+            typeof bookingDate !== "string" ||
+            typeof startTime !== "string" ||
+            !barberId.trim() ||
+            !serviceId.trim() ||
+            !bookingDate.trim() ||
+            !startTime.trim()
         ) {
             return NextResponse.json(
                 {
                     success: false,
                     error: "Missing booking information.",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+
+        const nameValidation =
+            validateCustomerName(customerName);
+
+        if (!nameValidation.valid) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: nameValidation.error,
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+
+        const phoneValidation =
+            validatePhoneNumber(customerPhone);
+
+        if (!phoneValidation.valid) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: phoneValidation.error,
                 },
                 {
                     status: 400,
@@ -149,8 +188,8 @@ export async function POST(request: NextRequest) {
         const booking = await createBooking({
             barberId,
             serviceId,
-            customerName,
-            customerPhone,
+            customerName: nameValidation.value,
+            customerPhone: phoneValidation.value,
             bookingDate,
             startTime,
             endTime,

@@ -42,18 +42,36 @@ export default function ShopExperience() {
 
             <div className="my-8 h-px w-20 bg-brand-cream/40" />
 
-            <div className="reveal reveal-delay-2 flex flex-wrap gap-3">
-              <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">
-                {BUSINESS.hours.days}
-              </span>
+            <div className="reveal reveal-delay-2">
+              <div className="mb-3">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
+                  Online Appointments
+                </span>
+              </div>
 
-              <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">
-                {BUSINESS.hours.time}
-              </span>
+              <div className="flex flex-wrap gap-3">
+                <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
+                  Monday to Thursday
+                </span>
 
-              <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
-                {BUSINESS.hours.walkins}
-              </span>
+                <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
+                  10:00 – 19:00
+                </span>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">
+                  Open Daily
+                </span>
+
+                <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">
+                  Walk-ins Welcome Every Day
+                </span>
+              </div>
+
+              <p className="mt-8 text-sm font-light leading-relaxed text-brand-textPrimary/70">
+                Online appointments are available Monday to Thursday only.
+              </p>
             </div>
           </div>
         </div>

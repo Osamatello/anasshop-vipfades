@@ -59,27 +59,32 @@ const REVIEWS = [
     date: '3 weeks ago',
     initials: 'WS',
   },
-  {
-    id: 8,
-    rating: 5,
-    text: 'Mega! Handwerklich einfach super, schneidet mit Perfektion und Erfahrung. Als Kunde fühlt man sich aufgenommen. Mega Service und mega freundlich.',
-    name: 'Jason Seve',
-    date: '3 months ago',
-    initials: 'JS',
-  },
+];
+
+const FIRST_ROW = [
+  REVIEWS[0],
+  REVIEWS[3],
+  REVIEWS[2],
+  REVIEWS[5],
+];
+
+const SECOND_ROW = [
+  REVIEWS[1],
+  REVIEWS[4],
+  REVIEWS[6],
 ];
 
 export default function ClientExperiences() {
   return (
-    <section className="section-padding bg-brand-bgSecondary px-5 sm:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="border-t border-brand-border py-24 sm:py-28">
+      <div className="mx-auto max-w-7xl px-5">
         {/* Section heading */}
         <div className="mb-14 text-center">
-          <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
             Google Reviews
-          </span>
+          </p>
 
-          <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
+          <h2 className="mt-4 font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Client Experiences
           </h2>
 
@@ -90,61 +95,165 @@ export default function ClientExperiences() {
           </p>
         </div>
 
-        {/* Review cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {REVIEWS.map((review, index) => (
-            <article
-              key={review.id}
-              className={`reveal reveal-delay-${(index % 3) + 1
-                } group relative flex h-full min-h-[320px] flex-col justify-between overflow-hidden rounded-2xl border border-brand-border bg-brand-card/35 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/60 hover:shadow-[0_16px_45px_rgba(232,220,200,0.08)]`}
-            >
-              <div>
-                {/* Rating and quote */}
-                <div className="mb-5 flex items-center justify-between">
-                  <div
-                    className="flex gap-1"
-                    aria-label={`${review.rating} out of 5 stars`}
-                  >
-                    {Array.from({ length: 5 }).map((_, starIndex) => (
-                      <Star
-                        key={starIndex}
-                        className={`h-4 w-4 ${starIndex < review.rating
-                            ? 'fill-brand-cream text-brand-cream'
-                            : 'fill-transparent text-brand-cream/30'
-                          }`}
-                      />
-                    ))}
-                  </div>
+        {/* Reviews marquee */}
+        <div className="reviews-window relative overflow-hidden py-8">
+          {/* First row */}
+          <div className="reviews-track-left flex w-max items-stretch gap-10">
+            {[...FIRST_ROW, ...FIRST_ROW, ...FIRST_ROW].map(
+              (review, index) => (
+                <ReviewItem
+                  key={`first-${review.id}-${index}`}
+                  review={review}
+                />
+              )
+            )}
+          </div>
 
-                  <Quote className="h-5 w-5 text-brand-cream/40" />
-                </div>
-
-                {/* Review text */}
-                <p className="text-sm font-light leading-7 text-brand-textPrimary/85">
-                  “{review.text}”
-                </p>
-              </div>
-
-              {/* Client identity */}
-              <div className="mt-8 flex items-center gap-3 border-t border-brand-border/60 pt-6">
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/35 bg-brand-cream/5 text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-cream transition-all duration-300 group-hover:border-brand-cream/60 group-hover:bg-brand-cream/10">
-                  {review.initials}
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-brand-textPrimary">
-                    {review.name}
-                  </p>
-
-                  <p className="mt-1 text-[11px] font-light uppercase tracking-[0.12em] text-brand-cream/75">
-                    {review.date}
-                  </p>
-                </div>
-              </div>
-            </article>
-          ))}
+          {/* Second row */}
+          <div className="reviews-track-right mt-8 flex w-max items-stretch gap-10">
+            {[...SECOND_ROW, ...SECOND_ROW, ...SECOND_ROW].map(
+              (review, index) => (
+                <ReviewItem
+                  key={`second-${review.id}-${index}`}
+                  review={review}
+                />
+              )
+            )}
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .reviews-window::before,
+        .reviews-window::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 140px;
+          z-index: 10;
+          pointer-events: none;
+        }
+
+        .reviews-window::before {
+          left: 0;
+          background: linear-gradient(
+            to right,
+            var(--brand-bg, #070707),
+            transparent
+          );
+        }
+
+        .reviews-window::after {
+          right: 0;
+          background: linear-gradient(
+            to left,
+            var(--brand-bg, #070707),
+            transparent
+          );
+        }
+
+        .reviews-track-left {
+          animation: reviews-scroll-left 120s linear infinite;
+        }
+
+        .reviews-track-right {
+          animation: reviews-scroll-right 120s linear infinite;
+        }
+
+        @keyframes reviews-scroll-left {
+          from {
+            transform: translateX(0);
+          }
+
+          to {
+            transform: translateX(-33.333%);
+          }
+        }
+
+        @keyframes reviews-scroll-right {
+          from {
+            transform: translateX(-33.333%);
+          }
+
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .reviews-window::before,
+          .reviews-window::after {
+            width: 50px;
+          }
+
+          .reviews-track-left,
+          .reviews-track-right {
+            gap: 2rem;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .reviews-track-left,
+          .reviews-track-right {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
+  );
+}
+
+function ReviewItem({
+  review,
+}: {
+  review: (typeof REVIEWS)[number];
+}) {
+  return (
+    <article className="group flex min-h-[210px] w-[300px] flex-shrink-0 flex-col justify-between py-5 sm:w-[330px]">
+      <div>
+        {/* Rating and quote */}
+        <div className="mb-5 flex items-center justify-between">
+          <div
+            className="flex gap-1"
+            aria-label={`${review.rating} out of 5 stars`}
+          >
+            {Array.from({ length: 5 }).map((_, starIndex) => (
+              <Star
+                key={starIndex}
+                className={`h-3.5 w-3.5 ${starIndex < review.rating
+                    ? 'fill-brand-cream text-brand-cream'
+                    : 'fill-transparent text-brand-cream/30'
+                  }`}
+              />
+            ))}
+          </div>
+
+          <Quote className="h-4 w-4 text-brand-cream/20" />
+        </div>
+
+        {/* Review text */}
+        <p className="text-[13px] font-light leading-6 text-brand-textPrimary/75">
+          “{review.text}”
+        </p>
+      </div>
+
+      {/* Client identity */}
+      <div className="mt-7 flex items-center gap-3 border-t border-brand-border/30 pt-4">
+        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.03] text-[9px] font-semibold uppercase tracking-[0.08em] text-brand-cream/80">
+          {review.initials}
+        </div>
+
+        <div>
+          <p className="text-[13px] font-medium text-brand-textPrimary/90">
+            {review.name}
+          </p>
+
+          <p className="mt-1 text-[10px] font-light uppercase tracking-[0.12em] text-brand-cream/55">
+            {review.date}
+          </p>
+        </div>
+      </div>
+    </article>
   );
 }

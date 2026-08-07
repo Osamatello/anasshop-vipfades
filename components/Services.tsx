@@ -4,13 +4,18 @@ import { Clock } from 'lucide-react';
 import { SERVICES, type Service } from '@/lib/data';
 
 export default function Services() {
+  const orderedServices = [
+    ...SERVICES.filter((service) => service.id === 'haircut-beard'),
+    ...SERVICES.filter((service) => service.id !== 'haircut-beard'),
+  ];
+
   return (
-    <section id="services" className="section-padding bg-brand-bg px-5 sm:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-14 text-center">
-          <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
+    <section className="pt-24 pb-24 sm:pt-28 sm:pb-28 lg:pt-32 lg:pb-36">
+      <div className="mx-auto max-w-7xl px-5">
+        <div className="text-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
             The Menu
-          </span>
+          </p>
 
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Signature Cuts
@@ -23,15 +28,11 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {SERVICES.map((service: Service, index: number) => (
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          {orderedServices.map((service: Service, index: number) => (
             <ServiceCard key={service.id} service={service} index={index} />
           ))}
         </div>
-
-        <p className="reveal reveal-delay-3 mt-14 text-center text-xs font-light tracking-wide text-brand-textPrimary/75">
-          Walk-ins welcome during opening hours · Cash and card accepted
-        </p>
       </div>
     </section>
   );
@@ -49,12 +50,12 @@ function ServiceCard({
   return (
     <div
       className={`reveal reveal-delay-${(index % 3) + 1} group relative flex h-full min-h-[220px] flex-col justify-between rounded-xl border p-7 transition-all duration-300 hover:-translate-y-1 ${isPopular
-        ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
-        : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'
+          ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
+          : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'
         }`}
     >
       {isPopular && (
-        <span className="absolute -top-3 left-6 rounded-full border border-brand-cream/40 bg-brand-cream px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-bg">
+        <span className="absolute -top-3 left-6 rounded-full bg-brand-cream px-4 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-bg">
           Most Popular
         </span>
       )}

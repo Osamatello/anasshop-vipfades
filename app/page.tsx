@@ -7,7 +7,6 @@ import ShopExperience from '@/components/ShopExperience';
 import Statistics from '@/components/Statistics';
 import Barbers from '@/components/Barbers';
 import ClientExperiences from '@/components/ClientExperiences';
-import BookingAssistant from '@/components/BookingAssistant';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
@@ -25,7 +24,6 @@ export default function Home() {
       <Statistics />
       <Barbers />
       <ClientExperiences />
-      <BookingAssistant />
       <Contact />
       <Footer />
       <FloatingChat />

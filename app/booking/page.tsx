@@ -14,21 +14,21 @@ export default function BookingPage() {
             <Header />
 
             {/* Global moving atmosphere */}
-            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="booking-global-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
                 <div className="global-glow-one absolute -left-[20%] top-[5%] h-[850px] w-[850px] rounded-full bg-brand-cream/[0.065] blur-[180px]" />
 
                 <div className="global-glow-two absolute right-[-25%] top-[18%] h-[950px] w-[950px] rounded-full bg-brand-cream/[0.045] blur-[210px]" />
 
                 <div className="global-glow-three absolute bottom-[-35%] left-[35%] h-[800px] w-[800px] rounded-full bg-brand-cream/[0.035] blur-[200px]" />
 
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,220,200,0.035),transparent_35%)]" />
+                <div className="booking-radial-background absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,220,200,0.035),transparent_35%)]" />
             </div>
 
             <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 pb-5 pt-28 sm:px-6 sm:pb-6 sm:pt-32 lg:px-8 lg:pb-8 lg:pt-32">
                 {/* Split booking experience */}
-                <section className="relative grid min-h-[calc(100vh-150px)] overflow-hidden rounded-[28px] border border-brand-border/70 bg-[#090909]/95 backdrop-blur-sm lg:grid-cols-[38%_62%]">
+                <section className="booking-shell relative grid min-h-[calc(100vh-150px)] overflow-hidden rounded-[28px] border border-brand-border/70 bg-[#090909]/95 lg:grid-cols-[38%_62%] lg:backdrop-blur-sm">
                     {/* Large moving gold atmosphere across page */}
-                    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+                    <div className="booking-gold-atmosphere pointer-events-none absolute inset-0 z-0 overflow-hidden">
                         <div className="gold-wave gold-wave-one absolute left-[-22%] top-[-10%] h-[900px] w-[900px] rounded-[50%] border border-brand-cream/[0.10]" />
 
                         <div className="gold-wave gold-wave-two absolute left-[5%] top-[5%] h-[760px] w-[760px] rounded-[50%] border border-brand-cream/[0.06]" />
@@ -41,12 +41,12 @@ export default function BookingPage() {
                     {/* Left editorial panel */}
                     <aside className="relative z-10 flex flex-col justify-between overflow-hidden border-b border-brand-border/70 bg-[#0a0a0a]/55 p-7 sm:p-9 lg:border-b-0 lg:border-r lg:p-12 xl:p-14">
                         {/* Local gold ribbon */}
-                        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                        <div className="booking-local-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
                             <div className="ribbon-glow absolute -right-[320px] top-[40px] h-[720px] w-[720px] rounded-[48%] border-[2px] border-brand-cream/[0.08]" />
 
                             <div className="ribbon-glow-two absolute -right-[260px] top-[100px] h-[620px] w-[620px] rounded-[48%] border border-brand-cream/[0.08]" />
 
-                            <div className="absolute right-[-200px] top-[140px] h-[500px] w-[500px] rounded-full bg-brand-cream/[0.055] blur-[130px]" />
+                            <div className="booking-static-glow absolute right-[-200px] top-[140px] h-[500px] w-[500px] rounded-full bg-brand-cream/[0.055] blur-[130px]" />
                         </div>
 
                         {/* Vertical glowing divider */}
@@ -63,6 +63,7 @@ export default function BookingPage() {
                                     <br />
                                     Your barber.
                                     <br />
+
                                     <span className="text-brand-cream">
                                         Your time.
                                     </span>
@@ -117,7 +118,7 @@ export default function BookingPage() {
                         </div>
 
                         {/* Cancellation */}
-                        <div className="relative z-10 mt-10 rounded-2xl border border-brand-cream/15 bg-black/20 px-5 py-5 backdrop-blur-sm">
+                        <div className="booking-cancellation relative z-10 mt-10 rounded-2xl border border-brand-cream/15 bg-black/20 px-5 py-5 lg:backdrop-blur-sm">
                             <p className="text-[9px] font-semibold uppercase tracking-[0.25em] text-brand-cream">
                                 Cancellation Policy
                             </p>
@@ -132,7 +133,7 @@ export default function BookingPage() {
                     {/* Right concierge */}
                     <div className="relative z-10 flex min-h-[700px] flex-col bg-[#090909]/70 lg:min-h-0">
                         {/* Right moving atmosphere */}
-                        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                        <div className="booking-right-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
                             <div className="right-glow absolute right-[-300px] top-[50px] h-[700px] w-[700px] rounded-full bg-brand-cream/[0.025] blur-[180px]" />
 
                             <div className="right-glow-two absolute bottom-[-300px] left-[20%] h-[650px] w-[650px] rounded-full bg-brand-cream/[0.02] blur-[190px]" />
@@ -153,6 +154,7 @@ export default function BookingPage() {
                             <div className="hidden items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary sm:flex">
                                 <span className="relative flex h-2.5 w-2.5">
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+
                                     <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,0.9)]" />
                                 </span>
 
@@ -423,33 +425,48 @@ export default function BookingPage() {
                     animation: chatTopLight 4s ease-in-out infinite;
                 }
 
-                /* Mobile performance */
+                /* Mobile performance mode */
                 @media (max-width: 768px) {
+                    .booking-global-atmosphere,
+                    .booking-gold-atmosphere,
+                    .booking-local-atmosphere,
+                    .booking-right-atmosphere,
+                    .booking-radial-background,
+                    .global-glow-one,
                     .global-glow-two,
                     .global-glow-three,
                     .gold-wave-one,
                     .gold-wave-two,
+                    .moving-gold-glow,
                     .moving-gold-glow-secondary,
                     .ribbon-glow,
                     .ribbon-glow-two,
+                    .booking-static-glow,
+                    .divider-glow,
                     .right-glow,
-                    .right-glow-two {
-                        display: none;
-                    }
-
-                    .global-glow-one,
-                    .moving-gold-glow {
-                        animation: none;
-                        opacity: 0.22;
-                        filter: blur(70px);
-                    }
-
-                    .booking-accent,
+                    .right-glow-two,
                     .chat-top-light {
-                        animation: none;
+                        display: none !important;
+                        animation: none !important;
+                        filter: none !important;
+                    }
+
+                    .booking-shell,
+                    .booking-cancellation {
+                        -webkit-backdrop-filter: none !important;
+                        backdrop-filter: none !important;
+                    }
+
+                    .booking-shell {
+                        background: #090909;
+                    }
+
+                    .booking-cancellation {
+                        background: rgba(0, 0, 0, 0.28);
                     }
 
                     .booking-accent {
+                        animation: none !important;
                         width: 3.5rem;
                         opacity: 0.75;
                         box-shadow: none;

@@ -423,6 +423,39 @@ export default function BookingPage() {
                     animation: chatTopLight 4s ease-in-out infinite;
                 }
 
+                /* Mobile performance */
+                @media (max-width: 768px) {
+                    .global-glow-two,
+                    .global-glow-three,
+                    .gold-wave-one,
+                    .gold-wave-two,
+                    .moving-gold-glow-secondary,
+                    .ribbon-glow,
+                    .ribbon-glow-two,
+                    .right-glow,
+                    .right-glow-two {
+                        display: none;
+                    }
+
+                    .global-glow-one,
+                    .moving-gold-glow {
+                        animation: none;
+                        opacity: 0.22;
+                        filter: blur(70px);
+                    }
+
+                    .booking-accent,
+                    .chat-top-light {
+                        animation: none;
+                    }
+
+                    .booking-accent {
+                        width: 3.5rem;
+                        opacity: 0.75;
+                        box-shadow: none;
+                    }
+                }
+
                 @media (prefers-reduced-motion: reduce) {
                     .global-glow-one,
                     .global-glow-two,

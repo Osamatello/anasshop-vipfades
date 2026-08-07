@@ -13,6 +13,13 @@ import {
 } from '@/lib/data';
 
 import { QUICK_ACTIONS } from './constants';
+import {
+  parseBookingIntent,
+  type SlotPreference,
+  type SpecificDate,
+  type TimeOfDay,
+  type Weekday,
+} from './intentParser';
 import { useAvailability } from './useAvailability';
 import { useCatalog } from './useCatalog';
 import { nextDays } from './utils';
@@ -32,6 +39,14 @@ const nextId = () => {
   return idCounter;
 };
 
+type BookingPreference = {
+  relativeDate?: 'today' | 'tomorrow';
+  specificDate?: SpecificDate;
+  weekday?: Weekday;
+  timeOfDay?: TimeOfDay;
+  slotPreference?: SlotPreference;
+};
+
 export default function ChatInterface({
   onBooked,
   onClose,
@@ -42,6 +57,8 @@ export default function ChatInterface({
   const [messages, setMessages] = useState<Msg[]>([]);
   const [step, setStep] = useState<Step>('welcome');
   const [draft, setDraft] = useState<BookingDraft>({});
+  const [bookingPreference, setBookingPreference] =
+    useState<BookingPreference>({});
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
 
@@ -119,7 +136,7 @@ export default function ChatInterface({
     mountedRef.current = true;
 
     pushBot(
-      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge, here to help you schedule, check prices, and availability. What can I do for you?`,
+      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge. I can help you choose your service, find your preferred barber, and reserve the best available time. How can I help you today?`,
       {
         chips: QUICK_ACTIONS.map((action) => action.label),
       },
@@ -155,6 +172,12 @@ export default function ChatInterface({
       sub: barber.title,
     }));
 
+  const dateOptions = () =>
+    nextDays(4).map((day) => ({
+      label: day.label,
+      value: day.value,
+    }));
+
   const ensureCatalogReady = ({
     requireServices = false,
     requireBarbers = false,
@@ -163,26 +186,485 @@ export default function ChatInterface({
     requireBarbers?: boolean;
   }) => {
     if (catalogLoading) {
-      pushBot('The booking menu is still loading. Please wait a moment.');
+      pushBot('Just a moment — I’m preparing the booking menu for you.');
       return false;
     }
 
     if (catalogError) {
-      pushBot('We could not load the booking menu. Please try again shortly.');
+      pushBot('I’m having trouble loading the booking menu right now. Please try again shortly.');
       return false;
     }
 
     if (requireServices && services.length === 0) {
-      pushBot('No services are available right now. Please try again later.');
+      pushBot('There are no services available for online booking right now. Please try again later.');
       return false;
     }
 
     if (requireBarbers && barbers.length === 0) {
-      pushBot('No barbers are available right now. Please try again later.');
+      pushBot('There are no barbers available for online booking right now. Please try again later.');
       return false;
     }
 
     return true;
+  };
+
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatSpecificDate = (
+    specificDate: SpecificDate,
+  ) => {
+    return `${String(specificDate.day).padStart(2, '0')}.${String(
+      specificDate.month,
+    ).padStart(2, '0')}`;
+  };
+
+  const filterSlotsByTimeOfDay = (
+    availableSlots: string[],
+    timeOfDay?: TimeOfDay,
+  ) => {
+    if (!timeOfDay) {
+      return availableSlots;
+    }
+
+    return availableSlots.filter((slot) => {
+      const hour = Number.parseInt(
+        slot.split(':')[0],
+        10,
+      );
+
+      if (Number.isNaN(hour)) {
+        return false;
+      }
+
+      if (timeOfDay === 'morning') {
+        return hour < 12;
+      }
+
+      if (timeOfDay === 'afternoon') {
+        return hour >= 12 && hour < 17;
+      }
+
+      return hour >= 17;
+    });
+  };
+
+  const resolveRelativeDate = (
+    relativeDate?: BookingPreference['relativeDate'],
+  ) => {
+    if (!relativeDate) {
+      return undefined;
+    }
+
+    if (relativeDate === 'today') {
+      return undefined;
+    }
+
+    const tomorrow = new Date();
+    tomorrow.setDate(
+      tomorrow.getDate() + 1,
+    );
+
+    const tomorrowValue =
+      formatLocalDate(tomorrow);
+
+    return dateOptions().find(
+      (option) =>
+        option.value === tomorrowValue,
+    )?.value;
+  };
+
+  const resolveSpecificDate = (
+    specificDate?: SpecificDate,
+  ) => {
+    if (!specificDate) {
+      return undefined;
+    }
+
+    const today = new Date();
+
+    let year =
+      specificDate.year ??
+      today.getFullYear();
+
+    let candidate = new Date(
+      year,
+      specificDate.month - 1,
+      specificDate.day,
+    );
+
+    if (
+      candidate.getDate() !== specificDate.day ||
+      candidate.getMonth() !==
+      specificDate.month - 1
+    ) {
+      return undefined;
+    }
+
+    if (
+      specificDate.year === undefined &&
+      candidate <
+      new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      )
+    ) {
+      year += 1;
+
+      candidate = new Date(
+        year,
+        specificDate.month - 1,
+        specificDate.day,
+      );
+    }
+
+    const value =
+      formatLocalDate(candidate);
+
+    return dateOptions().find(
+      (option) =>
+        option.value === value,
+    )?.value;
+  };
+
+  const resolveWeekday = (
+    weekday?: Weekday,
+  ) => {
+    if (!weekday) {
+      return undefined;
+    }
+
+    return dateOptions().find((option) => {
+      const date = new Date(
+        `${option.value}T12:00:00`,
+      );
+
+      const optionWeekday =
+        new Intl.DateTimeFormat(
+          'en-US',
+          {
+            weekday: 'long',
+          },
+        )
+          .format(date)
+          .toLowerCase();
+
+      return optionWeekday === weekday;
+    })?.value;
+  };
+
+  const describePreference = (
+    preference: BookingPreference,
+    barberName?: string,
+  ) => {
+    const parts: string[] = [];
+
+    if (preference.specificDate) {
+      parts.push(
+        `on ${formatSpecificDate(
+          preference.specificDate,
+        )}`,
+      );
+    } else if (preference.relativeDate) {
+      parts.push(
+        preference.relativeDate,
+      );
+    } else if (preference.weekday) {
+      parts.push(
+        `on ${preference.weekday}`,
+      );
+    }
+
+    if (preference.timeOfDay) {
+      parts.push(
+        `in the ${preference.timeOfDay}`,
+      );
+    }
+
+    if (barberName) {
+      parts.push(
+        `with ${barberName}`,
+      );
+    }
+
+    if (
+      preference.slotPreference === 'last'
+    ) {
+      parts.push(
+        'for the last available appointment',
+      );
+    }
+
+    if (
+      preference.slotPreference === 'first'
+    ) {
+      parts.push(
+        'for the first available appointment',
+      );
+    }
+
+    return parts.join(' ');
+  };
+
+  const loadDateAvailability = async ({
+    service,
+    barber,
+    date,
+    timeOfDay,
+    slotPreference,
+    pushDateAsUser = true,
+  }: {
+    service: NonNullable<BookingDraft['service']>;
+    barber: NonNullable<BookingDraft['barber']>;
+    date: string;
+    timeOfDay?: TimeOfDay;
+    slotPreference?: SlotPreference;
+    pushDateAsUser?: boolean;
+  }) => {
+    setDraft((currentDraft) => ({
+      ...currentDraft,
+      service,
+      barber,
+      date,
+      time: undefined,
+      name: undefined,
+      phone: undefined,
+    }));
+
+    if (pushDateAsUser) {
+      pushUser(date);
+    }
+
+    setStep('pickTime');
+
+    pushBot(
+      timeOfDay
+        ? `One moment — I’m checking ${timeOfDay} availability for you.`
+        : 'One moment — I’m checking the available times for you.',
+    );
+
+    const availableSlots =
+      await loadAvailability({
+        barberId: barber.id,
+        serviceId: service.id,
+        date,
+      });
+
+    if (availabilityError) {
+      pushBot(
+        'I couldn’t check the availability right now. Please choose another day or try again shortly.',
+        {
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
+    if (availableSlots.length === 0) {
+      pushBot(
+        'That day is fully booked at the moment. Let’s try another day.',
+        {
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
+    const preferredSlots =
+      filterSlotsByTimeOfDay(
+        availableSlots,
+        timeOfDay,
+      );
+
+    if (
+      timeOfDay &&
+      preferredSlots.length === 0
+    ) {
+      pushBot(
+        `I couldn’t find any ${timeOfDay} appointments on that day, but these times are still available:`,
+        {
+          chips: [
+            ...availableSlots,
+            'Back',
+          ],
+        },
+      );
+
+      return;
+    }
+
+    const usableSlots =
+      timeOfDay
+        ? preferredSlots
+        : availableSlots;
+
+    if (
+      slotPreference &&
+      usableSlots.length > 0
+    ) {
+      const preferredTime =
+        slotPreference === 'last'
+          ? usableSlots[
+          usableSlots.length - 1
+          ]
+          : usableSlots[0];
+
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        time: preferredTime,
+      }));
+
+      setStep('enterName');
+
+      const positionText =
+        slotPreference === 'last'
+          ? 'last available'
+          : 'first available';
+
+      pushBot(
+        `Perfect. The ${positionText}${timeOfDay ? ` ${timeOfDay}` : ''
+        } appointment is ${preferredTime}. I’ve selected it for you. What name should I put the appointment under?`,
+        {
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
+    pushBot(
+      timeOfDay
+        ? `Perfect. Here are the available ${timeOfDay} times. Which one works best for you?`
+        : `Here are the available times for ${date}. Which one works best for you?`,
+      {
+        chips: [
+          ...usableSlots,
+          'Back',
+        ],
+      },
+    );
+  };
+
+  const continueWithPreferredDate = async ({
+    service,
+    barber,
+    preference = bookingPreference,
+  }: {
+    service: NonNullable<BookingDraft['service']>;
+    barber: NonNullable<BookingDraft['barber']>;
+    preference?: BookingPreference;
+  }) => {
+    let preferredDate: string | undefined;
+
+    if (preference.specificDate) {
+      preferredDate =
+        resolveSpecificDate(
+          preference.specificDate,
+        );
+
+      if (!preferredDate) {
+        setStep('pickDate');
+
+        pushBot(
+          `${formatSpecificDate(
+            preference.specificDate,
+          )} isn’t available for online booking. Here are the next available booking days:`,
+          {
+            options: dateOptions(),
+            chips: ['Back'],
+          },
+        );
+
+        return;
+      }
+    } else if (preference.relativeDate) {
+      if (
+        preference.relativeDate === 'today'
+      ) {
+        setStep('pickDate');
+
+        pushBot(
+          'Online appointments can’t be booked for the same day. Here are the next available booking days:',
+          {
+            options: dateOptions(),
+            chips: ['Back'],
+          },
+        );
+
+        return;
+      }
+
+      preferredDate =
+        resolveRelativeDate(
+          preference.relativeDate,
+        );
+
+      if (!preferredDate) {
+        setStep('pickDate');
+
+        pushBot(
+          'Tomorrow isn’t available for online appointments. Here are the next available booking days:',
+          {
+            options: dateOptions(),
+            chips: ['Back'],
+          },
+        );
+
+        return;
+      }
+    } else if (preference.weekday) {
+      preferredDate =
+        resolveWeekday(
+          preference.weekday,
+        );
+
+      if (!preferredDate) {
+        setStep('pickDate');
+
+        pushBot(
+          `${preference.weekday} isn’t one of the currently available online booking days. Here are the next available options:`,
+          {
+            options: dateOptions(),
+            chips: ['Back'],
+          },
+        );
+
+        return;
+      }
+    }
+
+    if (!preferredDate) {
+      setStep('pickDate');
+
+      pushBot(
+        `Perfect. You’ll be with ${barber.name}. Which day would you prefer?`,
+        {
+          options: dateOptions(),
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
+    await loadDateAvailability({
+      service,
+      barber,
+      date: preferredDate,
+      timeOfDay:
+        preference.timeOfDay,
+      slotPreference:
+        preference.slotPreference,
+      pushDateAsUser: false,
+    });
   };
 
   const startBooking = () => {
@@ -193,11 +675,13 @@ export default function ChatInterface({
     }
 
     setDraft({});
+    setBookingPreference({});
     resetAvailability();
     setStep('pickService');
 
-    pushBot('Great choice. Select your service.', {
+    pushBot('Perfect. Let’s tailor your appointment. Which service would you like today?', {
       options: serviceOptions(),
+      chips: ['Back'],
     });
   };
 
@@ -209,13 +693,13 @@ export default function ChatInterface({
     }
 
     pushBot(
-      `Here's our full menu:\n\n${services
+      `Of course. Here’s our full service menu:\n\n${services
         .map(
           (service) =>
             `• ${service.name}: €${service.price}${service.duration ? ` (${service.duration} min)` : ''
             }`,
         )
-        .join('\n')}\n\nWould you like to book?`,
+        .join('\n')}\n\nIf you’re ready, I can take you straight into booking.`,
       {
         chips: ['Book now', 'Choose a barber'],
       },
@@ -232,13 +716,15 @@ export default function ChatInterface({
     }
 
     setDraft({});
+    setBookingPreference({});
     resetAvailability();
     setStep('pickService');
 
     pushBot(
-      `We're open ${BUSINESS.hours.days}, ${BUSINESS.hours.time}. First, choose a service and I'll check the available times.`,
+      `Online appointments are available ${BUSINESS.hours.days}, ${BUSINESS.hours.time}. Choose your service first and I’ll find the available times for you.`,
       {
         options: serviceOptions(),
+        chips: ['Back'],
       },
     );
   };
@@ -254,15 +740,210 @@ export default function ChatInterface({
     }
 
     setDraft({});
+    setBookingPreference({});
     resetAvailability();
     setStep('pickBarberPre');
 
-    pushBot('Pick your preferred barber.', {
+    pushBot('Absolutely. Who would you like to book with?', {
       options: barberOptions(),
+      chips: ['Back'],
     });
   };
 
+  const handleBack = () => {
+    pushUser('Back');
+
+    if (step === 'pickService') {
+      if (draft.barber) {
+        setDraft({});
+        resetAvailability();
+        setStep('pickBarberPre');
+
+        pushBot('Of course. Let’s go back to your barber selection.', {
+          options: barberOptions(),
+          chips: ['Back'],
+        });
+
+        return;
+      }
+
+      setDraft({});
+      setBookingPreference({});
+      resetAvailability();
+      setStep('welcome');
+
+      pushBot('Of course. What would you like to do?', {
+        chips: QUICK_ACTIONS.map((action) => action.label),
+      });
+
+      return;
+    }
+
+    if (step === 'pickBarberPre') {
+      setDraft({});
+      setBookingPreference({});
+      resetAvailability();
+      setStep('welcome');
+
+      pushBot('No problem. What would you like to do?', {
+        chips: QUICK_ACTIONS.map((action) => action.label),
+      });
+
+      return;
+    }
+
+    if (step === 'pickBarber') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        service: undefined,
+        barber: undefined,
+        date: undefined,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickService');
+
+      pushBot('Of course. Let’s choose your service again.', {
+        options: serviceOptions(),
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    if (step === 'pickDate') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        barber: undefined,
+        date: undefined,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickBarber');
+
+      pushBot('No problem. Choose the barber you’d like to book with.', {
+        options: barberOptions(),
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    if (step === 'pickTime') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        date: undefined,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickDate');
+
+      pushBot('Of course. Let’s choose another day.', {
+        options: dateOptions(),
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    if (step === 'enterName') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      setStep('pickTime');
+
+      if (slots.length > 0) {
+        const preferredSlots =
+          filterSlotsByTimeOfDay(
+            slots,
+            bookingPreference.timeOfDay,
+          );
+
+        pushBot('No problem. Choose the time that works best for you.', {
+          chips: [
+            ...(preferredSlots.length > 0
+              ? preferredSlots
+              : slots),
+            'Back',
+          ],
+        });
+
+        return;
+      }
+
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        date: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickDate');
+
+      pushBot('No problem. Let’s choose your day again.', {
+        options: dateOptions(),
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    if (step === 'enterPhone') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      setStep('enterName');
+
+      pushBot('Of course. What name should I put the appointment under?', {
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    if (step === 'confirm') {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        phone: undefined,
+      }));
+
+      setStep('enterPhone');
+
+      pushBot('No problem. What’s the best phone number for your booking?', {
+        chips: ['Back'],
+      });
+
+      return;
+    }
+
+    pushBot('You’re already at the beginning.', {
+      chips: QUICK_ACTIONS.map((action) => action.label),
+    });
+
+    setStep('welcome');
+  };
+
   const handleChip = (chip: string) => {
+    if (chip === 'Back') {
+      handleBack();
+      return true;
+    }
+
     if (chip === 'Book an appointment' || chip === 'Book now') {
       startBooking();
       return true;
@@ -301,7 +982,7 @@ export default function ChatInterface({
     return false;
   };
 
-  const pickService = (id: string) => {
+  const pickService = async (id: string) => {
     const service = services.find((item) => item.id === id);
 
     if (!service) {
@@ -315,33 +996,36 @@ export default function ChatInterface({
       service,
       date: undefined,
       time: undefined,
+      name: undefined,
+      phone: undefined,
     }));
 
     resetAvailability();
     pushUser(service.name);
 
     if (selectedBarber) {
-      setStep('pickDate');
-
-      pushBot(
-        `${service.name}: €${service.price}. ${selectedBarber.name} is already selected. What day works for you?`,
-        {
-          options: nextDays(4).map((day) => ({
-            label: day.label,
-            value: day.value,
-          })),
-        },
-      );
+      await continueWithPreferredDate({
+        service,
+        barber: selectedBarber,
+      });
 
       return;
     }
 
     setStep('pickBarber');
 
+    const preferenceText =
+      describePreference(
+        bookingPreference,
+      );
+
     pushBot(
-      `${service.name}: €${service.price}. Now choose your barber.`,
+      preferenceText
+        ? `Great choice. ${service.name} is €${service.price}. I’ve kept your preference ${preferenceText}. Now let’s choose your barber.`
+        : `Great choice. ${service.name} is €${service.price}. Now let’s choose your barber.`,
       {
         options: barberOptions(),
+        chips: ['Back'],
       },
     );
   };
@@ -350,7 +1034,7 @@ export default function ChatInterface({
     const barber = barbers.find((item) => item.id === id);
 
     if (!barber) {
-      pushBot('That barber is no longer available. Please choose another one.');
+      pushBot('That barber is no longer available for booking. Please choose another one.');
       return;
     }
 
@@ -360,78 +1044,75 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Great, ${barber.name} is selected. Now choose your service.`,
-      { options: serviceOptions() },
+      `Perfect. ${barber.name} is selected. Which service would you like?`,
+      {
+        options: serviceOptions(),
+        chips: ['Back'],
+      },
     );
   };
 
-  const pickBarber = (id: string) => {
+  const pickBarber = async (id: string) => {
     const barber = barbers.find((item) => item.id === id);
 
     if (!barber) {
       return;
     }
 
+    const selectedService = draft.service;
+
     setDraft((currentDraft) => ({
       ...currentDraft,
       barber,
       date: undefined,
       time: undefined,
+      name: undefined,
+      phone: undefined,
     }));
 
     resetAvailability();
 
     pushUser(barber.name);
-    setStep('pickDate');
 
-    pushBot(`Booked with ${barber.name}. What day works for you?`, {
-      options: nextDays(4).map((day) => ({
-        label: day.label,
-        value: day.value,
-      })),
-    });
+    if (selectedService) {
+      await continueWithPreferredDate({
+        service: selectedService,
+        barber,
+      });
+
+      return;
+    }
+
+    setStep('pickService');
+
+    pushBot(
+      `Perfect. ${barber.name} is selected. Which service would you like?`,
+      {
+        options: serviceOptions(),
+        chips: ['Back'],
+      },
+    );
   };
 
   const pickDate = async (date: string) => {
-    const currentDraft = {
-      ...draft,
-      date,
-    };
-
-    setDraft(currentDraft);
-
-    pushUser(date);
-    setStep('pickTime');
-
-    if (!currentDraft.service || !currentDraft.barber) {
-      pushBot('Please select a service and barber first.');
-      return;
-    }
-
-    pushBot('Checking available times...');
-
-    const availableSlots = await loadAvailability({
-      barberId: currentDraft.barber.id,
-      serviceId: currentDraft.service.id,
-      date,
-    });
-
-    if (availabilityError) {
+    if (!draft.service || !draft.barber) {
       pushBot(
-        'We could not check availability right now. Please choose another date or try again shortly.',
+        'I still need your service and barber before I can check the available times.',
+        {
+          chips: ['Back'],
+        },
       );
       return;
     }
 
-    if (availableSlots.length === 0) {
-      pushBot(
-        'No available appointments for this day. Please choose another date.',
-      );
-      return;
-    }
-
-    pushBot(`${date}: here are the available times:`, {
-      chips: availableSlots,
+    await loadDateAvailability({
+      service: draft.service,
+      barber: draft.barber,
+      date,
+      timeOfDay:
+        bookingPreference.timeOfDay,
+      slotPreference:
+        bookingPreference.slotPreference,
     });
   };
 
@@ -444,7 +1125,9 @@ export default function ChatInterface({
     pushUser(time);
     setStep('enterName');
 
-    pushBot('Almost there. What name should I put the booking under?');
+    pushBot('Great. Your time is selected. What name should I put the appointment under?', {
+      chips: ['Back'],
+    });
   };
 
   const submitName = (name: string) => {
@@ -465,7 +1148,10 @@ export default function ChatInterface({
     setStep('enterPhone');
 
     pushBot(
-      `Thanks, ${result.value.split(' ')[0]}. What's the best phone number to confirm?`,
+      `Thanks, ${result.value.split(' ')[0]}. Just one final detail — what’s the best phone number for your booking?`,
+      {
+        chips: ['Back'],
+      },
     );
   };
 
@@ -476,7 +1162,7 @@ export default function ChatInterface({
 
     if (!result.valid) {
       pushBot(
-        `${result.error} For example: 0176 12345678 or +49 176 12345678.`,
+        `${result.error} You can enter it like 0176 12345678 or +49 176 12345678.`,
       );
       return;
     }
@@ -489,9 +1175,9 @@ export default function ChatInterface({
     setDraft(finalDraft);
     setStep('confirm');
 
-    pushBot("Here's your booking summary. Does everything look right?", {
+    pushBot('Everything is ready. Please take a quick look at your appointment details before I confirm it.', {
       booking: finalDraft,
-      chips: ['Confirm booking', 'Start over'],
+      chips: ['Confirm booking', 'Back', 'Start over'],
     });
   };
 
@@ -506,12 +1192,12 @@ export default function ChatInterface({
       !draft.name ||
       !draft.phone
     ) {
-      pushBot('Missing booking information. Please start over.');
+      pushBot('Some booking details are still missing. Please start again so I can complete the appointment correctly.');
       return;
     }
 
     try {
-      pushBot('Saving your appointment...');
+      pushBot('Perfect. I’m reserving your appointment now.');
 
       const response = await fetch('/api/bookings', {
         method: 'POST',
@@ -539,7 +1225,7 @@ export default function ChatInterface({
       setStep('done');
 
       pushBot(
-        `Your appointment is confirmed.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe'll see you at ${BUSINESS.address}. You can also reach us at ${BUSINESS.phoneFormatted}.`,
+        `You're all set.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe look forward to seeing you at ${BUSINESS.address}. If you need us before your appointment, you can reach us at ${BUSINESS.phoneFormatted}.`,
         {
           chips: ['Book another', 'View prices'],
         },
@@ -551,7 +1237,7 @@ export default function ChatInterface({
       console.error('Booking error:', error);
 
       pushBot(
-        'Sorry, we could not complete your booking. Please try again.',
+        'I’m sorry, I couldn’t complete the booking right now. Please try again and I’ll take you through it.',
         {
           chips: ['Start over'],
         },
@@ -561,23 +1247,219 @@ export default function ChatInterface({
 
   const restart = () => {
     setDraft({});
+    setBookingPreference({});
     resetAvailability();
     setStep('welcome');
     pushUser('Start over');
 
-    pushBot('No problem. What would you like to do?', {
+    pushBot('Of course. Let’s start fresh. What would you like to do?', {
       chips: QUICK_ACTIONS.map((action) => action.label),
     });
   };
 
+  const handleSmallTalk = (
+    smallTalk: 'greeting' | 'howAreYou' | 'thanks' | 'goodbye',
+  ) => {
+    if (smallTalk === 'howAreYou') {
+      pushBot(
+        "I'm doing great, thank you for asking. I hope you're having a great day too. How can I help you?",
+      );
+      return;
+    }
+
+    if (smallTalk === 'thanks') {
+      pushBot(
+        "You're very welcome. It's my pleasure to help.",
+      );
+      return;
+    }
+
+    if (smallTalk === 'goodbye') {
+      pushBot(
+        'Take care. We look forward to seeing you at VIP FADES.',
+      );
+      return;
+    }
+
+    pushBot(
+      'Hello and welcome to VIP FADES. How can I help you today?',
+    );
+  };
+
+  const handleNaturalInput = async (value: string) => {
+    const parsed = parseBookingIntent(value, {
+      barbers,
+      services,
+    });
+
+    if (
+      parsed.smallTalk &&
+      !parsed.wantsBooking
+    ) {
+      pushUser(value);
+      handleSmallTalk(
+        parsed.smallTalk,
+      );
+      return true;
+    }
+
+    if (!parsed.wantsBooking) {
+      return false;
+    }
+
+    pushUser(value);
+
+    if (!ensureCatalogReady({
+      requireServices: true,
+      requireBarbers: true,
+    })) {
+      return true;
+    }
+
+    const nextPreference: BookingPreference = {
+      relativeDate:
+        parsed.relativeDate ??
+        bookingPreference.relativeDate,
+      specificDate:
+        parsed.specificDate ??
+        bookingPreference.specificDate,
+      weekday:
+        parsed.weekday ??
+        bookingPreference.weekday,
+      timeOfDay:
+        parsed.timeOfDay ??
+        bookingPreference.timeOfDay,
+      slotPreference:
+        parsed.slotPreference ??
+        bookingPreference.slotPreference,
+    };
+
+    if (parsed.specificDate) {
+      nextPreference.relativeDate =
+        undefined;
+      nextPreference.weekday =
+        undefined;
+    } else if (parsed.relativeDate) {
+      nextPreference.specificDate =
+        undefined;
+      nextPreference.weekday =
+        undefined;
+    } else if (parsed.weekday) {
+      nextPreference.specificDate =
+        undefined;
+      nextPreference.relativeDate =
+        undefined;
+    }
+
+    setBookingPreference(
+      nextPreference,
+    );
+
+    const parsedService =
+      parsed.serviceName
+        ? services.find(
+          (service) =>
+            service.name.toLowerCase() ===
+            parsed.serviceName?.toLowerCase(),
+        )
+        : undefined;
+
+    const parsedBarber =
+      parsed.barberName
+        ? barbers.find(
+          (barber) =>
+            barber.name.toLowerCase() ===
+            parsed.barberName?.toLowerCase(),
+        )
+        : undefined;
+
+    const existingDraft =
+      step === 'welcome' ||
+        step === 'menu' ||
+        step === 'done'
+        ? {}
+        : draft;
+
+    const selectedService =
+      parsedService ??
+      existingDraft.service;
+
+    const selectedBarber =
+      parsedBarber ??
+      existingDraft.barber;
+
+    setDraft({
+      ...existingDraft,
+      service: selectedService,
+      barber: selectedBarber,
+      date: undefined,
+      time: undefined,
+      name: undefined,
+      phone: undefined,
+    });
+
+    resetAvailability();
+
+    if (!selectedService) {
+      setStep('pickService');
+
+      const preferenceText =
+        describePreference(
+          nextPreference,
+          selectedBarber?.name,
+        );
+
+      pushBot(
+        preferenceText
+          ? `Absolutely. I’ve got you ${preferenceText}. Which service would you like?`
+          : 'Absolutely. Which service would you like?',
+        {
+          options: serviceOptions(),
+          chips: ['Back'],
+        },
+      );
+
+      return true;
+    }
+
+    if (!selectedBarber) {
+      setStep('pickBarber');
+
+      const preferenceText =
+        describePreference(
+          nextPreference,
+        );
+
+      pushBot(
+        preferenceText
+          ? `Perfect. ${selectedService.name} is selected, and I’ve kept your preference ${preferenceText}. Who would you like to book with?`
+          : `Perfect. ${selectedService.name} is selected. Who would you like to book with?`,
+        {
+          options: barberOptions(),
+          chips: ['Back'],
+        },
+      );
+
+      return true;
+    }
+
+    await continueWithPreferredDate({
+      service: selectedService,
+      barber: selectedBarber,
+      preference: nextPreference,
+    });
+
+    return true;
+  };
+
   const handleOption = (value: string) => {
     if (step === 'pickService') {
-      pickService(value);
+      void pickService(value);
       return;
     }
 
     if (step === 'pickBarber') {
-      pickBarber(value);
+      void pickBarber(value);
       return;
     }
 
@@ -587,11 +1469,11 @@ export default function ChatInterface({
     }
 
     if (step === 'pickDate') {
-      pickDate(value);
+      void pickDate(value);
     }
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const value = input.trim();
@@ -614,16 +1496,27 @@ export default function ChatInterface({
 
     const handled = handleChip(value);
 
-    if (!handled) {
-      pushUser(value);
-      pushBot(
-        "I didn't understand that request. Please choose one of the available options.",
-        {
-          chips: QUICK_ACTIONS.map((action) => action.label),
-        },
-      );
-      setStep('welcome');
+    if (handled) {
+      return;
     }
+
+    const naturallyHandled =
+      await handleNaturalInput(value);
+
+    if (naturallyHandled) {
+      return;
+    }
+
+    pushUser(value);
+
+    pushBot(
+      "I’m not quite sure what you mean. Choose one of the options below and I’ll guide you from there.",
+      {
+        chips: QUICK_ACTIONS.map((action) => action.label),
+      },
+    );
+
+    setStep('welcome');
   };
 
   const showInput = step === 'enterName' || step === 'enterPhone';

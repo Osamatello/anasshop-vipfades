@@ -22,7 +22,6 @@ import {
 } from './intentParser';
 import { useAvailability } from './useAvailability';
 import { useCatalog } from './useCatalog';
-import { nextDays } from './utils';
 
 import {
   validateCustomerName,
@@ -38,6 +37,8 @@ const nextId = () => {
   idCounter += 1;
   return idCounter;
 };
+
+const BUSINESS_TIME_ZONE = 'Europe/Berlin';
 
 type BookingPreference = {
   relativeDate?: 'today' | 'tomorrow';
@@ -172,46 +173,78 @@ export default function ChatInterface({
       sub: barber.title,
     }));
 
-  const dateOptions = () =>
-    nextDays(4).map((day) => ({
-      label: day.label,
-      value: day.value,
-    }));
+  const getKoblenzDateValue = (date = new Date()) => {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: BUSINESS_TIME_ZONE,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date);
 
-  const ensureCatalogReady = ({
-    requireServices = false,
-    requireBarbers = false,
-  }: {
-    requireServices?: boolean;
-    requireBarbers?: boolean;
-  }) => {
-    if (catalogLoading) {
-      pushBot('Just a moment — I’m preparing the booking menu for you.');
-      return false;
+    const year = parts.find((part) => part.type === 'year')?.value;
+    const month = parts.find((part) => part.type === 'month')?.value;
+    const day = parts.find((part) => part.type === 'day')?.value;
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatUtcDate = (date: Date) => {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const dateOptions = () => {
+    const todayValue = getKoblenzDateValue();
+    const [year, month, day] = todayValue.split('-').map(Number);
+
+    const cursor = new Date(
+      Date.UTC(year, month - 1, day),
+    );
+
+    const options: {
+      label: string;
+      value: string;
+    }[] = [];
+
+    while (options.length < 4) {
+      cursor.setUTCDate(cursor.getUTCDate() + 1);
+
+      const weekday = cursor.getUTCDay();
+
+      // Online booking is available Monday - Thursday only.
+      if (weekday < 1 || weekday > 4) {
+        continue;
+      }
+
+      const value = formatUtcDate(cursor);
+
+      const label = new Intl.DateTimeFormat('en-GB', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'numeric',
+        timeZone: 'UTC',
+      }).format(cursor);
+
+      options.push({
+        label,
+        value,
+      });
     }
 
-    if (catalogError) {
-      pushBot('I’m having trouble loading the booking menu right now. Please try again shortly.');
-      return false;
-    }
+    return options;
+  };
 
-    if (requireServices && services.length === 0) {
-      pushBot('There are no services available for online booking right now. Please try again later.');
-      return false;
-    }
-
-    if (requireBarbers && barbers.length === 0) {
-      pushBot('There are no barbers available for online booking right now. Please try again later.');
-      return false;
-    }
-
-    return true;
+  const isTodayOrPastInKoblenz = (date: string) => {
+    return date <= getKoblenzDateValue();
   };
 
   const formatLocalDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   };
@@ -265,9 +298,11 @@ export default function ChatInterface({
       return undefined;
     }
 
-    const tomorrow = new Date();
-    tomorrow.setDate(
-      tomorrow.getDate() + 1,
+    const todayValue = getKoblenzDateValue();
+    const [year, month, day] = todayValue.split('-').map(Number);
+
+    const tomorrow = new Date(
+      Date.UTC(year, month - 1, day + 1),
     );
 
     const tomorrowValue =
@@ -286,46 +321,49 @@ export default function ChatInterface({
       return undefined;
     }
 
-    const today = new Date();
+    const todayValue = getKoblenzDateValue();
+    const [currentYear] = todayValue.split('-').map(Number);
 
     let year =
       specificDate.year ??
-      today.getFullYear();
+      currentYear;
 
     let candidate = new Date(
-      year,
-      specificDate.month - 1,
-      specificDate.day,
+      Date.UTC(
+        year,
+        specificDate.month - 1,
+        specificDate.day,
+      ),
     );
 
     if (
-      candidate.getDate() !== specificDate.day ||
-      candidate.getMonth() !==
+      candidate.getUTCDate() !== specificDate.day ||
+      candidate.getUTCMonth() !==
       specificDate.month - 1
     ) {
       return undefined;
     }
 
+    let value =
+      formatLocalDate(candidate);
+
     if (
       specificDate.year === undefined &&
-      candidate <
-      new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-      )
+      value < todayValue
     ) {
       year += 1;
 
       candidate = new Date(
-        year,
-        specificDate.month - 1,
-        specificDate.day,
+        Date.UTC(
+          year,
+          specificDate.month - 1,
+          specificDate.day,
+        ),
       );
-    }
 
-    const value =
-      formatLocalDate(candidate);
+      value =
+        formatLocalDate(candidate);
+    }
 
     return dateOptions().find(
       (option) =>
@@ -341,8 +379,11 @@ export default function ChatInterface({
     }
 
     return dateOptions().find((option) => {
+      const [year, month, day] =
+        option.value.split('-').map(Number);
+
       const date = new Date(
-        `${option.value}T12:00:00`,
+        Date.UTC(year, month - 1, day),
       );
 
       const optionWeekday =
@@ -350,6 +391,7 @@ export default function ChatInterface({
           'en-US',
           {
             weekday: 'long',
+            timeZone: 'UTC',
           },
         )
           .format(date)
@@ -427,6 +469,35 @@ export default function ChatInterface({
     slotPreference?: SlotPreference;
     pushDateAsUser?: boolean;
   }) => {
+    if (pushDateAsUser) {
+      pushUser(date);
+    }
+
+    if (isTodayOrPastInKoblenz(date)) {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        service,
+        barber,
+        date: undefined,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickDate');
+
+      pushBot(
+        'Same-day bookings aren’t available online. Please choose one of the next available booking days:',
+        {
+          options: dateOptions(),
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
     setDraft((currentDraft) => ({
       ...currentDraft,
       service,
@@ -436,10 +507,6 @@ export default function ChatInterface({
       name: undefined,
       phone: undefined,
     }));
-
-    if (pushDateAsUser) {
-      pushUser(date);
-    }
 
     setStep('pickTime');
 
@@ -683,6 +750,36 @@ export default function ChatInterface({
       options: serviceOptions(),
       chips: ['Back'],
     });
+  };
+
+  const ensureCatalogReady = ({
+    requireServices = false,
+    requireBarbers = false,
+  }: {
+    requireServices?: boolean;
+    requireBarbers?: boolean;
+  }) => {
+    if (catalogLoading) {
+      pushBot('Just a moment — I’m preparing the booking menu for you.');
+      return false;
+    }
+
+    if (catalogError) {
+      pushBot('I’m having trouble loading the booking menu right now. Please try again shortly.');
+      return false;
+    }
+
+    if (requireServices && services.length === 0) {
+      pushBot('There are no services available for online booking right now. Please try again later.');
+      return false;
+    }
+
+    if (requireBarbers && barbers.length === 0) {
+      pushBot('There are no barbers available for online booking right now. Please try again later.');
+      return false;
+    }
+
+    return true;
   };
 
   const showPrices = () => {

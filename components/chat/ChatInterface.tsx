@@ -62,6 +62,8 @@ export default function ChatInterface({
     useState<BookingPreference>({});
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  const [bookedBookingId, setBookedBookingId] = useState<string | null>(null);
+  const [cancellingBooking, setCancellingBooking] = useState(false);
 
   const {
     slots,
@@ -1056,6 +1058,11 @@ export default function ChatInterface({
       return true;
     }
 
+    if (chip === 'Cancel appointment') {
+      void cancelCurrentBooking();
+      return true;
+    }
+
     if (chip === 'Start over' || chip === 'Book another') {
       restart();
       return true;
@@ -1268,6 +1275,58 @@ export default function ChatInterface({
     });
   };
 
+  const cancelCurrentBooking = async () => {
+    if (!bookedBookingId || cancellingBooking) {
+      return;
+    }
+
+    pushUser('Cancel appointment');
+    setCancellingBooking(true);
+
+    try {
+      pushBot('One moment — I’m cancelling your appointment now.');
+
+      const response = await fetch(
+        `/api/bookings/${bookedBookingId}/cancel`,
+        {
+          method: 'POST',
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || 'Failed to cancel booking.',
+        );
+      }
+
+      setBookedBookingId(null);
+      setDraft({});
+      setBookingPreference({});
+      resetAvailability();
+      setStep('welcome');
+
+      pushBot(
+        'Your appointment has been cancelled successfully. The time has been released and is available for booking again.',
+        {
+          chips: ['Book an appointment', 'View prices'],
+        },
+      );
+    } catch (error) {
+      console.error('Cancellation error:', error);
+
+      pushBot(
+        'I’m sorry, I couldn’t cancel the appointment right now. Please try again shortly.',
+        {
+          chips: ['Cancel appointment'],
+        },
+      );
+    } finally {
+      setCancellingBooking(false);
+    }
+  };
+
   const confirmBooking = async () => {
     pushUser('Confirm booking');
 
@@ -1309,12 +1368,13 @@ export default function ChatInterface({
         );
       }
 
+      setBookedBookingId(data.booking.id);
       setStep('done');
 
       pushBot(
         `You're all set.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe look forward to seeing you at ${BUSINESS.address}. If you need us before your appointment, you can reach us at ${BUSINESS.phoneFormatted}.`,
         {
-          chips: ['Book another', 'View prices'],
+          chips: ['Cancel appointment', 'Book another', 'View prices'],
         },
       );
 
@@ -1333,6 +1393,7 @@ export default function ChatInterface({
   };
 
   const restart = () => {
+    setBookedBookingId(null);
     setDraft({});
     setBookingPreference({});
     resetAvailability();

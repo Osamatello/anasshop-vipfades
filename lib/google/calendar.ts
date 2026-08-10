@@ -2,6 +2,10 @@ import "server-only";
 
 import { google } from "googleapis";
 
+import {
+    koblenzLocalDateTimeToUtc,
+} from "@/lib/timezone";
+
 const GOOGLE_CALENDAR_SCOPE =
     "https://www.googleapis.com/auth/calendar.events";
 
@@ -10,8 +14,6 @@ const ANAS_BARBER_ID =
 
 const ABD_BARBER_ID =
     "d115a860-db00-4904-a906-5c67478cf6d2";
-
-const TIME_ZONE = "Europe/Berlin";
 
 type CreateCalendarEventInput = {
     barberId: string;
@@ -95,6 +97,31 @@ export async function createGoogleCalendarEvent(
         input.barberId
     );
 
+    // Booking times are entered in Koblenz local time.
+    // Convert them explicitly to UTC before sending them
+    // to Google Calendar so there is no timezone ambiguity.
+    const startDate =
+        koblenzLocalDateTimeToUtc(
+            input.bookingDate,
+            input.startTime
+        );
+
+    const endDate =
+        koblenzLocalDateTimeToUtc(
+            input.bookingDate,
+            input.endTime
+        );
+
+    if (
+        Number.isNaN(startDate.getTime()) ||
+        Number.isNaN(endDate.getTime()) ||
+        endDate <= startDate
+    ) {
+        throw new Error(
+            "Invalid Google Calendar event start or end time."
+        );
+    }
+
     const response =
         await calendar.events.insert({
             calendarId,
@@ -111,14 +138,12 @@ export async function createGoogleCalendarEvent(
 
                 start: {
                     dateTime:
-                        `${input.bookingDate}T${input.startTime}:00`,
-                    timeZone: TIME_ZONE,
+                        startDate.toISOString(),
                 },
 
                 end: {
                     dateTime:
-                        `${input.bookingDate}T${input.endTime}:00`,
-                    timeZone: TIME_ZONE,
+                        endDate.toISOString(),
                 },
             },
         });

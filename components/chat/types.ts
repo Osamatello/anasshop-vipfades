@@ -35,4 +35,7 @@ export type Step =
     | "enterName"
     | "enterPhone"
     | "confirm"
+    | "cancelEnterPhone"
+    | "cancelPickBooking"
+    | "cancelConfirm"
     | "done";

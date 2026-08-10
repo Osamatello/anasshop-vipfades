@@ -12,6 +12,8 @@ export type ExistingBooking = {
 export type BookingForCancellation = {
     id: string;
     barber_id: string;
+    service_id: string;
+    customer_phone: string;
     booking_date: string;
     start_time: string;
     end_time: string;
@@ -74,6 +76,8 @@ export async function getBookingById(
             `
             id,
             barber_id,
+            service_id,
+            customer_phone,
             booking_date,
             start_time,
             end_time,
@@ -91,6 +95,40 @@ export async function getBookingById(
     }
 
     return data;
+}
+
+export async function getUpcomingBookingsByPhone(
+    customerPhone: string,
+    fromDate: string
+): Promise<BookingForCancellation[]> {
+    const { data, error } = await supabaseServer
+        .from("bookings")
+        .select(
+            `
+            id,
+            barber_id,
+            service_id,
+            customer_phone,
+            booking_date,
+            start_time,
+            end_time,
+            status,
+            google_calendar_event_id
+            `
+        )
+        .eq("customer_phone", customerPhone)
+        .eq("status", "booked")
+        .gte("booking_date", fromDate)
+        .order("booking_date", { ascending: true })
+        .order("start_time", { ascending: true });
+
+    if (error) {
+        throw new Error(
+            `Failed to fetch customer bookings: ${error.message}`
+        );
+    }
+
+    return data ?? [];
 }
 
 export async function createBooking(

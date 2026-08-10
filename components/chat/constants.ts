@@ -3,6 +3,7 @@ import {
     Clock,
     Tag,
     UserRound,
+    CalendarX,
 } from 'lucide-react';
 
 export const QUICK_ACTIONS = [
@@ -25,5 +26,10 @@ export const QUICK_ACTIONS = [
         label: 'Choose a barber',
         value: 'barber',
         icon: UserRound,
+    },
+    {
+        label: 'Cancel my appointment',
+        value: 'cancel',
+        icon: CalendarX,
     },
 ];

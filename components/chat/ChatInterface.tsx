@@ -62,7 +62,17 @@ export default function ChatInterface({
     useState<BookingPreference>({});
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
-  const [bookedBookingId, setBookedBookingId] = useState<string | null>(null);
+  const [cancellationBookings, setCancellationBookings] = useState<{
+    id: string;
+    barberId: string;
+    serviceId: string;
+    bookingDate: string;
+    startTime: string;
+    barberName?: string;
+    serviceName?: string;
+  }[]>([]);
+  const [selectedCancellationBookingId, setSelectedCancellationBookingId] =
+    useState<string | null>(null);
   const [cancellingBooking, setCancellingBooking] = useState(false);
 
   const {
@@ -839,8 +849,222 @@ export default function ChatInterface({
     });
   };
 
+  const startCancellation = () => {
+    pushUser('Cancel my appointment');
+    setCancellationBookings([]);
+    setSelectedCancellationBookingId(null);
+    setStep('cancelEnterPhone');
+
+    pushBot(
+      'Of course. Please enter the same phone number you used when you booked your appointment.',
+      {
+        chips: ['Back'],
+      },
+    );
+  };
+
+  const submitCancellationPhone = async (phone: string) => {
+    const result = validatePhoneNumber(phone);
+
+    pushUser(phone);
+
+    if (!result.valid) {
+      pushBot(
+        `${result.error} Please enter the same phone number you used for the booking.`,
+        {
+          chips: ['Back'],
+        },
+      );
+      return;
+    }
+
+    try {
+      pushBot('One moment — I’m looking for your upcoming appointments.');
+
+      const response = await fetch(
+        `/api/bookings/cancel?phone=${encodeURIComponent(result.value)}`,
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || 'Failed to find bookings.',
+        );
+      }
+
+      if (!Array.isArray(data.bookings) || data.bookings.length === 0) {
+        setStep('welcome');
+
+        pushBot(
+          'I couldn’t find any upcoming appointments with that phone number. Please check the number or contact us if you need help.',
+          {
+            chips: QUICK_ACTIONS.map((action) => action.label),
+          },
+        );
+        return;
+      }
+
+      setCancellationBookings(data.bookings);
+      setStep('cancelPickBooking');
+
+      pushBot(
+        data.bookings.length === 1
+          ? 'I found your upcoming appointment. Select it below to continue with the cancellation.'
+          : 'I found your upcoming appointments. Which one would you like to cancel?',
+        {
+          options: data.bookings.map(
+            (booking: {
+              id: string;
+              barberName: string;
+              serviceName: string;
+              bookingDate: string;
+              startTime: string;
+            }) => ({
+              label: `${booking.serviceName} with ${booking.barberName}`,
+              value: booking.id,
+              sub: `${booking.bookingDate} · ${booking.startTime}`,
+            }),
+          ),
+          chips: ['Back'],
+        },
+      );
+    } catch (error) {
+      console.error('Find booking error:', error);
+
+      pushBot(
+        'I’m sorry, I couldn’t find your appointments right now. Please try again shortly.',
+        {
+          chips: ['Back'],
+        },
+      );
+    }
+  };
+
+  const selectCancellationBooking = (bookingId: string) => {
+    const booking = cancellationBookings.find(
+      (item) => item.id === bookingId,
+    );
+
+    if (!booking) {
+      return;
+    }
+
+    setSelectedCancellationBookingId(bookingId);
+    setStep('cancelConfirm');
+    pushUser('Select appointment');
+
+    pushBot(
+      `Are you sure you want to cancel your appointment on ${booking.bookingDate} at ${booking.startTime}?`,
+      {
+        chips: ['Confirm cancellation', 'Back'],
+      },
+    );
+  };
+
+  const confirmCancellation = async () => {
+    if (!selectedCancellationBookingId || cancellingBooking) {
+      return;
+    }
+
+    pushUser('Confirm cancellation');
+    setCancellingBooking(true);
+
+    try {
+      pushBot('One moment — I’m cancelling your appointment now.');
+
+      const response = await fetch(
+        `/api/bookings/${selectedCancellationBookingId}/cancel`,
+        {
+          method: 'POST',
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || 'Failed to cancel booking.',
+        );
+      }
+
+      setCancellationBookings([]);
+      setSelectedCancellationBookingId(null);
+      setDraft({});
+      setBookingPreference({});
+      resetAvailability();
+      setStep('welcome');
+
+      pushBot(
+        'Your appointment has been cancelled successfully.',
+        {
+          chips: QUICK_ACTIONS.map((action) => action.label),
+        },
+      );
+    } catch (error) {
+      console.error('Cancellation error:', error);
+
+      pushBot(
+        'I’m sorry, I couldn’t cancel the appointment right now. Please try again shortly.',
+        {
+          chips: ['Confirm cancellation', 'Back'],
+        },
+      );
+    } finally {
+      setCancellingBooking(false);
+    }
+  };
+
   const handleBack = () => {
     pushUser('Back');
+
+    if (step === 'cancelEnterPhone') {
+      setCancellationBookings([]);
+      setSelectedCancellationBookingId(null);
+      setStep('welcome');
+
+      pushBot('No problem. What would you like to do?', {
+        chips: QUICK_ACTIONS.map((action) => action.label),
+      });
+
+      return;
+    }
+
+    if (step === 'cancelPickBooking') {
+      setCancellationBookings([]);
+      setSelectedCancellationBookingId(null);
+      setStep('cancelEnterPhone');
+
+      pushBot(
+        'No problem. Please enter the phone number used for the booking.',
+        {
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
+    if (step === 'cancelConfirm') {
+      setSelectedCancellationBookingId(null);
+      setStep('cancelPickBooking');
+
+      pushBot('No problem. Choose the appointment you want to cancel.', {
+        options: cancellationBookings.map((booking) => {
+          const barber = barbers.find((item) => item.id === booking.barberId);
+          const service = services.find((item) => item.id === booking.serviceId);
+
+          return {
+            label: `${service?.name ?? 'Appointment'} with ${barber?.name ?? 'your barber'}`,
+            value: booking.id,
+            sub: `${booking.bookingDate} · ${booking.startTime}`,
+          };
+        }),
+        chips: ['Back'],
+      });
+
+      return;
+    }
 
     if (step === 'pickService') {
       if (draft.barber) {
@@ -1053,13 +1277,18 @@ export default function ChatInterface({
       return true;
     }
 
+    if (chip === 'Cancel my appointment') {
+      startCancellation();
+      return true;
+    }
+
     if (chip === 'Confirm booking') {
       confirmBooking();
       return true;
     }
 
-    if (chip === 'Cancel appointment') {
-      void cancelCurrentBooking();
+    if (chip === 'Confirm cancellation') {
+      void confirmCancellation();
       return true;
     }
 
@@ -1275,58 +1504,6 @@ export default function ChatInterface({
     });
   };
 
-  const cancelCurrentBooking = async () => {
-    if (!bookedBookingId || cancellingBooking) {
-      return;
-    }
-
-    pushUser('Cancel appointment');
-    setCancellingBooking(true);
-
-    try {
-      pushBot('One moment — I’m cancelling your appointment now.');
-
-      const response = await fetch(
-        `/api/bookings/${bookedBookingId}/cancel`,
-        {
-          method: 'POST',
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(
-          data.error || 'Failed to cancel booking.',
-        );
-      }
-
-      setBookedBookingId(null);
-      setDraft({});
-      setBookingPreference({});
-      resetAvailability();
-      setStep('welcome');
-
-      pushBot(
-        'Your appointment has been cancelled successfully. The time has been released and is available for booking again.',
-        {
-          chips: ['Book an appointment', 'View prices'],
-        },
-      );
-    } catch (error) {
-      console.error('Cancellation error:', error);
-
-      pushBot(
-        'I’m sorry, I couldn’t cancel the appointment right now. Please try again shortly.',
-        {
-          chips: ['Cancel appointment'],
-        },
-      );
-    } finally {
-      setCancellingBooking(false);
-    }
-  };
-
   const confirmBooking = async () => {
     pushUser('Confirm booking');
 
@@ -1368,13 +1545,12 @@ export default function ChatInterface({
         );
       }
 
-      setBookedBookingId(data.booking.id);
       setStep('done');
 
       pushBot(
         `You're all set.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe look forward to seeing you at ${BUSINESS.address}. If you need us before your appointment, you can reach us at ${BUSINESS.phoneFormatted}.`,
         {
-          chips: ['Cancel appointment', 'Book another', 'View prices'],
+          chips: ['Book another', 'View prices'],
         },
       );
 
@@ -1393,7 +1569,6 @@ export default function ChatInterface({
   };
 
   const restart = () => {
-    setBookedBookingId(null);
     setDraft({});
     setBookingPreference({});
     resetAvailability();
@@ -1618,6 +1793,11 @@ export default function ChatInterface({
 
     if (step === 'pickDate') {
       void pickDate(value);
+      return;
+    }
+
+    if (step === 'cancelPickBooking') {
+      selectCancellationBooking(value);
     }
   };
 
@@ -1639,6 +1819,11 @@ export default function ChatInterface({
 
     if (step === 'enterPhone') {
       submitPhone(value);
+      return;
+    }
+
+    if (step === 'cancelEnterPhone') {
+      await submitCancellationPhone(value);
       return;
     }
 
@@ -1667,12 +1852,15 @@ export default function ChatInterface({
     setStep('welcome');
   };
 
-  const showInput = step === 'enterName' || step === 'enterPhone';
+  const showInput =
+    step === 'enterName' ||
+    step === 'enterPhone' ||
+    step === 'cancelEnterPhone';
 
   const inputPlaceholder =
     step === 'enterName'
       ? 'Your name'
-      : step === 'enterPhone'
+      : step === 'enterPhone' || step === 'cancelEnterPhone'
         ? 'Phone number'
         : 'Message…';
 

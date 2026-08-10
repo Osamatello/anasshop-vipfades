@@ -29,6 +29,7 @@ export type CreatedBooking = {
     start_time: string;
     end_time: string;
     status: string;
+    google_calendar_event_id: string | null;
 };
 
 export async function getBookingsByBarberAndDate(
@@ -46,12 +47,13 @@ export async function getBookingsByBarberAndDate(
         .order("start_time", { ascending: true });
 
     if (error) {
-        throw new Error(`Failed to fetch bookings: ${error.message}`);
+        throw new Error(
+            `Failed to fetch bookings: ${error.message}`
+        );
     }
 
     return data ?? [];
 }
-
 
 export async function createBooking(
     input: CreateBookingInput
@@ -78,14 +80,35 @@ export async function createBooking(
             booking_date,
             start_time,
             end_time,
-            status
+            status,
+            google_calendar_event_id
             `
         )
         .single();
 
     if (error) {
-        throw new Error(`Failed to create booking: ${error.message}`);
+        throw new Error(
+            `Failed to create booking: ${error.message}`
+        );
     }
 
     return data;
+}
+
+export async function saveGoogleCalendarEventId(
+    bookingId: string,
+    eventId: string
+): Promise<void> {
+    const { error } = await supabaseServer
+        .from("bookings")
+        .update({
+            google_calendar_event_id: eventId,
+        })
+        .eq("id", bookingId);
+
+    if (error) {
+        throw new Error(
+            `Failed to save Google Calendar event ID: ${error.message}`
+        );
+    }
 }

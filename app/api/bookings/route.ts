@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
     createBooking,
     getBookingsByBarberAndDate,
+    saveGoogleCalendarEventId,
 } from "@/lib/supabase/bookings";
 
 import { getServiceById } from "@/lib/supabase/services";
@@ -37,8 +38,11 @@ function addMinutesToTime(
     const totalMinutes =
         timeToMinutes(time) + minutesToAdd;
 
-    const hoursResult = Math.floor(totalMinutes / 60);
-    const minutesResult = totalMinutes % 60;
+    const hoursResult =
+        Math.floor(totalMinutes / 60);
+
+    const minutesResult =
+        totalMinutes % 60;
 
     return `${hoursResult
         .toString()
@@ -54,7 +58,10 @@ function periodsOverlap(
     startTwo: number,
     endTwo: number
 ): boolean {
-    return startOne < endTwo && endOne > startTwo;
+    return (
+        startOne < endTwo &&
+        endOne > startTwo
+    );
 }
 
 
@@ -67,12 +74,17 @@ function isPastOrCurrentTimeToday(
     bookingDate: string,
     startTime: string
 ): boolean {
-    if (bookingDate !== getKoblenzDate()) {
+    if (
+        bookingDate !==
+        getKoblenzDate()
+    ) {
         return false;
     }
 
     const nowInKoblenz =
-        getKoblenzTimeParts(new Date());
+        getKoblenzTimeParts(
+            new Date()
+        );
 
     const currentMinutes =
         nowInKoblenz.hours * 60 +
@@ -81,13 +93,19 @@ function isPastOrCurrentTimeToday(
     const bookingStart =
         timeToMinutes(startTime);
 
-    return bookingStart <= currentMinutes;
+    return (
+        bookingStart <=
+        currentMinutes
+    );
 }
 
 
-export async function POST(request: NextRequest) {
+export async function POST(
+    request: NextRequest
+) {
     try {
-        const body = await request.json();
+        const body =
+            await request.json();
 
         const {
             barberId,
@@ -100,10 +118,14 @@ export async function POST(request: NextRequest) {
 
 
         if (
-            typeof barberId !== "string" ||
-            typeof serviceId !== "string" ||
-            typeof bookingDate !== "string" ||
-            typeof startTime !== "string" ||
+            typeof barberId !==
+            "string" ||
+            typeof serviceId !==
+            "string" ||
+            typeof bookingDate !==
+            "string" ||
+            typeof startTime !==
+            "string" ||
             !barberId.trim() ||
             !serviceId.trim() ||
             !bookingDate.trim() ||
@@ -112,7 +134,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 {
                     success: false,
-                    error: "Missing booking information.",
+                    error:
+                        "Missing booking information.",
                 },
                 {
                     status: 400,
@@ -121,8 +144,11 @@ export async function POST(request: NextRequest) {
         }
 
 
-        // Past dates cannot be booked.
-        if (isPastDate(bookingDate)) {
+        if (
+            isPastDate(
+                bookingDate
+            )
+        ) {
             return NextResponse.json(
                 {
                     success: false,
@@ -136,9 +162,6 @@ export async function POST(request: NextRequest) {
         }
 
 
-        // Same-day bookings are allowed,
-        // but the selected time must still be in the future
-        // according to Koblenz local time.
         if (
             isPastOrCurrentTimeToday(
                 bookingDate,
@@ -159,13 +182,18 @@ export async function POST(request: NextRequest) {
 
 
         const nameValidation =
-            validateCustomerName(customerName);
+            validateCustomerName(
+                customerName
+            );
 
-        if (!nameValidation.valid) {
+        if (
+            !nameValidation.valid
+        ) {
             return NextResponse.json(
                 {
                     success: false,
-                    error: nameValidation.error,
+                    error:
+                        nameValidation.error,
                 },
                 {
                     status: 400,
@@ -175,13 +203,18 @@ export async function POST(request: NextRequest) {
 
 
         const phoneValidation =
-            validatePhoneNumber(customerPhone);
+            validatePhoneNumber(
+                customerPhone
+            );
 
-        if (!phoneValidation.valid) {
+        if (
+            !phoneValidation.valid
+        ) {
             return NextResponse.json(
                 {
                     success: false,
-                    error: phoneValidation.error,
+                    error:
+                        phoneValidation.error,
                 },
                 {
                     status: 400,
@@ -190,14 +223,18 @@ export async function POST(request: NextRequest) {
         }
 
 
-        const service = await getServiceById(serviceId);
+        const service =
+            await getServiceById(
+                serviceId
+            );
 
 
         if (!service) {
             return NextResponse.json(
                 {
                     success: false,
-                    error: "Service not found.",
+                    error:
+                        "Service not found.",
                 },
                 {
                     status: 404,
@@ -206,13 +243,13 @@ export async function POST(request: NextRequest) {
         }
 
 
-        const endTime = addMinutesToTime(
-            startTime,
-            service.duration_minutes
-        );
+        const endTime =
+            addMinutesToTime(
+                startTime,
+                service.duration_minutes
+            );
 
 
-        // Double booking protection
         const existingBookings =
             await getBookingsByBarberAndDate(
                 barberId,
@@ -220,26 +257,38 @@ export async function POST(request: NextRequest) {
             );
 
 
-        const newStart = timeToMinutes(startTime);
-        const newEnd = timeToMinutes(endTime);
-
-
-        const hasConflict = existingBookings.some((booking) => {
-            const existingStart = timeToMinutes(
-                booking.start_time
+        const newStart =
+            timeToMinutes(
+                startTime
             );
 
-            const existingEnd = timeToMinutes(
-                booking.end_time
+        const newEnd =
+            timeToMinutes(
+                endTime
             );
 
-            return periodsOverlap(
-                newStart,
-                newEnd,
-                existingStart,
-                existingEnd
+
+        const hasConflict =
+            existingBookings.some(
+                (booking) => {
+                    const existingStart =
+                        timeToMinutes(
+                            booking.start_time
+                        );
+
+                    const existingEnd =
+                        timeToMinutes(
+                            booking.end_time
+                        );
+
+                    return periodsOverlap(
+                        newStart,
+                        newEnd,
+                        existingStart,
+                        existingEnd
+                    );
+                }
             );
-        });
 
 
         if (hasConflict) {
@@ -256,39 +305,63 @@ export async function POST(request: NextRequest) {
         }
 
 
-        // Supabase remains the source of truth.
-        const booking = await createBooking({
-            barberId,
-            serviceId,
-            customerName: nameValidation.value,
-            customerPhone: phoneValidation.value,
-            bookingDate,
-            startTime,
-            endTime,
-        });
+        const booking =
+            await createBooking({
+                barberId,
+                serviceId,
+                customerName:
+                    nameValidation.value,
+                customerPhone:
+                    phoneValidation.value,
+                bookingDate,
+                startTime,
+                endTime,
+            });
 
 
-        // Google Calendar synchronization.
-        // A Calendar failure must not remove or invalidate
-        // a booking that was successfully stored in Supabase.
-        let calendarSynced = false;
-        let calendarEventId: string | null = null;
+        let calendarSynced =
+            false;
+
+        let calendarEventId:
+            string | null =
+            null;
+
 
         try {
             const calendarEvent =
-                await createGoogleCalendarEvent({
-                    barberId,
-                    serviceName: service.name,
-                    customerName: nameValidation.value,
-                    customerPhone: phoneValidation.value,
-                    bookingDate,
-                    startTime,
-                    endTime,
-                });
+                await createGoogleCalendarEvent(
+                    {
+                        barberId,
+                        serviceName:
+                            service.name,
+                        customerName:
+                            nameValidation.value,
+                        customerPhone:
+                            phoneValidation.value,
+                        bookingDate,
+                        startTime,
+                        endTime,
+                    }
+                );
 
-            calendarSynced = true;
-            calendarEventId = calendarEvent.eventId;
-        } catch (calendarError) {
+
+            calendarEventId =
+                calendarEvent.eventId;
+
+
+            await saveGoogleCalendarEventId(
+                booking.id,
+                calendarEvent.eventId
+            );
+
+
+            calendarSynced =
+                true;
+
+
+        } catch (
+        calendarError
+        ) {
             console.error(
                 "Google Calendar sync error:",
                 calendarError
@@ -298,10 +371,18 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            booking,
+
+            booking: {
+                ...booking,
+                google_calendar_event_id:
+                    calendarEventId,
+            },
+
             calendar: {
-                synced: calendarSynced,
-                eventId: calendarEventId,
+                synced:
+                    calendarSynced,
+                eventId:
+                    calendarEventId,
             },
         });
 

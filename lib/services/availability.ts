@@ -25,10 +25,8 @@ function minutesToTime(totalMinutes: number): string {
         .padStart(2, "0")}`;
 }
 
-function isTodayOrPast(date: string): boolean {
-    const todayInKoblenz = getKoblenzDate();
-
-    return date <= todayInKoblenz;
+function isPastDate(date: string): boolean {
+    return date < getKoblenzDate();
 }
 
 function periodsOverlap(
@@ -75,14 +73,13 @@ export async function getAvailableSlots(
     serviceId: string,
     bookingDate: string
 ): Promise<string[]> {
-    // Booking dates are evaluated using Koblenz local time.
-    // No same-day or past bookings.
-    if (isTodayOrPast(bookingDate)) {
+    // Past dates cannot be booked.
+    // Same-day bookings are allowed if the appointment time
+    // has not already passed in Koblenz.
+    if (isPastDate(bookingDate)) {
         return [];
     }
 
-    // Use UTC only to determine the weekday of the YYYY-MM-DD
-    // calendar date. This avoids depending on the Vercel server timezone.
     const [year, month, day] = bookingDate.split("-").map(Number);
 
     const date = new Date(
@@ -94,7 +91,7 @@ export async function getAvailableSlots(
     const dayOfWeek =
         javascriptDay === 0 ? 7 : javascriptDay;
 
-    // Booking is only available Monday - Thursday.
+    // Online booking is available Monday - Thursday.
     if (dayOfWeek < 1 || dayOfWeek > 4) {
         return [];
     }
@@ -127,10 +124,30 @@ export async function getAvailableSlots(
         service.duration_minutes
     );
 
+    const todayInKoblenz = getKoblenzDate();
+    const isSameDay =
+        bookingDate === todayInKoblenz;
+
+    const nowInKoblenz =
+        getKoblenzTimeParts(new Date());
+
+    const currentMinutes =
+        nowInKoblenz.hours * 60 +
+        nowInKoblenz.minutes;
+
     return possibleSlots.filter((slot) => {
         const slotStart = timeToMinutes(slot);
         const slotEnd =
             slotStart + service.duration_minutes;
+
+        // For same-day bookings, only future appointment
+        // start times are available.
+        if (
+            isSameDay &&
+            slotStart <= currentMinutes
+        ) {
+            return false;
+        }
 
         const overlapsBooking = bookings.some((booking) => {
             const bookingStart = timeToMinutes(

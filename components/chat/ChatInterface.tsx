@@ -210,35 +210,35 @@ export default function ChatInterface({
     }[] = [];
 
     while (options.length < 4) {
-      cursor.setUTCDate(cursor.getUTCDate() + 1);
-
       const weekday = cursor.getUTCDay();
 
       // Online booking is available Monday - Thursday only.
-      if (weekday < 1 || weekday > 4) {
-        continue;
+      if (weekday >= 1 && weekday <= 4) {
+        const value = formatUtcDate(cursor);
+
+        const label = new Intl.DateTimeFormat('en-GB', {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'numeric',
+          timeZone: 'UTC',
+        }).format(cursor);
+
+        options.push({
+          label,
+          value,
+        });
       }
 
-      const value = formatUtcDate(cursor);
-
-      const label = new Intl.DateTimeFormat('en-GB', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'numeric',
-        timeZone: 'UTC',
-      }).format(cursor);
-
-      options.push({
-        label,
-        value,
-      });
+      cursor.setUTCDate(
+        cursor.getUTCDate() + 1,
+      );
     }
 
     return options;
   };
 
-  const isTodayOrPastInKoblenz = (date: string) => {
-    return date <= getKoblenzDateValue();
+  const isPastInKoblenz = (date: string) => {
+    return date < getKoblenzDateValue();
   };
 
   const formatLocalDate = (date: Date) => {
@@ -294,11 +294,15 @@ export default function ChatInterface({
       return undefined;
     }
 
+    const todayValue = getKoblenzDateValue();
+
     if (relativeDate === 'today') {
-      return undefined;
+      return dateOptions().find(
+        (option) =>
+          option.value === todayValue,
+      )?.value;
     }
 
-    const todayValue = getKoblenzDateValue();
     const [year, month, day] = todayValue.split('-').map(Number);
 
     const tomorrow = new Date(
@@ -473,7 +477,7 @@ export default function ChatInterface({
       pushUser(date);
     }
 
-    if (isTodayOrPastInKoblenz(date)) {
+    if (isPastInKoblenz(date)) {
       setDraft((currentDraft) => ({
         ...currentDraft,
         service,
@@ -488,7 +492,7 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot(
-        'Same-day bookings aren’t available online. Please choose one of the next available booking days:',
+        'That date has already passed. Please choose one of the available booking days:',
         {
           options: dateOptions(),
           chips: ['Back'],
@@ -653,22 +657,6 @@ export default function ChatInterface({
         return;
       }
     } else if (preference.relativeDate) {
-      if (
-        preference.relativeDate === 'today'
-      ) {
-        setStep('pickDate');
-
-        pushBot(
-          'Online appointments can’t be booked for the same day. Here are the next available booking days:',
-          {
-            options: dateOptions(),
-            chips: ['Back'],
-          },
-        );
-
-        return;
-      }
-
       preferredDate =
         resolveRelativeDate(
           preference.relativeDate,
@@ -678,7 +666,9 @@ export default function ChatInterface({
         setStep('pickDate');
 
         pushBot(
-          'Tomorrow isn’t available for online appointments. Here are the next available booking days:',
+          preference.relativeDate === 'today'
+            ? 'Today isn’t available for online appointments. Here are the next available booking days:'
+            : 'Tomorrow isn’t available for online appointments. Here are the next available booking days:',
           {
             options: dateOptions(),
             chips: ['Back'],

@@ -10,6 +10,11 @@ import { getServiceById } from "@/lib/supabase/services";
 import { createGoogleCalendarEvent } from "@/lib/google/calendar";
 
 import {
+    getKoblenzDate,
+    getKoblenzTimeParts,
+} from "@/lib/timezone";
+
+import {
     validateCustomerName,
     validatePhoneNumber,
 } from "@/lib/validation/booking";
@@ -53,14 +58,30 @@ function periodsOverlap(
 }
 
 
-function isTodayOrPast(date: string): boolean {
-    const today = new Date();
-    const selectedDate = new Date(`${date}T12:00:00`);
+function isPastDate(date: string): boolean {
+    return date < getKoblenzDate();
+}
 
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
 
-    return selectedDate <= today;
+function isPastOrCurrentTimeToday(
+    bookingDate: string,
+    startTime: string
+): boolean {
+    if (bookingDate !== getKoblenzDate()) {
+        return false;
+    }
+
+    const nowInKoblenz =
+        getKoblenzTimeParts(new Date());
+
+    const currentMinutes =
+        nowInKoblenz.hours * 60 +
+        nowInKoblenz.minutes;
+
+    const bookingStart =
+        timeToMinutes(startTime);
+
+    return bookingStart <= currentMinutes;
 }
 
 
@@ -100,14 +121,35 @@ export async function POST(request: NextRequest) {
         }
 
 
-        // No same-day or past bookings.
-        // The earliest possible booking date is tomorrow.
-        if (isTodayOrPast(bookingDate)) {
+        // Past dates cannot be booked.
+        if (isPastDate(bookingDate)) {
             return NextResponse.json(
                 {
                     success: false,
                     error:
-                        "Same-day bookings are not available. Please choose a future date.",
+                        "Past dates cannot be booked. Please choose another date.",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+
+        // Same-day bookings are allowed,
+        // but the selected time must still be in the future
+        // according to Koblenz local time.
+        if (
+            isPastOrCurrentTimeToday(
+                bookingDate,
+                startTime
+            )
+        ) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "This appointment time has already passed. Please choose a later time.",
                 },
                 {
                     status: 400,

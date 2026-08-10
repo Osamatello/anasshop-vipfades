@@ -7,6 +7,8 @@ import {
 
 import { getServiceById } from "@/lib/supabase/services";
 
+import { createGoogleCalendarEvent } from "@/lib/google/calendar";
+
 import {
     validateCustomerName,
     validatePhoneNumber,
@@ -212,6 +214,7 @@ export async function POST(request: NextRequest) {
         }
 
 
+        // Supabase remains the source of truth.
         const booking = await createBooking({
             barberId,
             serviceId,
@@ -223,9 +226,41 @@ export async function POST(request: NextRequest) {
         });
 
 
+        // Google Calendar synchronization.
+        // A Calendar failure must not remove or invalidate
+        // a booking that was successfully stored in Supabase.
+        let calendarSynced = false;
+        let calendarEventId: string | null = null;
+
+        try {
+            const calendarEvent =
+                await createGoogleCalendarEvent({
+                    barberId,
+                    serviceName: service.name,
+                    customerName: nameValidation.value,
+                    customerPhone: phoneValidation.value,
+                    bookingDate,
+                    startTime,
+                    endTime,
+                });
+
+            calendarSynced = true;
+            calendarEventId = calendarEvent.eventId;
+        } catch (calendarError) {
+            console.error(
+                "Google Calendar sync error:",
+                calendarError
+            );
+        }
+
+
         return NextResponse.json({
             success: true,
             booking,
+            calendar: {
+                synced: calendarSynced,
+                eventId: calendarEventId,
+            },
         });
 
 

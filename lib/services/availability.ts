@@ -3,6 +3,11 @@ import { getBookingsByBarberAndDate } from "@/lib/supabase/bookings";
 import { getBlockedTimesByBarberAndDate } from "@/lib/supabase/blocked-times";
 import { getServiceById } from "@/lib/supabase/services";
 
+import {
+    getKoblenzDate,
+    getKoblenzTimeParts,
+} from "@/lib/timezone";
+
 const DEFAULT_SLOT_INTERVAL_MINUTES = 10;
 
 function timeToMinutes(time: string): number {
@@ -20,21 +25,10 @@ function minutesToTime(totalMinutes: number): string {
         .padStart(2, "0")}`;
 }
 
-function isSameDay(date: string): boolean {
-    const today = new Date();
-    const selectedDate = new Date(`${date}T12:00:00`);
+function isTodayOrPast(date: string): boolean {
+    const todayInKoblenz = getKoblenzDate();
 
-    return (
-        today.getFullYear() === selectedDate.getFullYear() &&
-        today.getMonth() === selectedDate.getMonth() &&
-        today.getDate() === selectedDate.getDate()
-    );
-}
-
-function getCurrentMinutes(): number {
-    const now = new Date();
-
-    return now.getHours() * 60 + now.getMinutes();
+    return date <= todayInKoblenz;
 }
 
 function periodsOverlap(
@@ -81,24 +75,49 @@ export async function getAvailableSlots(
     serviceId: string,
     bookingDate: string
 ): Promise<string[]> {
-    const date = new Date(`${bookingDate}T12:00:00`);
-    const javascriptDay = date.getDay();
+    // Booking dates are evaluated using Koblenz local time.
+    // No same-day or past bookings.
+    if (isTodayOrPast(bookingDate)) {
+        return [];
+    }
 
-    const dayOfWeek = javascriptDay === 0 ? 7 : javascriptDay;
+    // Use UTC only to determine the weekday of the YYYY-MM-DD
+    // calendar date. This avoids depending on the Vercel server timezone.
+    const [year, month, day] = bookingDate.split("-").map(Number);
 
-    // Booking is only available Monday - Thursday
+    const date = new Date(
+        Date.UTC(year, month - 1, day)
+    );
+
+    const javascriptDay = date.getUTCDay();
+
+    const dayOfWeek =
+        javascriptDay === 0 ? 7 : javascriptDay;
+
+    // Booking is only available Monday - Thursday.
     if (dayOfWeek < 1 || dayOfWeek > 4) {
         return [];
     }
 
-    const [service, businessHours, bookings, blockedTimes] = await Promise.all([
-        getServiceById(serviceId),
-        getBusinessHoursByDay(dayOfWeek),
-        getBookingsByBarberAndDate(barberId, bookingDate),
-        getBlockedTimesByBarberAndDate(barberId, bookingDate),
-    ]);
+    const [service, businessHours, bookings, blockedTimes] =
+        await Promise.all([
+            getServiceById(serviceId),
+            getBusinessHoursByDay(dayOfWeek),
+            getBookingsByBarberAndDate(
+                barberId,
+                bookingDate
+            ),
+            getBlockedTimesByBarberAndDate(
+                barberId,
+                bookingDate
+            ),
+        ]);
 
-    if (!service || !businessHours || !businessHours.is_open) {
+    if (
+        !service ||
+        !businessHours ||
+        !businessHours.is_open
+    ) {
         return [];
     }
 
@@ -110,30 +129,17 @@ export async function getAvailableSlots(
 
     return possibleSlots.filter((slot) => {
         const slotStart = timeToMinutes(slot);
-        const slotEnd = slotStart + service.duration_minutes;
-
-        // Same-day booking rules
-        if (isSameDay(bookingDate)) {
-            const currentMinutes = getCurrentMinutes();
-
-            // Remove past times
-            if (slotStart <= currentMinutes) {
-                return false;
-            }
-
-            // Make sure service can finish before closing time
-            const closingMinutes = timeToMinutes(
-                businessHours.close_time
-            );
-
-            if (slotEnd > closingMinutes) {
-                return false;
-            }
-        }
+        const slotEnd =
+            slotStart + service.duration_minutes;
 
         const overlapsBooking = bookings.some((booking) => {
-            const bookingStart = timeToMinutes(booking.start_time);
-            const bookingEnd = timeToMinutes(booking.end_time);
+            const bookingStart = timeToMinutes(
+                booking.start_time
+            );
+
+            const bookingEnd = timeToMinutes(
+                booking.end_time
+            );
 
             return periodsOverlap(
                 slotStart,
@@ -147,25 +153,38 @@ export async function getAvailableSlots(
             return false;
         }
 
-        const overlapsBlockedTime = blockedTimes.some((blockedTime) => {
-            const blockedStartDate = new Date(blockedTime.start_at);
-            const blockedEndDate = new Date(blockedTime.end_at);
+        const overlapsBlockedTime = blockedTimes.some(
+            (blockedTime) => {
+                const blockedStartDate = new Date(
+                    blockedTime.start_at
+                );
 
-            const blockedStart =
-                blockedStartDate.getHours() * 60 +
-                blockedStartDate.getMinutes();
+                const blockedEndDate = new Date(
+                    blockedTime.end_at
+                );
 
-            const blockedEnd =
-                blockedEndDate.getHours() * 60 +
-                blockedEndDate.getMinutes();
+                const blockedStartParts =
+                    getKoblenzTimeParts(blockedStartDate);
 
-            return periodsOverlap(
-                slotStart,
-                slotEnd,
-                blockedStart,
-                blockedEnd
-            );
-        });
+                const blockedEndParts =
+                    getKoblenzTimeParts(blockedEndDate);
+
+                const blockedStart =
+                    blockedStartParts.hours * 60 +
+                    blockedStartParts.minutes;
+
+                const blockedEnd =
+                    blockedEndParts.hours * 60 +
+                    blockedEndParts.minutes;
+
+                return periodsOverlap(
+                    slotStart,
+                    slotEnd,
+                    blockedStart,
+                    blockedEnd
+                );
+            }
+        );
 
         return !overlapsBlockedTime;
     });

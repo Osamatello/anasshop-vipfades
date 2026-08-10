@@ -51,6 +51,17 @@ function periodsOverlap(
 }
 
 
+function isTodayOrPast(date: string): boolean {
+    const today = new Date();
+    const selectedDate = new Date(`${date}T12:00:00`);
+
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate <= today;
+}
+
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -79,6 +90,22 @@ export async function POST(request: NextRequest) {
                 {
                     success: false,
                     error: "Missing booking information.",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+
+        // No same-day or past bookings.
+        // The earliest possible booking date is tomorrow.
+        if (isTodayOrPast(bookingDate)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "Same-day bookings are not available. Please choose a future date.",
                 },
                 {
                     status: 400,

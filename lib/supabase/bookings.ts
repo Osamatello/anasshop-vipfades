@@ -9,6 +9,16 @@ export type ExistingBooking = {
     status: string;
 };
 
+export type BookingForCancellation = {
+    id: string;
+    barber_id: string;
+    booking_date: string;
+    start_time: string;
+    end_time: string;
+    status: string;
+    google_calendar_event_id: string | null;
+};
+
 export type CreateBookingInput = {
     barberId: string;
     serviceId: string;
@@ -53,6 +63,34 @@ export async function getBookingsByBarberAndDate(
     }
 
     return data ?? [];
+}
+
+export async function getBookingById(
+    bookingId: string
+): Promise<BookingForCancellation | null> {
+    const { data, error } = await supabaseServer
+        .from("bookings")
+        .select(
+            `
+            id,
+            barber_id,
+            booking_date,
+            start_time,
+            end_time,
+            status,
+            google_calendar_event_id
+            `
+        )
+        .eq("id", bookingId)
+        .maybeSingle();
+
+    if (error) {
+        throw new Error(
+            `Failed to fetch booking: ${error.message}`
+        );
+    }
+
+    return data;
 }
 
 export async function createBooking(
@@ -109,6 +147,24 @@ export async function saveGoogleCalendarEventId(
     if (error) {
         throw new Error(
             `Failed to save Google Calendar event ID: ${error.message}`
+        );
+    }
+}
+
+export async function cancelBooking(
+    bookingId: string
+): Promise<void> {
+    const { error } = await supabaseServer
+        .from("bookings")
+        .update({
+            status: "cancelled",
+        })
+        .eq("id", bookingId)
+        .eq("status", "booked");
+
+    if (error) {
+        throw new Error(
+            `Failed to cancel booking: ${error.message}`
         );
     }
 }

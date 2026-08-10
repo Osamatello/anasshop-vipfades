@@ -25,6 +25,11 @@ type CreateCalendarEventInput = {
     endTime: string;
 };
 
+type DeleteCalendarEventInput = {
+    barberId: string;
+    eventId: string;
+};
+
 function getCalendarId(barberId: string): string {
     if (barberId === ANAS_BARBER_ID) {
         const calendarId =
@@ -159,4 +164,24 @@ export async function createGoogleCalendarEvent(
         htmlLink:
             response.data.htmlLink ?? null,
     };
+}
+
+export async function deleteGoogleCalendarEvent(
+    input: DeleteCalendarEventInput
+): Promise<void> {
+    const auth = getGoogleAuth();
+
+    const calendar = google.calendar({
+        version: "v3",
+        auth,
+    });
+
+    const calendarId = getCalendarId(
+        input.barberId
+    );
+
+    await calendar.events.delete({
+        calendarId,
+        eventId: input.eventId,
+    });
 }

@@ -51,9 +51,9 @@ function BarberCard({
   index: number;
 }) {
   const avatar =
-    index === 0
-      ? '/images/barber_placeholder_1.png'
-      : '/images/barber_placeholder_2.png';
+    barber.name.toLowerCase() === 'anas'
+      ? '/images/anas-barber.jpeg'
+      : '/images/abd-barber.jpeg';
 
   const scrollToBooking = () => {
     document
@@ -77,7 +77,7 @@ function BarberCard({
         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
           <img
             src={avatar}
-            alt={`${barber.name} portrait placeholder`}
+            alt={`${barber.name} barber portrait`}
             className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0"
           />
         </div>

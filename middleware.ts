@@ -21,6 +21,11 @@ export async function middleware(
     const supabaseAnonKey =
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+    const dashboardAdminEmail =
+        process.env.DASHBOARD_ADMIN_EMAIL
+            ?.trim()
+            .toLowerCase();
+
     if (
         !supabaseUrl ||
         !supabaseAnonKey
@@ -95,6 +100,16 @@ export async function middleware(
             "/dashboard"
         );
 
+    const isAuthorizedAdmin =
+        Boolean(
+            user?.email &&
+            dashboardAdminEmail &&
+            user.email
+                .trim()
+                .toLowerCase() ===
+            dashboardAdminEmail
+        );
+
     if (
         isDashboardRoute &&
         !isLoginPage &&
@@ -112,8 +127,38 @@ export async function middleware(
     }
 
     if (
+        isDashboardRoute &&
+        !isLoginPage &&
+        user &&
+        !isAuthorizedAdmin
+    ) {
+        const url =
+            request.nextUrl.clone();
+
+        url.pathname =
+            "/dashboard/login";
+
+        const redirectResponse =
+            NextResponse.redirect(
+                url
+            );
+
+        redirectResponse.cookies.set(
+            "vipfades-unauthorized-dashboard",
+            "1",
+            {
+                maxAge: 10,
+                path: "/dashboard/login",
+                sameSite: "lax",
+            }
+        );
+
+        return redirectResponse;
+    }
+
+    if (
         isLoginPage &&
-        user
+        isAuthorizedAdmin
     ) {
         const url =
             request.nextUrl.clone();

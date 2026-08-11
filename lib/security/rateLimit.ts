@@ -9,6 +9,12 @@ export const bookingRateLimit = new Ratelimit({
     prefix: "vipfades:booking",
 });
 
+export const cancellationLookupRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(3, "10 m"),
+    prefix: "vipfades:cancellation-lookup",
+});
+
 export function getClientIdentifier(headers: Headers): string {
     const forwardedFor = headers.get("x-forwarded-for");
 

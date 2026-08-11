@@ -6,10 +6,49 @@ import { validatePhoneNumber } from "@/lib/validation/booking";
 import { getServiceById } from "@/lib/supabase/services";
 import { getBarbers } from "@/lib/supabase/barbers";
 
+import {
+    cancellationLookupRateLimit,
+    getClientIdentifier,
+} from "@/lib/security/rateLimit";
+
 export async function GET(
     request: NextRequest
 ) {
     try {
+        const identifier =
+            getClientIdentifier(
+                request.headers
+            );
+
+        const rateLimit =
+            await cancellationLookupRateLimit.limit(
+                identifier
+            );
+
+        if (!rateLimit.success) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "Too many cancellation lookup attempts. Please wait a few minutes and try again.",
+                },
+                {
+                    status: 429,
+                    headers: {
+                        "Retry-After": Math.max(
+                            1,
+                            Math.ceil(
+                                (
+                                    rateLimit.reset -
+                                    Date.now()
+                                ) / 1000
+                            )
+                        ).toString(),
+                    },
+                }
+            );
+        }
+
         const phone =
             request.nextUrl.searchParams.get("phone");
 

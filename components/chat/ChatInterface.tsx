@@ -1609,20 +1609,25 @@ export default function ChatInterface({
     );
   };
 
+  const isActiveBookingStep = () =>
+    step === 'pickService' ||
+    step === 'pickBarberPre' ||
+    step === 'pickBarber' ||
+    step === 'pickDate' ||
+    step === 'pickTime' ||
+    step === 'enterName' ||
+    step === 'enterPhone' ||
+    step === 'confirm';
+
   const handleNaturalInput = async (value: string) => {
     const parsed = parseBookingIntent(value, {
       barbers,
       services,
     });
 
-    if (
-      parsed.smallTalk &&
-      !parsed.wantsBooking
-    ) {
+    if (parsed.smallTalk && !parsed.wantsBooking) {
       pushUser(value);
-      handleSmallTalk(
-        parsed.smallTalk,
-      );
+      handleSmallTalk(parsed.smallTalk);
       return true;
     }
 
@@ -1639,77 +1644,165 @@ export default function ChatInterface({
       return true;
     }
 
+    const activeBooking = isActiveBookingStep();
+
+    const parsedService = parsed.serviceName
+      ? services.find(
+        (service) =>
+          service.name.toLowerCase() === parsed.serviceName?.toLowerCase(),
+      )
+      : undefined;
+
+    const parsedBarber = parsed.barberName
+      ? barbers.find(
+        (barber) =>
+          barber.name.toLowerCase() === parsed.barberName?.toLowerCase(),
+      )
+      : undefined;
+
+    const hasParsedDate = Boolean(
+      parsed.specificDate ||
+      parsed.relativeDate ||
+      parsed.weekday,
+    );
+
+    const hasParsedTimePreference = Boolean(
+      parsed.timeOfDay ||
+      parsed.slotPreference,
+    );
+
+    const changingService =
+      activeBooking &&
+      Boolean(parsedService) &&
+      parsedService?.id !== draft.service?.id;
+
+    const changingBarber =
+      activeBooking &&
+      Boolean(parsedBarber) &&
+      parsedBarber?.id !== draft.barber?.id;
+
+    const changingDate =
+      activeBooking && hasParsedDate;
+
+    const changingTime =
+      activeBooking && hasParsedTimePreference;
+
     const nextPreference: BookingPreference = {
       relativeDate:
-        parsed.relativeDate ??
-        bookingPreference.relativeDate,
+        parsed.relativeDate ?? bookingPreference.relativeDate,
       specificDate:
-        parsed.specificDate ??
-        bookingPreference.specificDate,
+        parsed.specificDate ?? bookingPreference.specificDate,
       weekday:
-        parsed.weekday ??
-        bookingPreference.weekday,
+        parsed.weekday ?? bookingPreference.weekday,
       timeOfDay:
-        parsed.timeOfDay ??
-        bookingPreference.timeOfDay,
+        parsed.timeOfDay ?? bookingPreference.timeOfDay,
       slotPreference:
-        parsed.slotPreference ??
-        bookingPreference.slotPreference,
+        parsed.slotPreference ?? bookingPreference.slotPreference,
     };
 
     if (parsed.specificDate) {
-      nextPreference.relativeDate =
-        undefined;
-      nextPreference.weekday =
-        undefined;
+      nextPreference.relativeDate = undefined;
+      nextPreference.weekday = undefined;
     } else if (parsed.relativeDate) {
-      nextPreference.specificDate =
-        undefined;
-      nextPreference.weekday =
-        undefined;
+      nextPreference.specificDate = undefined;
+      nextPreference.weekday = undefined;
     } else if (parsed.weekday) {
-      nextPreference.specificDate =
-        undefined;
-      nextPreference.relativeDate =
-        undefined;
+      nextPreference.specificDate = undefined;
+      nextPreference.relativeDate = undefined;
     }
 
-    setBookingPreference(
-      nextPreference,
-    );
+    setBookingPreference(nextPreference);
 
-    const parsedService =
-      parsed.serviceName
-        ? services.find(
-          (service) =>
-            service.name.toLowerCase() ===
-            parsed.serviceName?.toLowerCase(),
-        )
-        : undefined;
-
-    const parsedBarber =
-      parsed.barberName
-        ? barbers.find(
-          (barber) =>
-            barber.name.toLowerCase() ===
-            parsed.barberName?.toLowerCase(),
-        )
-        : undefined;
-
-    const existingDraft =
-      step === 'welcome' ||
-        step === 'menu' ||
-        step === 'done'
-        ? {}
-        : draft;
+    const existingDraft = activeBooking ? draft : {};
 
     const selectedService =
-      parsedService ??
-      existingDraft.service;
+      parsedService ?? existingDraft.service;
 
     const selectedBarber =
-      parsedBarber ??
-      existingDraft.barber;
+      parsedBarber ?? existingDraft.barber;
+
+    if (
+      activeBooking &&
+      (changingService ||
+        changingBarber ||
+        changingDate ||
+        changingTime)
+    ) {
+      setDraft({
+        ...existingDraft,
+        service: selectedService,
+        barber: selectedBarber,
+        date:
+          changingService || changingBarber || changingDate
+            ? undefined
+            : existingDraft.date,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      });
+
+      resetAvailability();
+
+      if (!selectedService) {
+        setStep('pickService');
+        pushBot('No problem. Which service would you like instead?', {
+          options: serviceOptions(),
+          chips: ['Back'],
+        });
+        return true;
+      }
+
+      if (!selectedBarber) {
+        setStep('pickBarber');
+        pushBot('No problem. Who would you like to book with instead?', {
+          options: barberOptions(),
+          chips: ['Back'],
+        });
+        return true;
+      }
+
+      if (
+        changingTime &&
+        !changingService &&
+        !changingBarber &&
+        !changingDate &&
+        existingDraft.date
+      ) {
+        await loadDateAvailability({
+          service: selectedService,
+          barber: selectedBarber,
+          date: existingDraft.date,
+          timeOfDay: nextPreference.timeOfDay,
+          slotPreference: nextPreference.slotPreference,
+          pushDateAsUser: false,
+        });
+        return true;
+      }
+
+      if (
+        (changingService || changingBarber) &&
+        existingDraft.date &&
+        !changingDate
+      ) {
+        await loadDateAvailability({
+          service: selectedService,
+          barber: selectedBarber,
+          date: existingDraft.date,
+          timeOfDay: nextPreference.timeOfDay,
+          slotPreference: nextPreference.slotPreference,
+          pushDateAsUser: false,
+        });
+        return true;
+      }
+
+      await continueWithPreferredDate({
+        service: selectedService,
+        barber: selectedBarber,
+        preference: nextPreference,
+      });
+
+      return true;
+    }
 
     setDraft({
       ...existingDraft,
@@ -1726,11 +1819,10 @@ export default function ChatInterface({
     if (!selectedService) {
       setStep('pickService');
 
-      const preferenceText =
-        describePreference(
-          nextPreference,
-          selectedBarber?.name,
-        );
+      const preferenceText = describePreference(
+        nextPreference,
+        selectedBarber?.name,
+      );
 
       pushBot(
         preferenceText
@@ -1748,10 +1840,7 @@ export default function ChatInterface({
     if (!selectedBarber) {
       setStep('pickBarber');
 
-      const preferenceText =
-        describePreference(
-          nextPreference,
-        );
+      const preferenceText = describePreference(nextPreference);
 
       pushBot(
         preferenceText

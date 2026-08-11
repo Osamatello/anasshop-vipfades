@@ -23,6 +23,12 @@ export type SmallTalkIntent =
     | 'thanks'
     | 'goodbye';
 
+export type ChangeIntent =
+    | 'barber'
+    | 'service'
+    | 'date'
+    | 'time';
+
 export type ParsedBookingIntent = {
     wantsBooking: boolean;
     barberName?: string;
@@ -33,6 +39,7 @@ export type ParsedBookingIntent = {
     timeOfDay?: TimeOfDay;
     slotPreference?: SlotPreference;
     smallTalk?: SmallTalkIntent;
+    changeIntent?: ChangeIntent;
 };
 
 type ParserCatalog = {
@@ -232,6 +239,36 @@ const findSlotPreference = (
     return undefined;
 };
 
+const findChangeIntent = (
+    normalizedInput: string,
+    hasBarber: boolean,
+    hasService: boolean,
+    hasDate: boolean,
+    hasTime: boolean,
+): ParsedBookingIntent['changeIntent'] => {
+    const hasChangeLanguage =
+        normalizedInput.includes('change') ||
+        normalizedInput.includes('switch') ||
+        normalizedInput.includes('instead') ||
+        normalizedInput.includes('actually') ||
+        normalizedInput.includes('rather') ||
+        normalizedInput.includes('make it') ||
+        normalizedInput.includes('what about') ||
+        normalizedInput.includes('how about') ||
+        normalizedInput.includes('different');
+
+    if (!hasChangeLanguage) {
+        return undefined;
+    }
+
+    if (hasBarber) return 'barber';
+    if (hasService) return 'service';
+    if (hasDate) return 'date';
+    if (hasTime) return 'time';
+
+    return undefined;
+};
+
 const findSmallTalk = (
     normalizedInput: string,
 ): ParsedBookingIntent['smallTalk'] => {
@@ -314,6 +351,15 @@ export function parseBookingIntent(
     const smallTalk =
         findSmallTalk(normalizedInput);
 
+    const changeIntent =
+        findChangeIntent(
+            normalizedInput,
+            Boolean(barber),
+            Boolean(service),
+            Boolean(relativeDate || specificDate || weekday),
+            Boolean(timeOfDay || slotPreference),
+        );
+
     const wantsBooking =
         normalizedInput.includes('book') ||
         normalizedInput.includes('booking') ||
@@ -336,5 +382,6 @@ export function parseBookingIntent(
         timeOfDay,
         slotPreference,
         smallTalk,
+        changeIntent,
     };
 }

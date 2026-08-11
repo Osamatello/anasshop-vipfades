@@ -73,6 +73,7 @@ export default function ChatInterface({
   }[]>([]);
   const [selectedCancellationBookingId, setSelectedCancellationBookingId] =
     useState<string | null>(null);
+  const [cancellationPhone, setCancellationPhone] = useState<string | null>(null);
   const [cancellingBooking, setCancellingBooking] = useState(false);
 
   const {
@@ -853,6 +854,7 @@ export default function ChatInterface({
     pushUser('Cancel my appointment');
     setCancellationBookings([]);
     setSelectedCancellationBookingId(null);
+    setCancellationPhone(null);
     setStep('cancelEnterPhone');
 
     pushBot(
@@ -905,6 +907,7 @@ export default function ChatInterface({
         return;
       }
 
+      setCancellationPhone(result.value);
       setCancellationBookings(data.bookings);
       setStep('cancelPickBooking');
 
@@ -977,6 +980,12 @@ export default function ChatInterface({
         `/api/bookings/${selectedCancellationBookingId}/cancel`,
         {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phone: cancellationPhone,
+          }),
         },
       );
 
@@ -990,6 +999,7 @@ export default function ChatInterface({
 
       setCancellationBookings([]);
       setSelectedCancellationBookingId(null);
+      setCancellationPhone(null);
       setDraft({});
       setBookingPreference({});
       resetAvailability();

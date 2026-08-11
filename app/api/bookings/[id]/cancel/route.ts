@@ -12,9 +12,13 @@ import {
     deleteGoogleCalendarEvent,
 } from "@/lib/google/calendar";
 
+import {
+    validatePhoneNumber,
+} from "@/lib/validation/booking";
+
 
 export async function POST(
-    _request: NextRequest,
+    request: NextRequest,
     {
         params,
     }: {
@@ -45,6 +49,31 @@ export async function POST(
         }
 
 
+        const body =
+            await request.json().catch(
+                () => null
+            );
+
+        const phoneResult =
+            validatePhoneNumber(
+                body?.phone ?? ""
+            );
+
+
+        if (!phoneResult.valid) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "A valid booking phone number is required.",
+                },
+                {
+                    status: 400,
+                }
+            );
+        }
+
+
         const booking =
             await getBookingById(
                 bookingId
@@ -60,6 +89,23 @@ export async function POST(
                 },
                 {
                     status: 404,
+                }
+            );
+        }
+
+
+        if (
+            booking.customer_phone !==
+            phoneResult.value
+        ) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "Booking verification failed.",
+                },
+                {
+                    status: 403,
                 }
             );
         }

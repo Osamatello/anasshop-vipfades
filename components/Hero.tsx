@@ -54,8 +54,8 @@ export default function Hero() {
             {BUSINESS.description}
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+          {/* Primary CTA */}
+          <div className="mt-10 flex flex-col items-center">
             <Link
               href="/booking"
               className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
@@ -64,20 +64,18 @@ export default function Hero() {
               Book Appointment
             </Link>
 
-            <Scissors className="h-4 w-4" />
-
-
-            <button
-              type="button"
-              onClick={() => scrollToSection('#services')}
-              className="flex items-center justify-center gap-2 rounded-full border border-brand-cream/50 bg-brand-bgSecondary/75 px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-textPrimary backdrop-blur-sm transition-all duration-300 hover:border-brand-cream hover:bg-brand-cream/10"
-            >
-              Explore Services
-            </button>
+            <div className="mt-8 text-center">
+              <p className="font-serif text-2xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
+                YOUR TIME. YOUR CHAIR.
+              </p>
+              <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/75 sm:text-base">
+                From the first consultation to the final mirror check.
+              </p>
+            </div>
           </div>
 
           {/* Business information */}
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
             <span className="flex items-center gap-2 text-sm font-medium">
               <Clock className="h-4 w-4 text-brand-textPrimary" />
               {BUSINESS.hours.time}

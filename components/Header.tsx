@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Menu, Scissors, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
-  { label: 'Signature Cuts', href: '#services' },
-  { label: 'The VIP Experience', href: '#experience' },
-  { label: 'The Artists', href: '#barbers' },
-  { label: 'Booking', href: '/booking' },
+  { label: 'Services', href: '#services' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Artists', href: '#barbers' },
   { label: 'Visit', href: '#contact' },
 ];
 
@@ -66,8 +65,8 @@ export default function Header() {
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${scrolled
-          ? 'border-b border-brand-border bg-brand-bg/90 py-3 backdrop-blur-xl'
-          : 'bg-transparent py-5'
+        ? 'border-b border-brand-border bg-brand-bg/90 py-3 backdrop-blur-xl'
+        : 'bg-transparent py-5'
         }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5">
@@ -99,13 +98,13 @@ export default function Header() {
         </button>
 
         {/* Desktop navigation */}
-        <nav className="hidden items-center gap-8 lg:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 lg:flex">
           {NAV_LINKS.map((link) => (
             <button
               type="button"
               key={link.href}
               onClick={() => handleNav(link.href)}
-              className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
+              className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
             >
               {link.label}
             </button>
@@ -113,15 +112,16 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {/* Desktop booking button */}
-          <button
-            type="button"
-            onClick={() => handleNav('/booking')}
-            className="hidden items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary sm:flex"
+          {/* Desktop Instagram link */}
+          <a
+            href="https://www.instagram.com/vipfades.kob/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden text-[13px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream lg:inline-flex"
+            aria-label="VIP FADES on Instagram"
           >
-            <Scissors className="h-4 w-4" />
-            Book Appointment
-          </button>
+            Instagram ↗
+          </a>
 
           {/* Mobile menu button */}
           <button
@@ -143,8 +143,8 @@ export default function Header() {
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${open
-            ? 'max-h-96 border-b border-brand-border bg-brand-bg/95'
-            : 'max-h-0'
+          ? 'max-h-96 border-b border-brand-border bg-brand-bg/95'
+          : 'max-h-0'
           }`}
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 pb-6 pt-4">
@@ -159,15 +159,6 @@ export default function Header() {
             </button>
           ))}
 
-          {/* Mobile booking button */}
-          <button
-            type="button"
-            onClick={() => handleNav('/booking')}
-            className="mt-2 flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all hover:border-brand-textPrimary hover:bg-brand-textPrimary"
-          >
-            <Scissors className="h-4 w-4" />
-            Book Appointment
-          </button>
         </nav>
       </div>
     </header>

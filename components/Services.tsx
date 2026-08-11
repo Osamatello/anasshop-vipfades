@@ -3,6 +3,23 @@
 import { Clock } from 'lucide-react';
 import { SERVICES, type Service } from '@/lib/data';
 
+const SERVICE_DESCRIPTIONS: Record<string, string> = {
+  'haircut-beard':
+    'A complete grooming experience combining a precision haircut with detailed beard shaping, clean lines and a polished finish.',
+  'mens-haircut':
+    'A tailored haircut shaped around your style and preferences, finished with sharp detailing and a clean, confident look.',
+  'beard-trim':
+    'Detailed beard shaping and trimming designed to sharpen your profile, define the edges and keep your beard looking fresh.',
+  eyebrows:
+    'Clean, precise eyebrow grooming that removes unwanted growth while keeping a natural, balanced and well-defined finish.',
+  'facial-cleansing':
+    'A refreshing facial treatment focused on cleansing, skincare and leaving your skin looking clean, smooth and revitalized.',
+  'hot-wax':
+    'Full-face hot wax treatment including the ears and nose for a smoother, cleaner finish and longer-lasting grooming results.',
+  'ears-nose':
+    'Quick and precise grooming for unwanted ear and nose hair, leaving the small details clean and professionally finished.',
+};
+
 export default function Services() {
   const orderedServices = [
     ...SERVICES.filter((service) => service.id === 'haircut-beard'),
@@ -53,8 +70,8 @@ function ServiceCard({
   return (
     <div
       className={`reveal reveal-delay-${(index % 3) + 1} group relative flex h-full min-h-[220px] flex-col justify-between rounded-xl border p-7 transition-all duration-300 hover:-translate-y-1 ${isPopular
-          ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
-          : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'
+        ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
+        : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'
         }`}
     >
       {isPopular && (
@@ -82,7 +99,7 @@ function ServiceCard({
         )}
 
         <p className="mt-4 text-sm font-light leading-relaxed text-brand-textPrimary/85">
-          {service.description}
+          {SERVICE_DESCRIPTIONS[service.id] ?? service.description}
         </p>
       </div>
     </div>

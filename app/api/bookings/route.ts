@@ -20,6 +20,11 @@ import {
     validatePhoneNumber,
 } from "@/lib/validation/booking";
 
+import {
+    bookingRateLimit,
+    getClientIdentifier,
+} from "@/lib/security/rateLimit";
+
 
 function timeToMinutes(time: string): number {
     const [hours, minutes] = time
@@ -104,6 +109,42 @@ export async function POST(
     request: NextRequest
 ) {
     try {
+        const identifier =
+            getClientIdentifier(
+                request.headers
+            );
+
+        const rateLimit =
+            await bookingRateLimit.limit(
+                identifier
+            );
+
+
+        if (!rateLimit.success) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "Too many booking attempts. Please wait a few minutes and try again.",
+                },
+                {
+                    status: 429,
+                    headers: {
+                        "Retry-After": Math.max(
+                            1,
+                            Math.ceil(
+                                (
+                                    rateLimit.reset -
+                                    Date.now()
+                                ) / 1000
+                            )
+                        ).toString(),
+                    },
+                }
+            );
+        }
+
+
         const body =
             await request.json();
 

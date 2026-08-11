@@ -15,6 +15,12 @@ export const cancellationLookupRateLimit = new Ratelimit({
     prefix: "vipfades:cancellation-lookup",
 });
 
+export const cancellationRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(3, "10 m"),
+    prefix: "vipfades:cancellation",
+});
+
 export function getClientIdentifier(headers: Headers): string {
     const forwardedFor = headers.get("x-forwarded-for");
 

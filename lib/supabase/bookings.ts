@@ -44,6 +44,21 @@ export type CreatedBooking = {
     google_calendar_event_id: string | null;
 };
 
+export type DashboardBooking = {
+    id: string;
+    barber_id: string;
+    barber_name: string;
+    service_id: string;
+    service_name: string;
+    service_price: number;
+    customer_name: string;
+    customer_phone: string;
+    booking_date: string;
+    start_time: string;
+    end_time: string;
+    status: string;
+};
+
 export async function getBookingsByBarberAndDate(
     barberId: string,
     bookingDate: string
@@ -129,6 +144,133 @@ export async function getUpcomingBookingsByPhone(
     }
 
     return data ?? [];
+}
+
+export async function getDashboardBookings(
+    fromDate: string
+): Promise<DashboardBooking[]> {
+    const [
+        bookingsResult,
+        barbersResult,
+        servicesResult,
+    ] = await Promise.all([
+        supabaseServer
+            .from("bookings")
+            .select(
+                `
+                id,
+                barber_id,
+                service_id,
+                customer_name,
+                customer_phone,
+                booking_date,
+                start_time,
+                end_time,
+                status
+                `
+            )
+            .eq("status", "booked")
+            .gte("booking_date", fromDate)
+            .order("booking_date", {
+                ascending: true,
+            })
+            .order("start_time", {
+                ascending: true,
+            }),
+
+        supabaseServer
+            .from("barbers")
+            .select(
+                "id, name"
+            ),
+
+        supabaseServer
+            .from("services")
+            .select(
+                "id, name, price"
+            ),
+    ]);
+
+    if (bookingsResult.error) {
+        throw new Error(
+            `Failed to fetch dashboard bookings: ${bookingsResult.error.message}`
+        );
+    }
+
+    if (barbersResult.error) {
+        throw new Error(
+            `Failed to fetch dashboard barbers: ${barbersResult.error.message}`
+        );
+    }
+
+    if (servicesResult.error) {
+        throw new Error(
+            `Failed to fetch dashboard services: ${servicesResult.error.message}`
+        );
+    }
+
+    const barbersById =
+        new Map(
+            (barbersResult.data ?? []).map(
+                (barber) => [
+                    barber.id,
+                    barber.name,
+                ]
+            )
+        );
+
+    const servicesById =
+        new Map(
+            (servicesResult.data ?? []).map(
+                (service) => [
+                    service.id,
+                    {
+                        name: service.name,
+                        price: Number(
+                            service.price
+                        ),
+                    },
+                ]
+            )
+        );
+
+    return (
+        bookingsResult.data ?? []
+    ).map((booking) => {
+        const service =
+            servicesById.get(
+                booking.service_id
+            );
+
+        return {
+            id: booking.id,
+            barber_id:
+                booking.barber_id,
+            barber_name:
+                barbersById.get(
+                    booking.barber_id
+                ) ?? "Unknown barber",
+            service_id:
+                booking.service_id,
+            service_name:
+                service?.name ??
+                "Unknown service",
+            service_price:
+                service?.price ?? 0,
+            customer_name:
+                booking.customer_name,
+            customer_phone:
+                booking.customer_phone,
+            booking_date:
+                booking.booking_date,
+            start_time:
+                booking.start_time,
+            end_time:
+                booking.end_time,
+            status:
+                booking.status,
+        };
+    });
 }
 
 export async function createBooking(

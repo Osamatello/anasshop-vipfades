@@ -64,30 +64,72 @@ export function useCatalog() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        let cancelled = false;
+
+        const wait = (ms: number) =>
+            new Promise((resolve) => setTimeout(resolve, ms));
+
+        async function fetchCatalog() {
+            const response = await fetch(
+                `/api/catalog?_=${Date.now()}`,
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    },
+                },
+            );
+
+            const data = (await response.json()) as CatalogResponse;
+
+            if (
+                !response.ok ||
+                !data.success ||
+                !data.barbers ||
+                !data.services
+            ) {
+                throw new Error(
+                    data.error || 'Failed to load booking catalog.',
+                );
+            }
+
+            return data;
+        }
+
         async function loadCatalog() {
             try {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetch('/api/catalog', {
-                    method: 'GET',
-                    cache: 'no-store',
-                });
+                let lastError: unknown;
 
-                const data = (await response.json()) as CatalogResponse;
+                for (let attempt = 0; attempt < 3; attempt += 1) {
+                    try {
+                        const data = await fetchCatalog();
 
-                if (
-                    !response.ok ||
-                    !data.success ||
-                    !data.barbers ||
-                    !data.services
-                ) {
-                    throw new Error(data.error || 'Failed to load booking catalog.');
+                        if (cancelled) {
+                            return;
+                        }
+
+                        setBarbers(data.barbers!.map(mapBarber));
+                        setServices(data.services!.map(mapService));
+                        return;
+                    } catch (catalogError) {
+                        lastError = catalogError;
+
+                        if (attempt < 2) {
+                            await wait(750 * (attempt + 1));
+                        }
+                    }
                 }
 
-                setBarbers(data.barbers.map(mapBarber));
-                setServices(data.services.map(mapService));
+                throw lastError;
             } catch (catalogError) {
+                if (cancelled) {
+                    return;
+                }
+
                 const message =
                     catalogError instanceof Error
                         ? catalogError.message
@@ -97,11 +139,17 @@ export function useCatalog() {
                 setBarbers([]);
                 setServices([]);
             } finally {
-                setLoading(false);
+                if (!cancelled) {
+                    setLoading(false);
+                }
             }
         }
 
         loadCatalog();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     return {

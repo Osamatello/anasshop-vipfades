@@ -7,6 +7,7 @@ import {
 } from "@/lib/supabase/bookings";
 
 import { getServiceById } from "@/lib/supabase/services";
+import { getAvailableSlots } from "@/lib/services/availability";
 
 import { createGoogleCalendarEvent } from "@/lib/google/calendar";
 
@@ -284,9 +285,37 @@ export async function POST(
         }
 
 
+        const normalizedStartTime =
+            startTime.slice(0, 5);
+
+        const availableSlots =
+            await getAvailableSlots(
+                barberId,
+                serviceId,
+                bookingDate
+            );
+
+        if (
+            !availableSlots.includes(
+                normalizedStartTime
+            )
+        ) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error:
+                        "This appointment time is not available. Please choose another available time.",
+                },
+                {
+                    status: 409,
+                }
+            );
+        }
+
+
         const endTime =
             addMinutesToTime(
-                startTime,
+                normalizedStartTime,
                 service.duration_minutes
             );
 
@@ -300,7 +329,7 @@ export async function POST(
 
         const newStart =
             timeToMinutes(
-                startTime
+                normalizedStartTime
             );
 
         const newEnd =
@@ -355,7 +384,8 @@ export async function POST(
                 customerPhone:
                     phoneValidation.value,
                 bookingDate,
-                startTime,
+                startTime:
+                    normalizedStartTime,
                 endTime,
             });
 
@@ -380,7 +410,8 @@ export async function POST(
                         customerPhone:
                             phoneValidation.value,
                         bookingDate,
-                        startTime,
+                        startTime:
+                            normalizedStartTime,
                         endTime,
                     }
                 );

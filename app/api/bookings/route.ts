@@ -412,7 +412,8 @@ export async function POST(
                         bookingDate,
                         startTime:
                             normalizedStartTime,
-                        endTime,
+                        durationMinutes:
+                            service.duration_minutes,
                     }
                 );
 

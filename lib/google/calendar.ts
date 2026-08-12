@@ -22,7 +22,7 @@ type CreateCalendarEventInput = {
     customerPhone: string;
     bookingDate: string;
     startTime: string;
-    endTime: string;
+    durationMinutes: number;
 };
 
 type DeleteCalendarEventInput = {
@@ -111,21 +111,24 @@ export async function createGoogleCalendarEvent(
             input.startTime
         );
 
-    const endDate =
-        koblenzLocalDateTimeToUtc(
-            input.bookingDate,
-            input.endTime
-        );
-
     if (
         Number.isNaN(startDate.getTime()) ||
-        Number.isNaN(endDate.getTime()) ||
-        endDate <= startDate
+        !Number.isFinite(input.durationMinutes) ||
+        input.durationMinutes <= 0
     ) {
         throw new Error(
-            "Invalid Google Calendar event start or end time."
+            "Invalid Google Calendar event start time or duration."
         );
     }
+
+    // Derive the event end directly from the validated service duration.
+    // This guarantees Google Calendar always receives exactly the same
+    // appointment duration as the service, without a second timezone conversion.
+    const endDate =
+        new Date(
+            startDate.getTime() +
+            input.durationMinutes * 60_000
+        );
 
     const response =
         await calendar.events.insert({

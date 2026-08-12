@@ -3,6 +3,14 @@ import LoginForm from './LoginForm';
 export const metadata = {
     title:
         'Staff Login | VIP FADES',
+    robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+            index: false,
+            follow: false,
+        },
+    },
 };
 
 export default function DashboardLoginPage() {

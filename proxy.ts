@@ -28,9 +28,22 @@ export async function proxy(
 
     if (
         !supabaseUrl ||
-        !supabaseAnonKey
+        !supabaseAnonKey ||
+        !dashboardAdminEmail
     ) {
-        return response;
+        console.error(
+            "Dashboard authentication is not configured correctly."
+        );
+
+        const url =
+            request.nextUrl.clone();
+
+        url.pathname =
+            "/";
+
+        return NextResponse.redirect(
+            url
+        );
     }
 
     const supabase =

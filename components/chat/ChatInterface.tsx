@@ -30,6 +30,10 @@ import {
 
 import type { BookingDraft, Msg, Step } from './types';
 
+import {
+  getBarberDayOff,
+} from '@/lib/booking/barberSchedule';
+
 
 let idCounter = 0;
 
@@ -151,9 +155,6 @@ export default function ChatInterface({
 
     pushBot(
       `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge. I can help you choose your service, find your preferred barber, and reserve the best available time. How can I help you today?`,
-      {
-        chips: QUICK_ACTIONS.map((action) => action.label),
-      },
     );
 
     return () => {
@@ -209,7 +210,9 @@ export default function ChatInterface({
     return `${year}-${month}-${day}`;
   };
 
-  const dateOptions = () => {
+  const dateOptions = (
+    barber?: BookingDraft['barber'],
+  ) => {
     const todayValue = getKoblenzDateValue();
     const [year, month, day] = todayValue.split('-').map(Number);
 
@@ -229,15 +232,21 @@ export default function ChatInterface({
       if (weekday >= 1 && weekday <= 4) {
         const value = formatUtcDate(cursor);
 
-        const label = new Intl.DateTimeFormat('en-GB', {
+        const baseLabel = new Intl.DateTimeFormat('en-GB', {
           weekday: 'short',
           day: 'numeric',
           month: 'numeric',
           timeZone: 'UTC',
         }).format(cursor);
 
+        const dayOff = barber
+          ? getBarberDayOff(barber.id, value)
+          : null;
+
         options.push({
-          label,
+          label: dayOff
+            ? `${baseLabel} · ${barber?.name ?? dayOff.barberName} off`
+            : baseLabel,
           value,
         });
       }
@@ -490,6 +499,37 @@ export default function ChatInterface({
       pushUser(date);
     }
 
+    const barberDayOff =
+      getBarberDayOff(
+        barber.id,
+        date,
+      );
+
+    if (barberDayOff) {
+      setDraft((currentDraft) => ({
+        ...currentDraft,
+        service,
+        barber,
+        date: undefined,
+        time: undefined,
+        name: undefined,
+        phone: undefined,
+      }));
+
+      resetAvailability();
+      setStep('pickDate');
+
+      pushBot(
+        `${barber.name} is off every ${barberDayOff.weekdayName}, so appointments with ${barber.name} aren’t available that day. Please choose another day:`,
+        {
+          options: dateOptions(barber),
+          chips: ['Back'],
+        },
+      );
+
+      return;
+    }
+
     if (isPastInKoblenz(date)) {
       setDraft((currentDraft) => ({
         ...currentDraft,
@@ -507,7 +547,7 @@ export default function ChatInterface({
       pushBot(
         'That date has already passed. Please choose one of the available booking days:',
         {
-          options: dateOptions(),
+          options: dateOptions(barber),
           chips: ['Back'],
         },
       );
@@ -662,7 +702,7 @@ export default function ChatInterface({
             preference.specificDate,
           )} isn’t available for online booking. Here are the next available booking days:`,
           {
-            options: dateOptions(),
+            options: dateOptions(barber),
             chips: ['Back'],
           },
         );
@@ -683,7 +723,7 @@ export default function ChatInterface({
             ? 'Today isn’t available for online appointments. Here are the next available booking days:'
             : 'Tomorrow isn’t available for online appointments. Here are the next available booking days:',
           {
-            options: dateOptions(),
+            options: dateOptions(barber),
             chips: ['Back'],
           },
         );
@@ -702,7 +742,7 @@ export default function ChatInterface({
         pushBot(
           `${preference.weekday} isn’t one of the currently available online booking days. Here are the next available options:`,
           {
-            options: dateOptions(),
+            options: dateOptions(barber),
             chips: ['Back'],
           },
         );
@@ -717,7 +757,7 @@ export default function ChatInterface({
       pushBot(
         `Perfect. You’ll be with ${barber.name}. Which day would you prefer?`,
         {
-          options: dateOptions(),
+          options: dateOptions(barber),
           chips: ['Back'],
         },
       );
@@ -900,9 +940,6 @@ export default function ChatInterface({
 
         pushBot(
           'I couldn’t find any upcoming appointments with that phone number. Please check the number or contact us if you need help.',
-          {
-            chips: QUICK_ACTIONS.map((action) => action.label),
-          },
         );
         return;
       }
@@ -1007,9 +1044,6 @@ export default function ChatInterface({
 
       pushBot(
         'Your appointment has been cancelled successfully.',
-        {
-          chips: QUICK_ACTIONS.map((action) => action.label),
-        },
       );
     } catch (error) {
       console.error('Cancellation error:', error);
@@ -1033,9 +1067,7 @@ export default function ChatInterface({
       setSelectedCancellationBookingId(null);
       setStep('welcome');
 
-      pushBot('No problem. What would you like to do?', {
-        chips: QUICK_ACTIONS.map((action) => action.label),
-      });
+      pushBot('No problem. What would you like to do?');
 
       return;
     }
@@ -1095,9 +1127,7 @@ export default function ChatInterface({
       resetAvailability();
       setStep('welcome');
 
-      pushBot('Of course. What would you like to do?', {
-        chips: QUICK_ACTIONS.map((action) => action.label),
-      });
+      pushBot('Of course. What would you like to do?');
 
       return;
     }
@@ -1108,9 +1138,7 @@ export default function ChatInterface({
       resetAvailability();
       setStep('welcome');
 
-      pushBot('No problem. What would you like to do?', {
-        chips: QUICK_ACTIONS.map((action) => action.label),
-      });
+      pushBot('No problem. What would you like to do?');
 
       return;
     }
@@ -1171,7 +1199,7 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot('Of course. Let’s choose another day.', {
-        options: dateOptions(),
+        options: dateOptions(draft.barber),
         chips: ['Back'],
       });
 
@@ -1216,7 +1244,7 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot('No problem. Let’s choose your day again.', {
-        options: dateOptions(),
+        options: dateOptions(draft.barber),
         chips: ['Back'],
       });
 
@@ -1254,9 +1282,7 @@ export default function ChatInterface({
       return;
     }
 
-    pushBot('You’re already at the beginning.', {
-      chips: QUICK_ACTIONS.map((action) => action.label),
-    });
+    pushBot('You’re already at the beginning.');
 
     setStep('welcome');
   };
@@ -1559,9 +1585,6 @@ export default function ChatInterface({
 
       pushBot(
         `You're all set.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe look forward to seeing you at ${BUSINESS.address}. If you need us before your appointment, you can reach us at ${BUSINESS.phoneFormatted}.`,
-        {
-          chips: ['Book another', 'View prices'],
-        },
       );
 
       onBooked?.(draft);
@@ -1585,9 +1608,7 @@ export default function ChatInterface({
     setStep('welcome');
     pushUser('Start over');
 
-    pushBot('Of course. Let’s start fresh. What would you like to do?', {
-      chips: QUICK_ACTIONS.map((action) => action.label),
-    });
+    pushBot('Of course. Let’s start fresh. What would you like to do?');
   };
 
   const handleSmallTalk = (
@@ -1943,9 +1964,6 @@ export default function ChatInterface({
 
     pushBot(
       "I’m not quite sure what you mean. Choose one of the options below and I’ll guide you from there.",
-      {
-        chips: QUICK_ACTIONS.map((action) => action.label),
-      },
     );
 
     setStep('welcome');
@@ -2025,7 +2043,7 @@ export default function ChatInterface({
       </div>
 
       {/* Quick actions */}
-      {step === 'welcome' && (
+      {(step === 'welcome' || step === 'done') && (
         <div className="border-t border-brand-border/40 px-4 pb-3 pt-3">
           <div className="grid grid-cols-2 gap-2">
             {QUICK_ACTIONS.map((action) => {

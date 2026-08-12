@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAvailableSlots } from "@/lib/services/availability";
+import { getBarberDayOff } from "@/lib/booking/barberSchedule";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,22 @@ export async function GET(request: NextRequest) {
                 },
                 { status: 400 }
             );
+        }
+
+        const barberDayOff =
+            getBarberDayOff(
+                barberId,
+                date
+            );
+
+        if (barberDayOff) {
+            return NextResponse.json({
+                success: true,
+                slots: [],
+                unavailableReason: "barber_off",
+                message:
+                    `${barberDayOff.barberName} is off every ${barberDayOff.weekdayName}.`,
+            });
         }
 
         const slots = await getAvailableSlots(

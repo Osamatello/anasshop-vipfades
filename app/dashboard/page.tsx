@@ -225,7 +225,7 @@ const getBarberVisual = (
 
 export default async function DashboardPage() {
     const supabase =
-        createAuthServerClient();
+        await createAuthServerClient();
 
     const {
         data: {

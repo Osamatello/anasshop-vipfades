@@ -27,9 +27,9 @@ export async function POST(
     {
         params,
     }: {
-        params: {
+        params: Promise<{
             id: string;
-        };
+        }>;
     }
 ) {
     try {
@@ -68,8 +68,10 @@ export async function POST(
         }
 
 
-        const bookingId =
-            params.id;
+        const {
+            id: bookingId,
+        } =
+            await params;
 
 
         if (

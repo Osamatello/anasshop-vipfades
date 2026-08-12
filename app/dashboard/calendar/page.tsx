@@ -139,12 +139,12 @@ const getMonthHref = (
 export default async function CalendarPage({
     searchParams,
 }: {
-    searchParams?: {
+    searchParams?: Promise<{
         month?: string;
-    };
+    }>;
 }) {
     const supabase =
-        createAuthServerClient();
+        await createAuthServerClient();
 
     const {
         data: { user },
@@ -161,12 +161,15 @@ export default async function CalendarPage({
     const bookings =
         await getDashboardBookings(today);
 
+    const resolvedSearchParams =
+        await searchParams;
+
     const {
         year,
         month,
     } =
         parseMonth(
-            searchParams?.month,
+            resolvedSearchParams?.month,
             today,
         );
 
@@ -390,15 +393,15 @@ export default async function CalendarPage({
                                             <div
                                                 key={date}
                                                 className={`min-h-[105px] border-b border-r border-white/[0.07] p-1.5 sm:min-h-[145px] sm:p-2 xl:min-h-[165px] ${isToday
-                                                        ? 'bg-[#d6a94e]/[0.045]'
-                                                        : 'bg-[#0f1013]'
+                                                    ? 'bg-[#d6a94e]/[0.045]'
+                                                    : 'bg-[#0f1013]'
                                                     }`}
                                             >
                                                 <div className="mb-2 flex items-center justify-between">
                                                     <span
                                                         className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold sm:h-8 sm:w-8 sm:text-sm ${isToday
-                                                                ? 'bg-[#e7c57c] text-[#111214]'
-                                                                : 'text-white/75'
+                                                            ? 'bg-[#e7c57c] text-[#111214]'
+                                                            : 'text-white/75'
                                                             }`}
                                                     >
                                                         {dayNumber}
@@ -482,8 +485,8 @@ function SidebarLink({
         <Link
             href={href}
             className={`flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm transition ${active
-                    ? 'border border-white/10 bg-white/[0.055] text-[#e7c57c]'
-                    : 'text-white/70 hover:bg-white/[0.04] hover:text-white'
+                ? 'border border-white/10 bg-white/[0.055] text-[#e7c57c]'
+                : 'text-white/70 hover:bg-white/[0.04] hover:text-white'
                 }`}
         >
             <Icon className="h-4 w-4" />

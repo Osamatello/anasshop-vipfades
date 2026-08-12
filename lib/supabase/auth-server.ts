@@ -3,7 +3,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-export function createAuthServerClient() {
+export async function createAuthServerClient() {
     const supabaseUrl =
         process.env.NEXT_PUBLIC_SUPABASE_URL;
 
@@ -23,7 +23,7 @@ export function createAuthServerClient() {
     }
 
     const cookieStore =
-        cookies();
+        await cookies();
 
     return createServerClient(
         supabaseUrl,

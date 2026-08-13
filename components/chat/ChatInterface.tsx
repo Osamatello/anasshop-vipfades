@@ -906,7 +906,7 @@ export default function ChatInterface({
             `• ${service.name}: €${service.price}${service.duration ? ` (${service.duration} Min.)` : ''
             }`,
         )
-        .join('\n')}\n\nIf you’re ready, I can take you straight into booking.`,
+        .join('\n')}\n\nWenn du möchtest, können wir direkt mit der Buchung starten.`,
       {
         chips: ['Jetzt buchen', 'Barber wählen'],
       },
@@ -1023,15 +1023,25 @@ export default function ChatInterface({
           options: data.bookings.map(
             (booking: {
               id: string;
+              barberId: string;
+              serviceId: string;
               barberName: string;
               serviceName: string;
               bookingDate: string;
               startTime: string;
-            }) => ({
-              label: `${booking.serviceName} with ${booking.barberName}`,
-              value: booking.id,
-              sub: `${booking.bookingDate} · ${booking.startTime}`,
-            }),
+            }) => {
+              const localizedService =
+                services.find(
+                  (service) =>
+                    service.id === booking.serviceId,
+                );
+
+              return {
+                label: `${localizedService?.name ?? booking.serviceName} bei ${booking.barberName}`,
+                value: booking.id,
+                sub: `${booking.bookingDate} · ${booking.startTime}`,
+              };
+            },
           ),
           chips: ['Zurück'],
         },
@@ -1164,7 +1174,7 @@ export default function ChatInterface({
           const service = services.find((item) => item.id === booking.serviceId);
 
           return {
-            label: `${service?.name ?? 'Termin'} with ${barber?.name ?? 'deinem Barber'}`,
+            label: `${service?.name ?? 'Termin'} bei ${barber?.name ?? 'deinem Barber'}`,
             value: booking.id,
             sub: `${booking.bookingDate} · ${booking.startTime}`,
           };
@@ -2062,11 +2072,11 @@ export default function ChatInterface({
 
         <div className="flex-1">
           <p className="font-serif text-lg leading-none text-brand-textPrimary">
-            Grooming Concierge
+            Buchungsassistent
           </p>
 
           <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.18em] text-brand-cream">
-            Online · AI Powered
+            Online · KI-gestützt
           </p>
         </div>
 
@@ -2250,7 +2260,7 @@ function MessageBubble({
 
             <div className="mt-3 flex items-center justify-between border-t border-brand-border pt-3">
               <span className="text-xs uppercase tracking-[0.18em] text-brand-textSecondary">
-                Total
+                Gesamt
               </span>
 
               <span className="font-serif text-xl text-brand-cream">

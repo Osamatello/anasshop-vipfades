@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 
-const SITE_URL = 'https://anasshop-vipfades-ismb.vercel.app';
+const SITE_URL = 'https://vip-fades.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,12 +24,7 @@ export const metadata: Metadata = {
     'Premium Barbershop',
   ],
 
-  authors: [
-    {
-      name: 'VIP FADES BY ANAS',
-    },
-  ],
-
+  authors: [{ name: 'VIP FADES BY ANAS' }],
   creator: 'VIP FADES BY ANAS',
   publisher: 'VIP FADES BY ANAS',
 
@@ -40,6 +35,10 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
     },
+  },
+
+  alternates: {
+    canonical: SITE_URL,
   },
 
   icons: {
@@ -53,12 +52,9 @@ export const metadata: Metadata = {
     locale: 'de_DE',
     url: SITE_URL,
     siteName: 'VIP FADES BY ANAS',
-
     title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
-
     description:
       'Premium cuts, clean fades and beard grooming in Koblenz. Book your appointment online with Anas or Abd.',
-
     images: [
       {
         url: '/images/og-image.png',
@@ -72,12 +68,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-
     title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
-
     description:
       'Premium cuts, clean fades and beard grooming in Koblenz.',
-
     images: ['/images/og-image.png'],
   },
 };

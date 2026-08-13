@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const SITE_URL = 'https://vip-fades.com';
 
@@ -86,6 +87,7 @@ export default function RootLayout({
       <body>
         {children}
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

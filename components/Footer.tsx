@@ -89,7 +89,7 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
-              Explore
+              Entdecken
             </p>
 
             <ul className="mt-5 space-y-3">
@@ -110,7 +110,7 @@ export default function Footer() {
           {/* Visit information */}
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
-              Visit
+              Besuch
             </p>
 
             <p className="mt-5 text-sm font-light leading-relaxed text-brand-textPrimary/80">

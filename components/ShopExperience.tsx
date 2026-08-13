@@ -70,7 +70,7 @@ export default function ShopExperience() {
               </div>
 
               <p className="mt-8 text-sm font-light leading-relaxed text-brand-textPrimary/70">
-                Online appointments are available Montag bis Donnerstag only.
+                Online-Termine sind ausschließlich von Montag bis Donnerstag verfügbar.
               </p>
             </div>
           </div>

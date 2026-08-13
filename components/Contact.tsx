@@ -22,7 +22,7 @@ export default function Contact() {
 
           <h2 className="font-serif font-light tracking-tight">
             <span className="block text-3xl text-brand-textPrimary sm:text-4xl lg:text-5xl">
-              Visit
+              Besuch uns bei
             </span>
 
             <span className="mt-2 block text-5xl text-brand-cream sm:text-6xl lg:text-7xl">

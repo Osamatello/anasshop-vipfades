@@ -82,18 +82,22 @@ const findService = (
     }
 
     const wantsHaircut =
+        normalizedInput.includes('haarschnitt') ||
+        normalizedInput.includes('haare schneiden') ||
         normalizedInput.includes('haircut') ||
         normalizedInput.includes('hair cut');
 
-    const wantsBeard = normalizedInput.includes('beard');
+    const wantsBeard =
+        normalizedInput.includes('bart') ||
+        normalizedInput.includes('beard');
 
     if (wantsHaircut && !wantsBeard) {
         return services.find((service) => {
             const normalizedName = normalizeText(service.name);
 
             return (
-                normalizedName.includes('haircut') &&
-                !normalizedName.includes('beard')
+                normalizedName.includes('haarschnitt') &&
+                !normalizedName.includes('bart')
             );
         });
     }
@@ -103,8 +107,8 @@ const findService = (
             const normalizedName = normalizeText(service.name);
 
             return (
-                normalizedName.includes('beard') &&
-                !normalizedName.includes('haircut')
+                normalizedName.includes('bart') &&
+                !normalizedName.includes('haarschnitt')
             );
         });
     }
@@ -114,8 +118,8 @@ const findService = (
             const normalizedName = normalizeText(service.name);
 
             return (
-                normalizedName.includes('haircut') &&
-                normalizedName.includes('beard')
+                normalizedName.includes('haarschnitt') &&
+                normalizedName.includes('bart')
             );
         });
     }
@@ -126,11 +130,17 @@ const findService = (
 const findRelativeDate = (
     normalizedInput: string,
 ): ParsedBookingIntent['relativeDate'] => {
-    if (normalizedInput.includes('tomorrow')) {
+    if (
+        normalizedInput.includes('morgen') ||
+        normalizedInput.includes('tomorrow')
+    ) {
         return 'tomorrow';
     }
 
-    if (normalizedInput.includes('today')) {
+    if (
+        normalizedInput.includes('heute') ||
+        normalizedInput.includes('today')
+    ) {
         return 'today';
     }
 
@@ -178,33 +188,47 @@ const findSpecificDate = (
 const findWeekday = (
     normalizedInput: string,
 ): ParsedBookingIntent['weekday'] => {
-    const weekdays: Weekday[] = [
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-        'sunday',
-    ];
+    const weekdays: {
+        value: Weekday;
+        labels: string[];
+    }[] = [
+            { value: 'monday', labels: ['montag', 'monday'] },
+            { value: 'tuesday', labels: ['dienstag', 'tuesday'] },
+            { value: 'wednesday', labels: ['mittwoch', 'wednesday'] },
+            { value: 'thursday', labels: ['donnerstag', 'thursday'] },
+            { value: 'friday', labels: ['freitag', 'friday'] },
+            { value: 'saturday', labels: ['samstag', 'saturday'] },
+            { value: 'sunday', labels: ['sonntag', 'sunday'] },
+        ];
 
-    return weekdays.find((weekday) =>
-        normalizedInput.includes(weekday),
-    );
+    return weekdays.find(({ labels }) =>
+        labels.some((label) =>
+            normalizedInput.includes(label),
+        ),
+    )?.value;
 };
 
 const findTimeOfDay = (
     normalizedInput: string,
 ): ParsedBookingIntent['timeOfDay'] => {
-    if (normalizedInput.includes('morning')) {
+    if (
+        normalizedInput.includes('morgen') ||
+        normalizedInput.includes('vormittag') ||
+        normalizedInput.includes('morning')
+    ) {
         return 'morning';
     }
 
-    if (normalizedInput.includes('afternoon')) {
+    if (
+        normalizedInput.includes('nachmittag') ||
+        normalizedInput.includes('afternoon')
+    ) {
         return 'afternoon';
     }
 
     if (
+        normalizedInput.includes('abend') ||
+        normalizedInput.includes('heute abend') ||
         normalizedInput.includes('evening') ||
         normalizedInput.includes('tonight')
     ) {
@@ -218,6 +242,10 @@ const findSlotPreference = (
     normalizedInput: string,
 ): ParsedBookingIntent['slotPreference'] => {
     if (
+        normalizedInput.includes('letzter termin') ||
+        normalizedInput.includes('spätester termin') ||
+        normalizedInput.includes('spaetester termin') ||
+        normalizedInput.includes('letzter slot') ||
         normalizedInput.includes('last appointment') ||
         normalizedInput.includes('latest appointment') ||
         normalizedInput.includes('last slot') ||
@@ -228,6 +256,10 @@ const findSlotPreference = (
     }
 
     if (
+        normalizedInput.includes('erster termin') ||
+        normalizedInput.includes('frühester termin') ||
+        normalizedInput.includes('fruehester termin') ||
+        normalizedInput.includes('erster slot') ||
         normalizedInput.includes('first appointment') ||
         normalizedInput.includes('earliest appointment') ||
         normalizedInput.includes('first slot') ||
@@ -247,6 +279,13 @@ const findChangeIntent = (
     hasTime: boolean,
 ): ParsedBookingIntent['changeIntent'] => {
     const hasChangeLanguage =
+        normalizedInput.includes('ändern') ||
+        normalizedInput.includes('aendern') ||
+        normalizedInput.includes('wechseln') ||
+        normalizedInput.includes('stattdessen') ||
+        normalizedInput.includes('doch') ||
+        normalizedInput.includes('lieber') ||
+        normalizedInput.includes('anders') ||
         normalizedInput.includes('change') ||
         normalizedInput.includes('switch') ||
         normalizedInput.includes('instead') ||
@@ -273,6 +312,9 @@ const findSmallTalk = (
     normalizedInput: string,
 ): ParsedBookingIntent['smallTalk'] => {
     if (
+        normalizedInput.includes('wie geht es dir') ||
+        normalizedInput.includes('wie gehts') ||
+        normalizedInput.includes('alles gut') ||
         normalizedInput.includes('how are you') ||
         normalizedInput.includes('howre you') ||
         normalizedInput.includes('how you doing') ||
@@ -282,6 +324,10 @@ const findSmallTalk = (
     }
 
     if (
+        normalizedInput === 'danke' ||
+        normalizedInput === 'dankeschön' ||
+        normalizedInput === 'dankeschoen' ||
+        normalizedInput === 'vielen dank' ||
         normalizedInput === 'thanks' ||
         normalizedInput === 'thank you' ||
         normalizedInput === 'thank u' ||
@@ -292,6 +338,11 @@ const findSmallTalk = (
     }
 
     if (
+        normalizedInput === 'tschüss' ||
+        normalizedInput === 'tschuess' ||
+        normalizedInput === 'ciao' ||
+        normalizedInput === 'bis später' ||
+        normalizedInput === 'bis spaeter' ||
         normalizedInput === 'bye' ||
         normalizedInput === 'goodbye' ||
         normalizedInput === 'see you' ||
@@ -302,14 +353,19 @@ const findSmallTalk = (
 
     if (
         normalizedInput === 'hi' ||
-        normalizedInput === 'hello' ||
+        normalizedInput === 'hallo' ||
         normalizedInput === 'hey' ||
+        normalizedInput === 'guten morgen' ||
+        normalizedInput === 'guten tag' ||
+        normalizedInput === 'guten abend' ||
+        normalizedInput === 'hello' ||
         normalizedInput === 'good morning' ||
         normalizedInput === 'good afternoon' ||
         normalizedInput === 'good evening' ||
         normalizedInput.startsWith('hi ') ||
-        normalizedInput.startsWith('hello ') ||
-        normalizedInput.startsWith('hey ')
+        normalizedInput.startsWith('hallo ') ||
+        normalizedInput.startsWith('hey ') ||
+        normalizedInput.startsWith('hello ')
     ) {
         return 'greeting';
     }
@@ -361,6 +417,10 @@ export function parseBookingIntent(
         );
 
     const wantsBooking =
+        normalizedInput.includes('buchen') ||
+        normalizedInput.includes('buchung') ||
+        normalizedInput.includes('termin') ||
+        normalizedInput.includes('reservieren') ||
         normalizedInput.includes('book') ||
         normalizedInput.includes('booking') ||
         normalizedInput.includes('appointment') ||

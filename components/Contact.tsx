@@ -17,7 +17,7 @@ export default function Contact() {
         {/* Section heading */}
         <div className="mb-14 text-center">
           <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            Visit Us
+            Besuch uns
           </span>
 
           <h2 className="font-serif font-light tracking-tight">
@@ -33,8 +33,8 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mt-8 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Visit us in the heart of Koblenz. Walk in any day or book your
-            appointment online Monday to Thursday.
+            Besuch uns im Herzen von Koblenz. Komm jederzeit spontan vorbei oder buche
+            deinen Termin online von Montag bis Donnerstag.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ export default function Contact() {
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ContactCard
             icon={MapPin}
-            label="Address"
+            label="Adresse"
             lines={[BUSINESS.address]}
             href={directionsUrl}
             external
@@ -50,18 +50,18 @@ export default function Contact() {
 
           <ContactCard
             icon={Phone}
-            label="Phone"
+            label="Telefon"
             lines={[BUSINESS.phoneFormatted]}
             href={`tel:${BUSINESS.phone}`}
           />
 
           <ContactCard
             icon={Clock}
-            label="Online Appointments"
+            label="Online-Termine"
             lines={[
-              'Monday to Thursday',
+              'Montag bis Donnerstag',
               '10:00 – 19:00',
-              'Walk-ins Welcome Every Day',
+              'Walk-ins täglich willkommen',
             ]}
           />
 
@@ -70,7 +70,7 @@ export default function Contact() {
             label="Instagram"
             lines={[
               BUSINESS.instagram,
-              'Follow our latest cuts',
+              'Entdecke unsere neuesten Cuts',
             ]}
             href={BUSINESS.instagramUrl}
             external
@@ -81,7 +81,7 @@ export default function Contact() {
         <div className="reveal reveal-delay-4 mt-12 flex flex-col items-center">
           <div className="group w-full overflow-hidden rounded-2xl border border-brand-border shadow-lg transition-all duration-300 hover:border-brand-cream/45 hover:shadow-[0_18px_50px_rgba(232,220,200,0.08)]">
             <iframe
-              title="VIP FADES location map"
+              title="Standort von VIP FADES"
               src={`https://maps.google.com/maps?q=${encodeURIComponent(
                 BUSINESS.address,
               )}&output=embed`}
@@ -98,7 +98,7 @@ export default function Contact() {
             className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
           >
             <MapPin className="h-4 w-4" />
-            Get Directions
+            Route anzeigen
           </a>
         </div>
       </div>

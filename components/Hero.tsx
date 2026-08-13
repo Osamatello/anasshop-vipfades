@@ -19,7 +19,7 @@ export default function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <img
           src="/images/ChatGPT_Image_Aug_4,_2026,_09_39_47_AM.png"
-          alt="VIP FADES barbershop interior"
+          alt="Innenbereich des VIP FADES Barbershops"
           className="h-full w-full animate-subtle-zoom object-cover"
         />
 
@@ -61,15 +61,15 @@ export default function Hero() {
               className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
             >
               <Scissors className="h-4 w-4" />
-              Book Appointment
+              Termin buchen
             </Link>
 
             <div className="mt-8 text-center">
               <p className="font-serif text-2xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
-                YOUR TIME. YOUR CHAIR.
+                DEINE ZEIT. DEIN STUHL.
               </p>
               <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/75 sm:text-base">
-                From the first consultation to the final mirror check.
+                Von der ersten Beratung bis zum letzten Blick in den Spiegel.
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function Hero() {
         type="button"
         onClick={() => scrollToSection('#services')}
         className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-brand-cream/70 transition-colors hover:text-brand-cream"
-        aria-label="Scroll to services"
+        aria-label="Zu den Leistungen scrollen"
       >
         <ArrowDown className="h-5 w-5 animate-bounce" />
       </button>

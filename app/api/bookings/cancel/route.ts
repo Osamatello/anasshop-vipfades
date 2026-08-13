@@ -30,7 +30,7 @@ export async function GET(
                 {
                     success: false,
                     error:
-                        "Too many cancellation lookup attempts. Please wait a few minutes and try again.",
+                        "Zu viele Suchversuche. Bitte warte ein paar Minuten und versuche es erneut.",
                 },
                 {
                     status: 429,
@@ -107,7 +107,7 @@ export async function GET(
 
                             serviceName:
                                 service?.name ??
-                                "Appointment",
+                                "Termin",
 
                             bookingDate:
                                 booking.booking_date,
@@ -136,7 +136,7 @@ export async function GET(
             {
                 success: false,
                 error:
-                    "Failed to find bookings.",
+                    "Termine konnten nicht gefunden werden.",
             },
             {
                 status: 500,

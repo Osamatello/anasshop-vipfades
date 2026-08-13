@@ -45,7 +45,7 @@ const ABD_BARBER_ID =
     'd115a860-db00-4904-a906-5c67478cf6d2';
 
 const WORKING_HOURS = '10:00 - 19:00';
-const WORKING_DAYS = 'Mon - Thu';
+const WORKING_DAYS = 'Mo - Do';
 const ACTIVE_SERVICES = 7;
 
 const formatTime = (value: string) =>
@@ -72,7 +72,7 @@ const formatDate = (
         parseDate(value);
 
     return new Intl.DateTimeFormat(
-        'en-GB',
+        'de-DE',
         options ?? {
             weekday: 'short',
             day: '2-digit',
@@ -85,7 +85,7 @@ const formatDate = (
 const getGreeting = () => {
     const hour = Number(
         new Intl.DateTimeFormat(
-            'en-GB',
+            'de-DE',
             {
                 timeZone:
                     'Europe/Berlin',
@@ -100,14 +100,14 @@ const getGreeting = () => {
     );
 
     if (hour < 12) {
-        return 'Good morning';
+        return 'Guten Morgen';
     }
 
     if (hour < 18) {
-        return 'Good afternoon';
+        return 'Guten Tag';
     }
 
-    return 'Good evening';
+    return 'Guten Abend';
 };
 
 const getStartOfWeek = (
@@ -248,14 +248,14 @@ export default async function DashboardPage() {
             today,
         );
 
-    const todayBookings =
+    const todayTermine =
         bookings.filter(
             (booking) =>
                 booking.booking_date ===
                 today,
         );
 
-    const upcomingBookings =
+    const upcomingTermine =
         bookings.filter(
             (booking) =>
                 booking.booking_date >
@@ -268,7 +268,7 @@ export default async function DashboardPage() {
     const weekEnd =
         getEndOfWeek(today);
 
-    const thisWeekBookings =
+    const thisWeekTermine =
         bookings.filter(
             (booking) => {
                 const date =
@@ -283,7 +283,7 @@ export default async function DashboardPage() {
             },
         );
 
-    const uniqueCustomers =
+    const uniqueKunden =
         new Set(
             bookings.map(
                 (booking) =>
@@ -291,22 +291,22 @@ export default async function DashboardPage() {
             ),
         ).size;
 
-    const anasBookings =
+    const anasTermine =
         bookings.filter(
             (booking) =>
                 booking.barber_id ===
                 ANAS_BARBER_ID,
         );
 
-    const abdBookings =
+    const abdTermine =
         bookings.filter(
             (booking) =>
                 booking.barber_id ===
                 ABD_BARBER_ID,
         );
 
-    const weekRevenue =
-        thisWeekBookings.reduce(
+    const weekUmsatz =
+        thisWeekTermine.reduce(
             (
                 total,
                 booking,
@@ -354,7 +354,7 @@ export default async function DashboardPage() {
                         <SidebarLink
                             href="/dashboard/calendar"
                             icon={CalendarDays}
-                            label="Calendar"
+                            label="Kalender"
                         />
                     </nav>
 
@@ -405,36 +405,36 @@ export default async function DashboardPage() {
                     <div className="px-4 py-5 sm:px-6 xl:px-8">
                         <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
                             <MetricCard
-                                label="Today"
+                                label="Heute"
                                 value={
-                                    todayBookings.length
+                                    todayTermine.length
                                 }
-                                note="Appointments"
+                                note="Termine"
                                 accent="cream"
                             />
 
                             <MetricCard
-                                label="Upcoming"
+                                label="Kommend"
                                 value={
-                                    upcomingBookings.length
+                                    upcomingTermine.length
                                 }
-                                note="Upcoming bookings"
+                                note="Kommende Termine"
                                 accent="blue"
                             />
 
                             <MetricCard
-                                label="This Week"
+                                label="Diese Woche"
                                 value={
-                                    thisWeekBookings.length
+                                    thisWeekTermine.length
                                 }
                                 note="Total bookings"
                                 accent="purple"
                             />
 
                             <MetricCard
-                                label="Total Customers"
+                                label="Kunden gesamt"
                                 value={
-                                    uniqueCustomers
+                                    uniqueKunden
                                 }
                                 note="Registered"
                                 accent="green"
@@ -452,7 +452,7 @@ export default async function DashboardPage() {
 
                                             <div>
                                                 <h2 className="text-xl font-semibold">
-                                                    Today&apos;s Schedule
+                                                    Heutige Termine
                                                 </h2>
 
                                                 <p className="mt-0.5 text-sm text-white/45">
@@ -479,10 +479,10 @@ export default async function DashboardPage() {
                                     </div>
 
                                     <div className="p-5">
-                                        {todayBookings.length >
+                                        {todayTermine.length >
                                             0 ? (
                                             <div className="space-y-3">
-                                                {todayBookings.map(
+                                                {todayTermine.map(
                                                     (
                                                         booking
                                                     ) => (
@@ -517,7 +517,7 @@ export default async function DashboardPage() {
                                     <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
                                         <div>
                                             <h2 className="text-xl font-semibold">
-                                                Upcoming Bookings
+                                                Kommende Termine
                                             </h2>
 
                                             <p className="mt-1 text-sm text-white/45">
@@ -534,9 +534,9 @@ export default async function DashboardPage() {
                                     </div>
 
                                     <div className="space-y-3 p-4">
-                                        {upcomingBookings.length >
+                                        {upcomingTermine.length >
                                             0 ? (
-                                            upcomingBookings.map(
+                                            upcomingTermine.map(
                                                 (
                                                     booking
                                                 ) => (
@@ -552,7 +552,7 @@ export default async function DashboardPage() {
                                             )
                                         ) : (
                                             <p className="rounded-xl border border-dashed border-white/10 p-6 text-center text-sm text-white/45">
-                                                No upcoming bookings.
+                                                Keine kommenden Termine.
                                             </p>
                                         )}
                                     </div>
@@ -563,7 +563,7 @@ export default async function DashboardPage() {
                                         icon={
                                             Clock3
                                         }
-                                        label="Working Hours"
+                                        label="Öffnungszeiten"
                                         value={
                                             WORKING_HOURS
                                         }
@@ -587,9 +587,9 @@ export default async function DashboardPage() {
                                         icon={
                                             UsersRound
                                         }
-                                        label="Customers"
+                                        label="Kunden"
                                         value={String(
-                                            uniqueCustomers,
+                                            uniqueKunden,
                                         )}
                                         note="Total registered"
                                     />
@@ -598,9 +598,9 @@ export default async function DashboardPage() {
                                         icon={
                                             BarChart3
                                         }
-                                        label="Revenue (This Week)"
-                                        value={`€${weekRevenue}`}
-                                        note={`From ${thisWeekBookings.length} booking${thisWeekBookings.length ===
+                                        label="Umsatz (This Week)"
+                                        value={`€${weekUmsatz}`}
+                                        note={`From ${thisWeekTermine.length} booking${thisWeekTermine.length ===
                                             1
                                             ? ''
                                             : 's'
@@ -627,7 +627,7 @@ export default async function DashboardPage() {
                                                 ANAS_BARBER_ID
                                             }
                                             count={
-                                                anasBookings.length
+                                                anasTermine.length
                                             }
                                             total={
                                                 bookings.length
@@ -639,7 +639,7 @@ export default async function DashboardPage() {
                                                 ABD_BARBER_ID
                                             }
                                             count={
-                                                abdBookings.length
+                                                abdTermine.length
                                             }
                                             total={
                                                 bookings.length

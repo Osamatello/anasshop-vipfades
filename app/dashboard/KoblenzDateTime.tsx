@@ -19,7 +19,7 @@ const getDateTime = (): DateTimeValue => {
 
     const date =
         new Intl.DateTimeFormat(
-            'en-GB',
+            'de-DE',
             {
                 timeZone:
                     TIME_ZONE,

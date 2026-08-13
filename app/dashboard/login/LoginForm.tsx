@@ -62,7 +62,7 @@ export default function LoginForm() {
 
             if (signInError) {
                 setError(
-                    'Invalid email or password.'
+                    'E-Mail oder Passwort ist falsch.'
                 );
                 return;
             }
@@ -81,7 +81,7 @@ export default function LoginForm() {
             );
 
             setError(
-                'Unable to sign in right now. Please try again.'
+                'Anmeldung aktuell nicht möglich. Bitte versuche es erneut.'
             );
         } finally {
             setLoading(false);
@@ -158,7 +158,7 @@ export default function LoginForm() {
                         }
                         required
                         className="w-full rounded-2xl border border-brand-border bg-[#151619] py-3.5 pl-11 pr-4 text-sm text-brand-textPrimary outline-none transition focus:border-brand-cream/50"
-                        placeholder="Enter password"
+                        placeholder="Passwort eingeben"
                     />
                 </div>
             </div>
@@ -177,8 +177,8 @@ export default function LoginForm() {
                 className="w-full rounded-2xl bg-brand-cream px-4 py-3.5 text-sm font-semibold text-brand-bg transition hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
             >
                 {loading
-                    ? 'Signing in...'
-                    : 'Sign in'}
+                    ? 'Anmeldung läuft...'
+                    : 'Anmelden'}
             </button>
         </form>
     );

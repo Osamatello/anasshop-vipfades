@@ -38,7 +38,7 @@ export default function SignOutButton() {
             className="inline-flex items-center gap-2 rounded-xl border border-brand-border px-3.5 py-2 text-sm text-brand-textSecondary transition hover:border-brand-cream/40 hover:text-brand-cream"
         >
             <LogOut className="h-4 w-4" />
-            Sign out
+            Abmelden
         </button>
     );
 }

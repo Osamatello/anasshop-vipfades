@@ -52,12 +52,30 @@ type BookingPreference = {
   slotPreference?: SlotPreference;
 };
 
+const TIME_OF_DAY_LABELS: Record<TimeOfDay, string> = {
+  morning: 'Vormittag',
+  afternoon: 'Nachmittag',
+  evening: 'Abend',
+};
+
+const WEEKDAY_LABELS: Record<Weekday, string> = {
+  monday: 'Montag',
+  tuesday: 'Dienstag',
+  wednesday: 'Mittwoch',
+  thursday: 'Donnerstag',
+  friday: 'Freitag',
+  saturday: 'Samstag',
+  sunday: 'Sonntag',
+};
+
 export default function ChatInterface({
   onBooked,
   onClose,
+  initialBarber,
 }: {
   onBooked?: (booking: BookingDraft) => void;
   onClose?: () => void;
+  initialBarber?: string;
 }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [step, setStep] = useState<Step>('welcome');
@@ -100,6 +118,7 @@ export default function ChatInterface({
   const mountedRef = useRef(true);
   const timeoutIdsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const pendingBotMessagesRef = useRef(0);
+  const initialBarberHandledRef = useRef(false);
 
   const pushBot = useCallback((text: string, extra?: Partial<Msg>) => {
     if (!mountedRef.current) {
@@ -154,7 +173,7 @@ export default function ChatInterface({
     mountedRef.current = true;
 
     pushBot(
-      `Welcome to ${BUSINESS.name}. I'm your personal grooming concierge. I can help you choose your service, find your preferred barber, and reserve the best available time. How can I help you today?`,
+      `Willkommen bei ${BUSINESS.name}. Ich bin dein persönlicher Buchungsassistent. Ich helfe dir bei der Auswahl deiner Leistung, deines Barbers und des passenden Termins. Wie kann ich dir helfen?`,
     );
 
     return () => {
@@ -164,6 +183,54 @@ export default function ChatInterface({
       pendingBotMessagesRef.current = 0;
     };
   }, [pushBot]);
+
+  useEffect(() => {
+    if (
+      initialBarberHandledRef.current ||
+      !initialBarber ||
+      catalogLoading
+    ) {
+      return;
+    }
+
+    initialBarberHandledRef.current = true;
+
+    if (catalogError || barbers.length === 0) {
+      return;
+    }
+
+    const selectedBarber = barbers.find(
+      (barber) =>
+        barber.name.trim().toLowerCase() ===
+        initialBarber.trim().toLowerCase(),
+    );
+
+    if (!selectedBarber) {
+      return;
+    }
+
+    setDraft({
+      barber: selectedBarber,
+    });
+    setBookingPreference({});
+    resetAvailability();
+    setStep('pickService');
+
+    pushBot(
+      `Perfekt. ${selectedBarber.name} ist ausgewählt. Welche Leistung möchtest du?`,
+      {
+        options: serviceOptions(),
+        chips: ['Zurück'],
+      },
+    );
+  }, [
+    initialBarber,
+    catalogLoading,
+    catalogError,
+    barbers,
+    pushBot,
+    resetAvailability,
+  ]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -176,7 +243,7 @@ export default function ChatInterface({
     services.map((service) => ({
       label: service.name,
       value: service.id,
-      sub: `€${service.price}${service.duration ? ` · ${service.duration} min` : ''
+      sub: `€${service.price}${service.duration ? ` · ${service.duration} Min.` : ''
         }`,
     }));
 
@@ -188,7 +255,7 @@ export default function ChatInterface({
     }));
 
   const getKoblenzDateValue = (date = new Date()) => {
-    const parts = new Intl.DateTimeFormat('en-CA', {
+    const parts = new Intl.DateTimeFormat('de-DE', {
       timeZone: BUSINESS_TIME_ZONE,
       year: 'numeric',
       month: '2-digit',
@@ -232,7 +299,7 @@ export default function ChatInterface({
       if (weekday >= 1 && weekday <= 4) {
         const value = formatUtcDate(cursor);
 
-        const baseLabel = new Intl.DateTimeFormat('en-GB', {
+        const baseLabel = new Intl.DateTimeFormat('de-DE', {
           weekday: 'short',
           day: 'numeric',
           month: 'numeric',
@@ -245,7 +312,7 @@ export default function ChatInterface({
 
         options.push({
           label: dayOff
-            ? `${baseLabel} · ${barber?.name ?? dayOff.barberName} off`
+            ? `${baseLabel} · ${barber?.name ?? dayOff.barberName} frei`
             : baseLabel,
           value,
         });
@@ -414,7 +481,7 @@ export default function ChatInterface({
 
       const optionWeekday =
         new Intl.DateTimeFormat(
-          'en-US',
+          'de-DE',
           {
             weekday: 'long',
             timeZone: 'UTC',
@@ -435,29 +502,29 @@ export default function ChatInterface({
 
     if (preference.specificDate) {
       parts.push(
-        `on ${formatSpecificDate(
+        `am ${formatSpecificDate(
           preference.specificDate,
         )}`,
       );
     } else if (preference.relativeDate) {
       parts.push(
-        preference.relativeDate,
+        preference.relativeDate === 'today' ? 'heute' : 'morgen',
       );
     } else if (preference.weekday) {
       parts.push(
-        `on ${preference.weekday}`,
+        `am ${WEEKDAY_LABELS[preference.weekday]}`,
       );
     }
 
     if (preference.timeOfDay) {
       parts.push(
-        `in the ${preference.timeOfDay}`,
+        `am ${TIME_OF_DAY_LABELS[preference.timeOfDay]}`,
       );
     }
 
     if (barberName) {
       parts.push(
-        `with ${barberName}`,
+        `bei ${barberName}`,
       );
     }
 
@@ -465,7 +532,7 @@ export default function ChatInterface({
       preference.slotPreference === 'last'
     ) {
       parts.push(
-        'for the last available appointment',
+        'zum spätesten verfügbaren Termin',
       );
     }
 
@@ -473,7 +540,7 @@ export default function ChatInterface({
       preference.slotPreference === 'first'
     ) {
       parts.push(
-        'for the first available appointment',
+        'zum frühesten verfügbaren Termin',
       );
     }
 
@@ -520,10 +587,10 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot(
-        `${barber.name} is off every ${barberDayOff.weekdayName}, so appointments with ${barber.name} aren’t available that day. Please choose another day:`,
+        `${barber.name} hat an diesem Wochentag frei. Bitte wähle einen anderen Tag:`,
         {
           options: dateOptions(barber),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -545,10 +612,10 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot(
-        'That date has already passed. Please choose one of the available booking days:',
+        'Dieses Datum ist bereits vorbei. Bitte wähle einen verfügbaren Buchungstag:',
         {
           options: dateOptions(barber),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -569,8 +636,8 @@ export default function ChatInterface({
 
     pushBot(
       timeOfDay
-        ? `One moment — I’m checking ${timeOfDay} availability for you.`
-        : 'One moment — I’m checking the available times for you.',
+        ? `Einen Moment – ich prüfe die Verfügbarkeit am ${TIME_OF_DAY_LABELS[timeOfDay]} für dich.`
+        : 'Einen Moment – ich prüfe die verfügbaren Zeiten für dich.',
     );
 
     const availableSlots =
@@ -582,9 +649,9 @@ export default function ChatInterface({
 
     if (availabilityError) {
       pushBot(
-        'I couldn’t check the availability right now. Please choose another day or try again shortly.',
+        'Ich konnte die Verfügbarkeit gerade nicht prüfen. Wähle bitte einen anderen Tag oder versuche es gleich noch einmal.',
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -593,9 +660,9 @@ export default function ChatInterface({
 
     if (availableSlots.length === 0) {
       pushBot(
-        'That day is fully booked at the moment. Let’s try another day.',
+        'Dieser Tag ist aktuell ausgebucht. Versuch es bitte mit einem anderen Tag.',
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -613,11 +680,11 @@ export default function ChatInterface({
       preferredSlots.length === 0
     ) {
       pushBot(
-        `I couldn’t find any ${timeOfDay} appointments on that day, but these times are still available:`,
+        `An diesem Tag habe ich am ${TIME_OF_DAY_LABELS[timeOfDay]} nichts gefunden. Diese Zeiten sind aber noch verfügbar:`,
         {
           chips: [
             ...availableSlots,
-            'Back',
+            'Zurück',
           ],
         },
       );
@@ -650,14 +717,14 @@ export default function ChatInterface({
 
       const positionText =
         slotPreference === 'last'
-          ? 'last available'
-          : 'first available';
+          ? 'späteste verfügbare Termin'
+          : 'früheste verfügbare Termin';
 
       pushBot(
-        `Perfect. The ${positionText}${timeOfDay ? ` ${timeOfDay}` : ''
-        } appointment is ${preferredTime}. I’ve selected it for you. What name should I put the appointment under?`,
+        `Perfekt. Der ${positionText}${timeOfDay ? ` am ${TIME_OF_DAY_LABELS[timeOfDay]}` : ''
+        } ist um ${preferredTime}. Ich habe ihn für dich ausgewählt. Auf welchen Namen soll ich den Termin eintragen?`,
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -666,12 +733,12 @@ export default function ChatInterface({
 
     pushBot(
       timeOfDay
-        ? `Perfect. Here are the available ${timeOfDay} times. Which one works best for you?`
-        : `Here are the available times for ${date}. Which one works best for you?`,
+        ? `Perfekt. Hier sind die verfügbaren Zeiten am ${TIME_OF_DAY_LABELS[timeOfDay]}. Welche passt dir am besten?`
+        : `Hier sind die verfügbaren Zeiten für den ${date}. Welche passt dir am besten?`,
       {
         chips: [
           ...usableSlots,
-          'Back',
+          'Zurück',
         ],
       },
     );
@@ -700,10 +767,10 @@ export default function ChatInterface({
         pushBot(
           `${formatSpecificDate(
             preference.specificDate,
-          )} isn’t available for online booking. Here are the next available booking days:`,
+          )} ist online nicht verfügbar. Hier sind die nächsten verfügbaren Buchungstage:`,
           {
             options: dateOptions(barber),
-            chips: ['Back'],
+            chips: ['Zurück'],
           },
         );
 
@@ -720,11 +787,11 @@ export default function ChatInterface({
 
         pushBot(
           preference.relativeDate === 'today'
-            ? 'Today isn’t available for online appointments. Here are the next available booking days:'
-            : 'Tomorrow isn’t available for online appointments. Here are the next available booking days:',
+            ? 'Heute sind keine Online-Termine verfügbar. Hier sind die nächsten verfügbaren Buchungstage:'
+            : 'Morgen sind keine Online-Termine verfügbar. Hier sind die nächsten verfügbaren Buchungstage:',
           {
             options: dateOptions(barber),
-            chips: ['Back'],
+            chips: ['Zurück'],
           },
         );
 
@@ -740,10 +807,10 @@ export default function ChatInterface({
         setStep('pickDate');
 
         pushBot(
-          `${preference.weekday} isn’t one of the currently available online booking days. Here are the next available options:`,
+          `${WEEKDAY_LABELS[preference.weekday]} ist aktuell kein verfügbarer Online-Buchungstag. Hier sind die nächsten Optionen:`,
           {
             options: dateOptions(barber),
-            chips: ['Back'],
+            chips: ['Zurück'],
           },
         );
 
@@ -755,10 +822,10 @@ export default function ChatInterface({
       setStep('pickDate');
 
       pushBot(
-        `Perfect. You’ll be with ${barber.name}. Which day would you prefer?`,
+        `Perfekt. Dein Termin ist bei ${barber.name}. Welcher Tag passt dir?`,
         {
           options: dateOptions(barber),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -778,7 +845,7 @@ export default function ChatInterface({
   };
 
   const startBooking = () => {
-    pushUser('Book an appointment');
+    pushUser('Termin buchen');
 
     if (!ensureCatalogReady({ requireServices: true })) {
       return;
@@ -789,9 +856,9 @@ export default function ChatInterface({
     resetAvailability();
     setStep('pickService');
 
-    pushBot('Perfect. Let’s tailor your appointment. Which service would you like today?', {
+    pushBot('Perfekt. Welche Leistung möchtest du buchen?', {
       options: serviceOptions(),
-      chips: ['Back'],
+      chips: ['Zurück'],
     });
   };
 
@@ -803,22 +870,22 @@ export default function ChatInterface({
     requireBarbers?: boolean;
   }) => {
     if (catalogLoading) {
-      pushBot('Just a moment — I’m preparing the booking menu for you.');
+      pushBot('Einen Moment – ich bereite die Buchung für dich vor.');
       return false;
     }
 
     if (catalogError) {
-      pushBot('I’m having trouble loading the booking menu right now. Please try again shortly.');
+      pushBot('Die Buchungsdaten konnten gerade nicht geladen werden. Bitte versuche es gleich noch einmal.');
       return false;
     }
 
     if (requireServices && services.length === 0) {
-      pushBot('There are no services available for online booking right now. Please try again later.');
+      pushBot('Aktuell sind keine Leistungen online buchbar. Bitte versuche es später erneut.');
       return false;
     }
 
     if (requireBarbers && barbers.length === 0) {
-      pushBot('There are no barbers available for online booking right now. Please try again later.');
+      pushBot('Aktuell sind keine Barber online verfügbar. Bitte versuche es später erneut.');
       return false;
     }
 
@@ -826,22 +893,22 @@ export default function ChatInterface({
   };
 
   const showPrices = () => {
-    pushUser('View prices');
+    pushUser('Preise ansehen');
 
     if (!ensureCatalogReady({ requireServices: true })) {
       return;
     }
 
     pushBot(
-      `Of course. Here’s our full service menu:\n\n${services
+      `Klar. Hier ist unsere komplette Preisliste:\n\n${services
         .map(
           (service) =>
-            `• ${service.name}: €${service.price}${service.duration ? ` (${service.duration} min)` : ''
+            `• ${service.name}: €${service.price}${service.duration ? ` (${service.duration} Min.)` : ''
             }`,
         )
         .join('\n')}\n\nIf you’re ready, I can take you straight into booking.`,
       {
-        chips: ['Book now', 'Choose a barber'],
+        chips: ['Jetzt buchen', 'Barber wählen'],
       },
     );
 
@@ -849,7 +916,7 @@ export default function ChatInterface({
   };
 
   const showAvailability = () => {
-    pushUser('Check availability');
+    pushUser('Verfügbarkeit prüfen');
 
     if (!ensureCatalogReady({ requireServices: true })) {
       return;
@@ -861,16 +928,16 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Online appointments are available ${BUSINESS.hours.days}, ${BUSINESS.hours.time}. Choose your service first and I’ll find the available times for you.`,
+      `Online-Termine sind ${BUSINESS.hours.days} von ${BUSINESS.hours.time} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
       {
         options: serviceOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
 
   const showBarbers = () => {
-    pushUser('Choose a barber');
+    pushUser('Barber wählen');
 
     if (!ensureCatalogReady({
       requireServices: true,
@@ -884,23 +951,23 @@ export default function ChatInterface({
     resetAvailability();
     setStep('pickBarberPre');
 
-    pushBot('Absolutely. Who would you like to book with?', {
+    pushBot('Klar. Bei welchem Barber möchtest du deinen Termin buchen?', {
       options: barberOptions(),
-      chips: ['Back'],
+      chips: ['Zurück'],
     });
   };
 
   const startCancellation = () => {
-    pushUser('Cancel my appointment');
+    pushUser('Termin stornieren');
     setCancellationBookings([]);
     setSelectedCancellationBookingId(null);
     setCancellationPhone(null);
     setStep('cancelEnterPhone');
 
     pushBot(
-      'Of course. Please enter the same phone number you used when you booked your appointment.',
+      'Klar. Gib bitte dieselbe Telefonnummer ein, die du bei der Buchung verwendet hast.',
       {
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
@@ -912,16 +979,16 @@ export default function ChatInterface({
 
     if (!result.valid) {
       pushBot(
-        `${result.error} Please enter the same phone number you used for the booking.`,
+        `${result.error} Bitte gib dieselbe Telefonnummer ein, die du bei der Buchung verwendet hast.`,
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
       return;
     }
 
     try {
-      pushBot('One moment — I’m looking for your upcoming appointments.');
+      pushBot('Einen Moment – ich suche deine kommenden Termine.');
 
       const response = await fetch(
         `/api/bookings/cancel?phone=${encodeURIComponent(result.value)}`,
@@ -931,7 +998,7 @@ export default function ChatInterface({
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.error || 'Failed to find bookings.',
+          data.error || 'Termine konnten nicht gefunden werden.',
         );
       }
 
@@ -939,7 +1006,7 @@ export default function ChatInterface({
         setStep('welcome');
 
         pushBot(
-          'I couldn’t find any upcoming appointments with that phone number. Please check the number or contact us if you need help.',
+          'Ich konnte unter dieser Telefonnummer keine kommenden Termine finden. Prüfe bitte die Nummer oder kontaktiere uns, wenn du Hilfe brauchst.',
         );
         return;
       }
@@ -950,8 +1017,8 @@ export default function ChatInterface({
 
       pushBot(
         data.bookings.length === 1
-          ? 'I found your upcoming appointment. Select it below to continue with the cancellation.'
-          : 'I found your upcoming appointments. Which one would you like to cancel?',
+          ? 'Ich habe deinen kommenden Termin gefunden. Wähle ihn unten aus, um mit der Stornierung fortzufahren.'
+          : 'Ich habe deine kommenden Termine gefunden. Welchen möchtest du stornieren?',
         {
           options: data.bookings.map(
             (booking: {
@@ -966,16 +1033,16 @@ export default function ChatInterface({
               sub: `${booking.bookingDate} · ${booking.startTime}`,
             }),
           ),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
     } catch (error) {
       console.error('Find booking error:', error);
 
       pushBot(
-        'I’m sorry, I couldn’t find your appointments right now. Please try again shortly.',
+        'Deine Termine konnten gerade nicht geladen werden. Bitte versuche es gleich noch einmal.',
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
     }
@@ -992,12 +1059,12 @@ export default function ChatInterface({
 
     setSelectedCancellationBookingId(bookingId);
     setStep('cancelConfirm');
-    pushUser('Select appointment');
+    pushUser('Termin auswählen');
 
     pushBot(
-      `Are you sure you want to cancel your appointment on ${booking.bookingDate} at ${booking.startTime}?`,
+      `Möchtest du deinen Termin am ${booking.bookingDate} um ${booking.startTime} wirklich stornieren?`,
       {
-        chips: ['Confirm cancellation', 'Back'],
+        chips: ['Stornierung bestätigen', 'Zurück'],
       },
     );
   };
@@ -1007,11 +1074,11 @@ export default function ChatInterface({
       return;
     }
 
-    pushUser('Confirm cancellation');
+    pushUser('Stornierung bestätigen');
     setCancellingBooking(true);
 
     try {
-      pushBot('One moment — I’m cancelling your appointment now.');
+      pushBot('Einen Moment – ich storniere deinen Termin.');
 
       const response = await fetch(
         `/api/bookings/${selectedCancellationBookingId}/cancel`,
@@ -1030,7 +1097,7 @@ export default function ChatInterface({
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.error || 'Failed to cancel booking.',
+          data.error || 'Termin konnte nicht storniert werden.',
         );
       }
 
@@ -1043,15 +1110,15 @@ export default function ChatInterface({
       setStep('welcome');
 
       pushBot(
-        'Your appointment has been cancelled successfully.',
+        'Dein Termin wurde erfolgreich storniert.',
       );
     } catch (error) {
       console.error('Cancellation error:', error);
 
       pushBot(
-        'I’m sorry, I couldn’t cancel the appointment right now. Please try again shortly.',
+        'Der Termin konnte gerade nicht storniert werden. Bitte versuche es gleich noch einmal.',
         {
-          chips: ['Confirm cancellation', 'Back'],
+          chips: ['Stornierung bestätigen', 'Zurück'],
         },
       );
     } finally {
@@ -1060,14 +1127,14 @@ export default function ChatInterface({
   };
 
   const handleBack = () => {
-    pushUser('Back');
+    pushUser('Zurück');
 
     if (step === 'cancelEnterPhone') {
       setCancellationBookings([]);
       setSelectedCancellationBookingId(null);
       setStep('welcome');
 
-      pushBot('No problem. What would you like to do?');
+      pushBot('Kein Problem. Was möchtest du machen?');
 
       return;
     }
@@ -1078,9 +1145,9 @@ export default function ChatInterface({
       setStep('cancelEnterPhone');
 
       pushBot(
-        'No problem. Please enter the phone number used for the booking.',
+        'Kein Problem. Gib bitte die Telefonnummer ein, die du bei der Buchung verwendet hast.',
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -1091,18 +1158,18 @@ export default function ChatInterface({
       setSelectedCancellationBookingId(null);
       setStep('cancelPickBooking');
 
-      pushBot('No problem. Choose the appointment you want to cancel.', {
+      pushBot('Kein Problem. Wähle den Termin aus, den du stornieren möchtest.', {
         options: cancellationBookings.map((booking) => {
           const barber = barbers.find((item) => item.id === booking.barberId);
           const service = services.find((item) => item.id === booking.serviceId);
 
           return {
-            label: `${service?.name ?? 'Appointment'} with ${barber?.name ?? 'your barber'}`,
+            label: `${service?.name ?? 'Termin'} with ${barber?.name ?? 'deinem Barber'}`,
             value: booking.id,
             sub: `${booking.bookingDate} · ${booking.startTime}`,
           };
         }),
-        chips: ['Back'],
+        chips: ['Zurück'],
       });
 
       return;
@@ -1114,9 +1181,9 @@ export default function ChatInterface({
         resetAvailability();
         setStep('pickBarberPre');
 
-        pushBot('Of course. Let’s go back to your barber selection.', {
+        pushBot('Klar. Gehen wir zurück zur Barber-Auswahl.', {
           options: barberOptions(),
-          chips: ['Back'],
+          chips: ['Zurück'],
         });
 
         return;
@@ -1127,7 +1194,7 @@ export default function ChatInterface({
       resetAvailability();
       setStep('welcome');
 
-      pushBot('Of course. What would you like to do?');
+      pushBot('Klar. Was möchtest du machen?');
 
       return;
     }
@@ -1138,7 +1205,7 @@ export default function ChatInterface({
       resetAvailability();
       setStep('welcome');
 
-      pushBot('No problem. What would you like to do?');
+      pushBot('Kein Problem. Was möchtest du machen?');
 
       return;
     }
@@ -1157,9 +1224,9 @@ export default function ChatInterface({
       resetAvailability();
       setStep('pickService');
 
-      pushBot('Of course. Let’s choose your service again.', {
+      pushBot('Klar. Wähle deine Leistung noch einmal.', {
         options: serviceOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       });
 
       return;
@@ -1178,9 +1245,9 @@ export default function ChatInterface({
       resetAvailability();
       setStep('pickBarber');
 
-      pushBot('No problem. Choose the barber you’d like to book with.', {
+      pushBot('Kein Problem. Wähle den Barber, bei dem du buchen möchtest.', {
         options: barberOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       });
 
       return;
@@ -1198,9 +1265,9 @@ export default function ChatInterface({
       resetAvailability();
       setStep('pickDate');
 
-      pushBot('Of course. Let’s choose another day.', {
+      pushBot('Klar. Wähle einen anderen Tag.', {
         options: dateOptions(draft.barber),
-        chips: ['Back'],
+        chips: ['Zurück'],
       });
 
       return;
@@ -1223,12 +1290,12 @@ export default function ChatInterface({
             bookingPreference.timeOfDay,
           );
 
-        pushBot('No problem. Choose the time that works best for you.', {
+        pushBot('Kein Problem. Wähle die Zeit, die dir am besten passt.', {
           chips: [
             ...(preferredSlots.length > 0
               ? preferredSlots
               : slots),
-            'Back',
+            'Zurück',
           ],
         });
 
@@ -1243,9 +1310,9 @@ export default function ChatInterface({
       resetAvailability();
       setStep('pickDate');
 
-      pushBot('No problem. Let’s choose your day again.', {
+      pushBot('Kein Problem. Wähle deinen Tag noch einmal.', {
         options: dateOptions(draft.barber),
-        chips: ['Back'],
+        chips: ['Zurück'],
       });
 
       return;
@@ -1260,8 +1327,8 @@ export default function ChatInterface({
 
       setStep('enterName');
 
-      pushBot('Of course. What name should I put the appointment under?', {
-        chips: ['Back'],
+      pushBot('Klar. Auf welchen Namen soll ich den Termin eintragen?', {
+        chips: ['Zurück'],
       });
 
       return;
@@ -1275,60 +1342,60 @@ export default function ChatInterface({
 
       setStep('enterPhone');
 
-      pushBot('No problem. What’s the best phone number for your booking?', {
-        chips: ['Back'],
+      pushBot('Kein Problem. Welche Telefonnummer sollen wir für deine Buchung verwenden?', {
+        chips: ['Zurück'],
       });
 
       return;
     }
 
-    pushBot('You’re already at the beginning.');
+    pushBot('Du bist bereits am Anfang.');
 
     setStep('welcome');
   };
 
   const handleChip = (chip: string) => {
-    if (chip === 'Back') {
+    if (chip === 'Zurück') {
       handleBack();
       return true;
     }
 
-    if (chip === 'Book an appointment' || chip === 'Book now') {
+    if (chip === 'Termin buchen' || chip === 'Jetzt buchen') {
       startBooking();
       return true;
     }
 
-    if (chip === 'View prices') {
+    if (chip === 'Preise ansehen') {
       showPrices();
       return true;
     }
 
-    if (chip === 'Check availability') {
+    if (chip === 'Verfügbarkeit prüfen') {
       showAvailability();
       return true;
     }
 
-    if (chip === 'Choose a barber') {
+    if (chip === 'Barber wählen') {
       showBarbers();
       return true;
     }
 
-    if (chip === 'Cancel my appointment') {
+    if (chip === 'Termin stornieren') {
       startCancellation();
       return true;
     }
 
-    if (chip === 'Confirm booking') {
+    if (chip === 'Buchung bestätigen') {
       confirmBooking();
       return true;
     }
 
-    if (chip === 'Confirm cancellation') {
+    if (chip === 'Stornierung bestätigen') {
       void confirmCancellation();
       return true;
     }
 
-    if (chip === 'Start over' || chip === 'Book another') {
+    if (chip === 'Neu starten' || chip === 'Weiteren Termin buchen') {
       restart();
       return true;
     }
@@ -1380,11 +1447,11 @@ export default function ChatInterface({
 
     pushBot(
       preferenceText
-        ? `Great choice. ${service.name} is €${service.price}. I’ve kept your preference ${preferenceText}. Now let’s choose your barber.`
-        : `Great choice. ${service.name} is €${service.price}. Now let’s choose your barber.`,
+        ? `Gute Wahl. ${service.name} kostet €${service.price}. Deine Auswahl ${preferenceText} habe ich übernommen. Jetzt wählst du deinen Barber.`
+        : `Gute Wahl. ${service.name} kostet €${service.price}. Jetzt wählst du deinen Barber.`,
       {
         options: barberOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
@@ -1393,7 +1460,7 @@ export default function ChatInterface({
     const barber = barbers.find((item) => item.id === id);
 
     if (!barber) {
-      pushBot('That barber is no longer available for booking. Please choose another one.');
+      pushBot('Dieser Barber ist aktuell nicht buchbar. Bitte wähle einen anderen.');
       return;
     }
 
@@ -1403,10 +1470,10 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Perfect. ${barber.name} is selected. Which service would you like?`,
+      `Perfekt. ${barber.name} ist ausgewählt. Welche Leistung möchtest du?`,
       {
         options: serviceOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
@@ -1445,10 +1512,10 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Perfect. ${barber.name} is selected. Which service would you like?`,
+      `Perfekt. ${barber.name} ist ausgewählt. Welche Leistung möchtest du?`,
       {
         options: serviceOptions(),
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
@@ -1456,9 +1523,9 @@ export default function ChatInterface({
   const pickDate = async (date: string) => {
     if (!draft.service || !draft.barber) {
       pushBot(
-        'I still need your service and barber before I can check the available times.',
+        'Ich brauche noch deine Leistung und deinen Barber, bevor ich die verfügbaren Zeiten prüfen kann.',
         {
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
       return;
@@ -1484,8 +1551,8 @@ export default function ChatInterface({
     pushUser(time);
     setStep('enterName');
 
-    pushBot('Great. Your time is selected. What name should I put the appointment under?', {
-      chips: ['Back'],
+    pushBot('Super. Deine Zeit ist ausgewählt. Auf welchen Namen soll ich den Termin eintragen?', {
+      chips: ['Zurück'],
     });
   };
 
@@ -1507,9 +1574,9 @@ export default function ChatInterface({
     setStep('enterPhone');
 
     pushBot(
-      `Thanks, ${result.value.split(' ')[0]}. Just one final detail — what’s the best phone number for your booking?`,
+      `Danke, ${result.value.split(' ')[0]}. Noch eine letzte Angabe: Welche Telefonnummer sollen wir für deine Buchung verwenden?`,
       {
-        chips: ['Back'],
+        chips: ['Zurück'],
       },
     );
   };
@@ -1521,7 +1588,7 @@ export default function ChatInterface({
 
     if (!result.valid) {
       pushBot(
-        `${result.error} You can enter it like 0176 12345678 or +49 176 12345678.`,
+        `${result.error} Du kannst sie z. B. so eingeben: 0176 12345678 oder +49 176 12345678.`,
       );
       return;
     }
@@ -1534,14 +1601,14 @@ export default function ChatInterface({
     setDraft(finalDraft);
     setStep('confirm');
 
-    pushBot('Everything is ready. Please take a quick look at your appointment details before I confirm it.', {
+    pushBot('Alles ist bereit. Prüfe bitte kurz deine Termindaten, bevor du die Buchung bestätigst.', {
       booking: finalDraft,
-      chips: ['Confirm booking', 'Back', 'Start over'],
+      chips: ['Buchung bestätigen', 'Zurück', 'Neu starten'],
     });
   };
 
   const confirmBooking = async () => {
-    pushUser('Confirm booking');
+    pushUser('Buchung bestätigen');
 
     if (
       !draft.service ||
@@ -1551,12 +1618,12 @@ export default function ChatInterface({
       !draft.name ||
       !draft.phone
     ) {
-      pushBot('Some booking details are still missing. Please start again so I can complete the appointment correctly.');
+      pushBot('Einige Buchungsdaten fehlen noch. Bitte starte neu, damit ich deinen Termin korrekt abschließen kann.');
       return;
     }
 
     try {
-      pushBot('Perfect. I’m reserving your appointment now.');
+      pushBot('Perfekt. Ich reserviere deinen Termin jetzt.');
 
       const response = await fetch('/api/bookings', {
         method: 'POST',
@@ -1577,14 +1644,14 @@ export default function ChatInterface({
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.error || 'Failed to create booking.',
+          data.error || 'Buchung konnte nicht erstellt werden.',
         );
       }
 
       setStep('done');
 
       pushBot(
-        `You're all set.\n\n${draft.service.name} with ${draft.barber.name}\n${draft.date} at ${draft.time}\nName: ${draft.name}\nPhone: ${draft.phone}\n\nWe look forward to seeing you at ${BUSINESS.address}. If you need us before your appointment, you can reach us at ${BUSINESS.phoneFormatted}.`,
+        `Dein Termin ist bestätigt.\n\n${draft.service.name} bei ${draft.barber.name}\n${draft.date} um ${draft.time}\nName: ${draft.name}\nTelefon: ${draft.phone}\n\nWir freuen uns auf dich bei ${BUSINESS.address}. Wenn du vorher etwas brauchst, erreichst du uns unter ${BUSINESS.phoneFormatted}.`,
       );
 
       onBooked?.(draft);
@@ -1593,9 +1660,9 @@ export default function ChatInterface({
       console.error('Booking error:', error);
 
       pushBot(
-        'I’m sorry, I couldn’t complete the booking right now. Please try again and I’ll take you through it.',
+        'Die Buchung konnte gerade nicht abgeschlossen werden. Bitte versuche es erneut.',
         {
-          chips: ['Start over'],
+          chips: ['Neu starten'],
         },
       );
     }
@@ -1606,9 +1673,9 @@ export default function ChatInterface({
     setBookingPreference({});
     resetAvailability();
     setStep('welcome');
-    pushUser('Start over');
+    pushUser('Neu starten');
 
-    pushBot('Of course. Let’s start fresh. What would you like to do?');
+    pushBot('Klar. Starten wir neu. Was möchtest du machen?');
   };
 
   const handleSmallTalk = (
@@ -1616,27 +1683,27 @@ export default function ChatInterface({
   ) => {
     if (smallTalk === 'howAreYou') {
       pushBot(
-        "I'm doing great, thank you for asking. I hope you're having a great day too. How can I help you?",
+        "Mir geht’s gut, danke! Ich hoffe, dir auch. Wie kann ich dir helfen?",
       );
       return;
     }
 
     if (smallTalk === 'thanks') {
       pushBot(
-        "You're very welcome. It's my pleasure to help.",
+        "Sehr gerne!",
       );
       return;
     }
 
     if (smallTalk === 'goodbye') {
       pushBot(
-        'Take care. We look forward to seeing you at VIP FADES.',
+        'Mach’s gut. Wir freuen uns auf dich bei VIP FADES.',
       );
       return;
     }
 
     pushBot(
-      'Hello and welcome to VIP FADES. How can I help you today?',
+      'Hallo und willkommen bei VIP FADES. Wie kann ich dir helfen?',
     );
   };
 
@@ -1776,18 +1843,18 @@ export default function ChatInterface({
 
       if (!selectedService) {
         setStep('pickService');
-        pushBot('No problem. Which service would you like instead?', {
+        pushBot('Kein Problem. Welche Leistung möchtest du stattdessen?', {
           options: serviceOptions(),
-          chips: ['Back'],
+          chips: ['Zurück'],
         });
         return true;
       }
 
       if (!selectedBarber) {
         setStep('pickBarber');
-        pushBot('No problem. Who would you like to book with instead?', {
+        pushBot('Kein Problem. Bei welchem Barber möchtest du stattdessen buchen?', {
           options: barberOptions(),
-          chips: ['Back'],
+          chips: ['Zurück'],
         });
         return true;
       }
@@ -1857,11 +1924,11 @@ export default function ChatInterface({
 
       pushBot(
         preferenceText
-          ? `Absolutely. I’ve got you ${preferenceText}. Which service would you like?`
-          : 'Absolutely. Which service would you like?',
+          ? `Klar. Ich habe deine Auswahl ${preferenceText}. Welche Leistung möchtest du?`
+          : 'Klar. Welche Leistung möchtest du?',
         {
           options: serviceOptions(),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -1875,11 +1942,11 @@ export default function ChatInterface({
 
       pushBot(
         preferenceText
-          ? `Perfect. ${selectedService.name} is selected, and I’ve kept your preference ${preferenceText}. Who would you like to book with?`
-          : `Perfect. ${selectedService.name} is selected. Who would you like to book with?`,
+          ? `Perfekt. ${selectedService.name} ist ausgewählt und deine Auswahl ${preferenceText} habe ich übernommen. Bei welchem Barber möchtest du buchen?`
+          : `Perfekt. ${selectedService.name} ist ausgewählt. Bei welchem Barber möchtest du buchen?`,
         {
           options: barberOptions(),
-          chips: ['Back'],
+          chips: ['Zurück'],
         },
       );
 
@@ -1963,7 +2030,7 @@ export default function ChatInterface({
     pushUser(value);
 
     pushBot(
-      "I’m not quite sure what you mean. Choose one of the options below and I’ll guide you from there.",
+      "Ich bin nicht ganz sicher, was du meinst. Wähle unten eine Option und ich helfe dir weiter.",
     );
 
     setStep('welcome');
@@ -1976,10 +2043,10 @@ export default function ChatInterface({
 
   const inputPlaceholder =
     step === 'enterName'
-      ? 'Your name'
+      ? 'Dein Name'
       : step === 'enterPhone' || step === 'cancelEnterPhone'
-        ? 'Phone number'
-        : 'Message…';
+        ? 'Telefonnummer'
+        : 'Nachricht…';
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-brand-border bg-[#111214]/95 backdrop-blur-md">
@@ -2011,7 +2078,7 @@ export default function ChatInterface({
               type="button"
               onClick={onClose}
               className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-border text-brand-textSecondary transition-colors hover:border-brand-cream hover:text-brand-cream"
-              aria-label="Close chat"
+              aria-label="Chat schließen"
             >
               <X className="h-4 w-4" />
             </button>
@@ -2075,14 +2142,14 @@ export default function ChatInterface({
         <input
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder={showInput ? inputPlaceholder : 'Message…'}
+          placeholder={showInput ? inputPlaceholder : 'Nachricht…'}
           className="flex-1 rounded-full bg-[#1a1b1e] px-4 py-2.5 text-sm text-brand-textPrimary outline-none ring-1 ring-brand-border placeholder:text-brand-textSecondary focus:ring-brand-cream/35"
         />
 
         <button
           type="submit"
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-cream text-brand-bg transition-colors hover:bg-brand-textPrimary"
-          aria-label="Send"
+          aria-label="Senden"
         >
           <Send className="h-4 w-4" />
         </button>
@@ -2163,7 +2230,7 @@ function MessageBubble({
           <div className="mt-3 rounded-2xl border border-brand-cream/20 bg-[#1a1b1e] p-4">
             <div className="grid grid-cols-2 gap-y-3 text-sm">
               <SummaryItem
-                label="Service"
+                label="Leistung"
                 value={msg.booking.service?.name}
               />
 
@@ -2172,13 +2239,13 @@ function MessageBubble({
                 value={msg.booking.barber?.name}
               />
 
-              <SummaryItem label="Date" value={msg.booking.date} />
+              <SummaryItem label="Datum" value={msg.booking.date} />
 
-              <SummaryItem label="Time" value={msg.booking.time} />
+              <SummaryItem label="Uhrzeit" value={msg.booking.time} />
 
               <SummaryItem label="Name" value={msg.booking.name} />
 
-              <SummaryItem label="Phone" value={msg.booking.phone} />
+              <SummaryItem label="Telefon" value={msg.booking.phone} />
             </div>
 
             <div className="mt-3 flex items-center justify-between border-t border-brand-border pt-3">

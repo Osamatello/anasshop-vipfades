@@ -8,7 +8,20 @@ import Header from '@/components/Header';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { BUSINESS } from '@/lib/data';
 
-export default function BookingPage() {
+export default async function BookingPage({
+    searchParams,
+}: {
+    searchParams?: Promise<{
+        barber?: string;
+    }>;
+}) {
+    const params =
+        await searchParams;
+
+    const initialBarber =
+        typeof params?.barber === 'string'
+            ? params.barber.trim().toLowerCase()
+            : undefined;
     return (
         <main className="relative min-h-screen overflow-hidden bg-[#070707] text-brand-textPrimary">
             <Header />
@@ -59,21 +72,21 @@ export default function BookingPage() {
 
                             <div className="mt-10">
                                 <h1 className="max-w-md font-serif text-4xl font-light leading-[1.02] tracking-tight text-brand-textPrimary sm:text-5xl xl:text-6xl">
-                                    Your chair.
+                                    Dein Stuhl.
                                     <br />
-                                    Your barber.
+                                    Dein Barber.
                                     <br />
 
                                     <span className="text-brand-cream">
-                                        Your time.
+                                        Deine Zeit.
                                     </span>
                                 </h1>
 
                                 <div className="booking-accent mt-7 h-px w-14 bg-brand-cream" />
 
                                 <p className="mt-7 max-w-md text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-                                    Book your next VIP FADES appointment with your
-                                    personal grooming concierge.
+                                    Buche deinen nächsten Termin bei VIP FADES mit deinem
+                                    persönlichen Buchungsassistenten.
                                 </p>
                             </div>
 
@@ -81,17 +94,17 @@ export default function BookingPage() {
                             <div className="mt-12 space-y-4">
                                 <InfoRow
                                     icon={<MapPin className="h-4 w-4" />}
-                                    label="Location"
+                                    label="Standort"
                                 >
                                     <p>{BUSINESS.address}</p>
                                 </InfoRow>
 
                                 <InfoRow
                                     icon={<Clock3 className="h-4 w-4" />}
-                                    label="Online Appointments"
+                                    label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Monday to Thursday
+                                        Montag bis Donnerstag
                                     </p>
 
                                     <p className="mt-1">
@@ -99,13 +112,13 @@ export default function BookingPage() {
                                     </p>
 
                                     <p className="mt-2 text-brand-cream/75">
-                                        Walk-ins welcome every day
+                                        Walk-ins täglich willkommen
                                     </p>
                                 </InfoRow>
 
                                 <InfoRow
                                     icon={<Phone className="h-4 w-4" />}
-                                    label="Contact"
+                                    label="Kontakt"
                                 >
                                     <a
                                         href={`tel:${BUSINESS.phoneFormatted.replace(/\s+/g, '')}`}
@@ -120,12 +133,12 @@ export default function BookingPage() {
                         {/* Cancellation */}
                         <div className="booking-cancellation relative z-10 mt-10 rounded-2xl border border-brand-cream/15 bg-black/20 px-5 py-5 lg:backdrop-blur-sm">
                             <p className="text-[9px] font-semibold uppercase tracking-[0.25em] text-brand-cream">
-                                Cancellation Policy
+                                Stornierungsbedingungen
                             </p>
 
                             <p className="mt-3 max-w-sm text-xs font-light leading-6 text-brand-textSecondary">
-                                Please cancel or reschedule at least 2 hours before
-                                your appointment.
+                                Bitte storniere oder verschiebe deinen Termin mindestens 2 Stunden
+                                vorher.
                             </p>
                         </div>
                     </aside>
@@ -143,11 +156,11 @@ export default function BookingPage() {
                         <div className="relative z-10 flex items-center justify-between border-b border-brand-border/60 px-6 py-5 sm:px-8 lg:px-10">
                             <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-                                    Personal Grooming Concierge
+                                    Persönlicher Buchungsassistent
                                 </p>
 
                                 <p className="mt-2 text-sm font-light text-brand-textSecondary">
-                                    Tell us what you need. We’ll guide the rest.
+                                    Sag uns, was du brauchst. Wir führen dich durch den Rest.
                                 </p>
                             </div>
 
@@ -167,22 +180,21 @@ export default function BookingPage() {
                             <div className="chat-top-light pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-brand-cream/70 to-transparent" />
 
                             <div className="h-full min-h-[620px]">
-                                <ChatInterface />
+                                <ChatInterface initialBarber={initialBarber} />
                             </div>
                         </div>
 
                         {/* Bottom reassurance */}
                         <div className="relative z-10 border-t border-brand-border/50 px-6 py-4 text-center text-[9px] font-light uppercase tracking-[0.24em] text-brand-cream/45 sm:px-8">
-                            Secure Booking · Instant Confirmation · Choose Your Barber
+                            Sichere Buchung · Sofortige Bestätigung · Wähle deinen Barber
                         </div>
                     </div>
                 </section>
 
                 {/* Legal */}
                 <div className="mt-5 text-center text-[10px] font-light leading-5 text-brand-textSecondary/50">
-                    By booking an appointment, you confirm that the details you
-                    provide are correct and that you agree to the cancellation
-                    policy.
+                    Mit deiner Buchung bestätigst du, dass deine Angaben korrekt sind und du
+                    den Stornierungsbedingungen zustimmst.
                 </div>
             </div>
 

@@ -5,19 +5,19 @@ import { SERVICES, type Service } from '@/lib/data';
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
   'haircut-beard':
-    'A complete grooming experience combining a precision haircut with detailed beard shaping, clean lines and a polished finish.',
+    'Das komplette Grooming-Erlebnis: präziser Haarschnitt, detaillierte Bartkonturen, saubere Linien und ein perfektes Finish.',
   'mens-haircut':
-    'A tailored haircut shaped around your style and preferences, finished with sharp detailing and a clean, confident look.',
+    'Ein Haarschnitt, der zu deinem Stil und deinen Wünschen passt – mit präzisen Details und einem sauberen Finish.',
   'beard-trim':
-    'Detailed beard shaping and trimming designed to sharpen your profile, define the edges and keep your beard looking fresh.',
+    'Präzises Bartformen und Trimmen für klare Konturen, saubere Kanten und einen gepflegten Look.',
   eyebrows:
-    'Clean, precise eyebrow grooming that removes unwanted growth while keeping a natural, balanced and well-defined finish.',
+    'Saubere und präzise Augenbrauenpflege für eine natürliche, ausgeglichene und klar definierte Form.',
   'facial-cleansing':
-    'A refreshing facial treatment focused on cleansing, skincare and leaving your skin looking clean, smooth and revitalized.',
+    'Erfrischende Gesichtsbehandlung mit Reinigung und Pflege für ein sauberes, glattes und frisches Hautbild.',
   'hot-wax':
-    'Full-face hot wax treatment including the ears and nose for a smoother, cleaner finish and longer-lasting grooming results.',
+    'Warmwachs-Behandlung für das gesamte Gesicht inklusive Ohren und Nase – für ein glattes, sauberes und langanhaltendes Ergebnis.',
   'ears-nose':
-    'Quick and precise grooming for unwanted ear and nose hair, leaving the small details clean and professionally finished.',
+    'Schnelle und präzise Entfernung unerwünschter Haare an Ohren und Nase für ein sauberes, gepflegtes Finish.',
 };
 
 export default function Services() {
@@ -34,7 +34,7 @@ export default function Services() {
       <div className="mx-auto max-w-7xl px-5">
         <div className="text-center">
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            The Menu
+            Unsere Leistungen
           </p>
 
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
@@ -44,7 +44,7 @@ export default function Services() {
           <div className="gold-divider mt-4" />
 
           <p className="mx-auto mt-6 max-w-lg text-base font-light text-brand-textPrimary/85">
-            Considered craftsmanship at transparent prices. Select a grooming package tailored to your routine.
+            Präzises Handwerk zu transparenten Preisen. Wähle die Behandlung, die zu deinem Style und deiner Routine passt.
           </p>
         </div>
 
@@ -76,7 +76,7 @@ function ServiceCard({
     >
       {isPopular && (
         <span className="absolute -top-3 left-6 rounded-full bg-brand-cream px-4 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-bg">
-          Most Popular
+          Am beliebtesten
         </span>
       )}
 
@@ -94,7 +94,7 @@ function ServiceCard({
         {service.duration && (
           <span className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-light text-brand-textPrimary/80">
             <Clock className="h-3 w-3 text-brand-textPrimary/80" />
-            {service.duration} min
+            {service.duration} Min.
           </span>
         )}
 

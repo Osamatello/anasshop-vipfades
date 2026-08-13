@@ -5,10 +5,10 @@ import { BUSINESS } from '@/lib/data';
 
 const NAV = [
   { label: 'Signature Cuts', href: '#services' },
-  { label: 'The VIP Experience', href: '#experience' },
-  { label: 'The Artists', href: '#barbers' },
-  { label: 'Booking', href: '#booking' },
-  { label: 'Visit', href: '#contact' },
+  { label: 'Das VIP Erlebnis', href: '#experience' },
+  { label: 'Unsere Barber', href: '#barbers' },
+  { label: 'Termin buchen', href: '#booking' },
+  { label: 'Besuch uns', href: '#contact' },
 ];
 
 export default function Footer() {
@@ -30,7 +30,7 @@ export default function Footer() {
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="flex items-center gap-3"
-              aria-label="Back to top"
+              aria-label="Nach oben"
             >
               <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm">
                 <img
@@ -59,7 +59,7 @@ export default function Footer() {
               <a
                 href={`tel:${BUSINESS.phone}`}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
-                aria-label="Call VIP FADES"
+                aria-label="VIP FADES anrufen"
               >
                 <Phone className="h-4 w-4" />
               </a>
@@ -69,7 +69,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
-                aria-label="Open Instagram"
+                aria-label="Instagram öffnen"
               >
                 <Instagram className="h-4 w-4" />
               </a>
@@ -79,7 +79,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
-                aria-label="Open directions"
+                aria-label="Route öffnen"
               >
                 <MapPin className="h-4 w-4" />
               </a>
@@ -132,7 +132,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-brand-border pt-8 sm:flex-row">
           <p className="text-xs font-light text-brand-textPrimary/60">
-            © {new Date().getFullYear()} {BUSINESS.name}. All rights reserved.
+            © {new Date().getFullYear()} {BUSINESS.name}. Alle Rechte vorbehalten.
           </p>
 
           <button
@@ -140,7 +140,7 @@ export default function Footer() {
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-brand-cream transition-colors hover:text-brand-textPrimary"
           >
-            Back to top
+            Nach oben
             <ArrowUp className="h-3.5 w-3.5" />
           </button>
         </div>

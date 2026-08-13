@@ -14,7 +14,7 @@ export default function FloatingChat() {
         <button
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand-accent text-brand-textPrimary shadow-2xl shadow-brand-accent/20 transition-all hover:scale-105 hover:bg-brand-hover sm:h-16 sm:w-16"
-          aria-label="Open booking concierge"
+          aria-label="Buchungsassistent öffnen"
         >
           <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7" />
           <span className="absolute -top-1 -right-1 flex h-4 w-4">

@@ -39,7 +39,7 @@ export async function GET() {
         return NextResponse.json(
             {
                 success: false,
-                error: 'Failed to load booking catalog.',
+                error: 'Buchungsdaten konnten nicht geladen werden.',
             },
             {
                 status: 500,

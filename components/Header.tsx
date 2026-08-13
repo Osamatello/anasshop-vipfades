@@ -6,10 +6,10 @@ import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Artists', href: '#barbers' },
-  { label: 'Visit', href: '#contact' },
+  { label: 'Leistungen', href: '#services' },
+  { label: 'Erlebnis', href: '#experience' },
+  { label: 'Barber', href: '#barbers' },
+  { label: 'Besuch', href: '#contact' },
 ];
 
 export default function Header() {
@@ -75,7 +75,7 @@ export default function Header() {
           type="button"
           onClick={handleBrandClick}
           className="flex items-center gap-3"
-          aria-label="VIP FADES BY ANAS home"
+          aria-label="VIP FADES BY ANAS Startseite"
         >
           <Image
             src="/images/favicon.png"
@@ -112,23 +112,21 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {/* Desktop Instagram link */}
-          <a
-            href="https://www.instagram.com/vipfades.kob/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden text-[13px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream lg:inline-flex"
-            aria-label="VIP FADES on Instagram"
+          {/* Desktop booking CTA */}
+          <button
+            type="button"
+            onClick={() => handleNav('/booking')}
+            className="hidden rounded-full border border-brand-cream bg-brand-cream px-7 py-3 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary lg:inline-flex"
           >
-            Instagram ↗
-          </a>
+            Termin buchen
+          </button>
 
           {/* Mobile menu button */}
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
             className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-cream/40 text-brand-cream transition-colors hover:border-brand-cream hover:text-brand-textPrimary lg:hidden"
-            aria-label="Toggle menu"
+            aria-label="Menü öffnen oder schließen"
             aria-expanded={open}
           >
             {open ? (
@@ -158,6 +156,14 @@ export default function Header() {
               {link.label}
             </button>
           ))}
+
+          <button
+            type="button"
+            onClick={() => handleNav('/booking')}
+            className="mt-3 rounded-full border border-brand-cream bg-brand-cream px-6 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
+          >
+            Termin buchen
+          </button>
 
         </nav>
       </div>

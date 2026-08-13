@@ -30,7 +30,7 @@ import {
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-    title: 'Calendar | VIP FADES',
+    title: 'Kalender | VIP FADES',
 };
 
 const ANAS_BARBER_ID =
@@ -40,13 +40,13 @@ const ABD_BARBER_ID =
     'd115a860-db00-4904-a906-5c67478cf6d2';
 
 const WEEKDAYS = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun',
+    'Mo',
+    'Di',
+    'Mi',
+    'Do',
+    'Fr',
+    'Sa',
+    'So',
 ];
 
 const pad = (value: number) =>
@@ -192,7 +192,7 @@ export default async function CalendarPage({
 
     const monthLabel =
         new Intl.DateTimeFormat(
-            'en-GB',
+            'de-DE',
             {
                 month: 'long',
                 year: 'numeric',
@@ -253,7 +253,7 @@ export default async function CalendarPage({
                         <SidebarLink
                             href="/dashboard/calendar"
                             icon={CalendarDays}
-                            label="Calendar"
+                            label="Kalender"
                             active
                         />
                     </nav>
@@ -274,7 +274,7 @@ export default async function CalendarPage({
                                 </p>
 
                                 <h1 className="mt-1 text-3xl font-semibold">
-                                    Booking Calendar
+                                    Buchungskalender
                                 </h1>
 
                                 <p className="mt-1 text-sm text-white/50">
@@ -453,7 +453,7 @@ export default async function CalendarPage({
 
                                                     {dayBookings.length > 3 && (
                                                         <p className="px-1 text-[9px] font-medium text-white/40 sm:text-[10px]">
-                                                            +{dayBookings.length - 3} more
+                                                            +{dayBookings.length - 3} weitere
                                                         </p>
                                                     )}
                                                 </div>

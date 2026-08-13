@@ -8,27 +8,27 @@ import {
 
 export const QUICK_ACTIONS = [
     {
-        label: 'Book an appointment',
+        label: 'Termin buchen',
         value: 'book',
         icon: Calendar,
     },
     {
-        label: 'View prices',
+        label: 'Preise ansehen',
         value: 'prices',
         icon: Tag,
     },
     {
-        label: 'Check availability',
+        label: 'Verfügbarkeit prüfen',
         value: 'availability',
         icon: Clock,
     },
     {
-        label: 'Choose a barber',
+        label: 'Barber wählen',
         value: 'barber',
         icon: UserRound,
     },
     {
-        label: 'Cancel my appointment',
+        label: 'Termin stornieren',
         value: 'cancel',
         icon: CalendarX,
     },

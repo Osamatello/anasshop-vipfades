@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
                 {
                     success: false,
                     error:
-                        "Missing required parameters: barberId, serviceId and date.",
+                        "Erforderliche Buchungsdaten fehlen.",
                 },
                 { status: 400 }
             );

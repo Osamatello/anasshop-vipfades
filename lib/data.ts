@@ -1,17 +1,17 @@
 export const BUSINESS = {
   name: "VIP FADES BY ANAS",
-  tagline: "Premium Cuts. Clean Fades.",
+  tagline: "Premium Cuts. Saubere Fades.",
   description:
-    "Precision barbering, modern style and a premium experience in Koblenz.",
+    "Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz.",
   address: "An der Moselbrücke 9, 56068 Koblenz",
   phone: "017663782674",
   phoneFormatted: "+49 176 63782674",
   instagram: "@vipfades.kob",
   instagramUrl: "https://instagram.com/vipfades.kob",
   hours: {
-    days: "Monday to Thursday",
-    time: "10:00 to 19:00",
-    walkins: "Walk-ins welcome",
+    days: "Montag bis Donnerstag",
+    time: "10:00 bis 19:00",
+    walkins: "Walk-ins willkommen",
   },
 };
 
@@ -26,50 +26,50 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     id: "haircut",
-    name: "Men's Haircut",
+    name: "Herrenhaarschnitt",
     price: 20,
     duration: 30,
-    description: "Precision cut tailored to your style.",
+    description: "Präziser Haarschnitt, abgestimmt auf deinen Style.",
   },
   {
     id: "beard",
-    name: "Beard Trim",
+    name: "Bart trimmen",
     price: 15,
     duration: 20,
-    description: "Shape, line and refine your beard.",
+    description: "Formen, Konturen und ein sauberes Bart-Finish.",
   },
   {
     id: "haircut-beard",
-    name: "Haircut + Beard",
+    name: "Haarschnitt + Bart",
     price: 35,
     duration: 40,
-    description: "The full grooming experience.",
+    description: "Das komplette Grooming-Erlebnis.",
   },
   {
     id: "eyebrows",
-    name: "Eyebrows",
+    name: "Augenbrauen",
     price: 7,
     duration: 10,
-    description: "Clean arch and precise definition.",
+    description: "Saubere Form und präzise Konturen.",
   },
   {
     id: "facial",
-    name: "Facial Cleansing",
+    name: "Gesichtsreinigung",
     price: 20,
-    description: "Deep cleanse for refreshed skin.",
+    description: "Tiefenreinigung für ein frisches Hautgefühl.",
   },
   {
     id: "hotwax",
-    name: "Hot Wax",
+    name: "Heißwachs",
     price: 10,
     duration: 10,
-    description: "Smooth finish with warm wax treatment.",
+    description: "Glattes Finish mit warmer Wachsbehandlung.",
   },
   {
     id: "ears-nose",
-    name: "Ears & Nose",
+    name: "Ohren & Nase",
     price: 5,
-    description: "Quick and clean detailing.",
+    description: "Schnelle und saubere Detailpflege.",
   },
 ];
 
@@ -84,14 +84,14 @@ export const BARBERS: Barber[] = [
   {
     id: "anas",
     name: "Anas",
-    title: "Head Barber & Founder",
-    specialty: "Fades, sharp lines & precision cuts",
+    title: "Head Barber & Gründer",
+    specialty: "Fades, scharfe Konturen & Präzisions-Cuts",
   },
   {
     id: "abd",
     name: "Abd",
     title: "Senior Barber",
-    specialty: "Classic cuts, beard sculpting & styling",
+    specialty: "Klassische Cuts, Bartstyling & Styling",
   },
 ];
 

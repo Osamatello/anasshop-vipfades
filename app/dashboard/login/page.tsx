@@ -2,7 +2,7 @@ import LoginForm from './LoginForm';
 
 export const metadata = {
     title:
-        'Staff Login | VIP FADES',
+        'Mitarbeiter-Login | VIP FADES',
     robots: {
         index: false,
         follow: false,
@@ -23,11 +23,11 @@ export default function DashboardLoginPage() {
                     </p>
 
                     <h1 className="mt-3 font-serif text-3xl text-brand-textPrimary">
-                        Staff Dashboard
+                        Mitarbeiter-Dashboard
                     </h1>
 
                     <p className="mt-3 text-sm leading-relaxed text-brand-textSecondary">
-                        Sign in to access the private booking dashboard.
+                        Melde dich an, um auf das private Buchungs-Dashboard zuzugreifen.
                     </p>
                 </div>
 

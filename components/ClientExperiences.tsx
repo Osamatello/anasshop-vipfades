@@ -6,25 +6,25 @@ const REVIEWS = [
   {
     id: 1,
     rating: 5,
-    text: 'Great service, great hair cut, recommend to everyone.',
+    text: 'Top Service, top Haarschnitt – kann ich jedem empfehlen.',
     name: 'Sead Sokolovic',
-    date: '3 weeks ago',
+    date: 'vor 3 Wochen',
     initials: 'SS',
   },
   {
     id: 2,
     rating: 5,
-    text: 'Very nice! Walk in appointment and got in right away. Took about eight minutes for a shave.',
+    text: 'Sehr gut! Bin ohne Termin reingekommen und direkt drangekommen. Die Rasur hat ungefähr acht Minuten gedauert.',
     name: 'Camden Leslie',
-    date: '8 months ago',
+    date: 'vor 8 Monaten',
     initials: 'CL',
   },
   {
     id: 3,
     rating: 5,
-    text: 'Good vibe, great barber skills, amazing service for just 20 euro. I totally recommend!',
+    text: 'Gute Stimmung, starke Barber-Skills und super Service für nur 20 Euro. Klare Empfehlung!',
     name: 'Daniel Tian',
-    date: '1 year ago',
+    date: 'vor 1 Jahr',
     initials: 'DT',
   },
   {
@@ -32,7 +32,7 @@ const REVIEWS = [
     rating: 5,
     text: 'Meine Bedürfnisse werden korrekt wahrgenommen und umgesetzt! Ob Termin oder nicht, ich hatte nie lange Wartezeit. Die Preise sind echt unschlagbar. Kann ich jedem empfehlen.',
     name: 'Johannes Brunke',
-    date: '1 month ago',
+    date: 'vor 1 Monat',
     initials: 'JB',
   },
   {
@@ -40,7 +40,7 @@ const REVIEWS = [
     rating: 5,
     text: 'Ich bin absolut begeistert! Der Service war erstklassig, das Team super freundlich und professionell. Auf meine Wünsche wurde perfekt eingegangen und das Ergebnis ist einfach top.',
     name: 'Jeremy Menges',
-    date: '3 months ago',
+    date: 'vor 3 Monaten',
     initials: 'JM',
   },
   {
@@ -48,7 +48,7 @@ const REVIEWS = [
     rating: 5,
     text: 'Sehr guter Laden, immer gute Haarschnitte und alles sehr sauber. Parfums sind auch sehr hochwertig. Gerne Kunde dort.',
     name: 'Nicolas Yarro',
-    date: '3 weeks ago',
+    date: 'vor 3 Wochen',
     initials: 'NY',
   },
   {
@@ -56,7 +56,7 @@ const REVIEWS = [
     rating: 5,
     text: 'War zweimal da, alles war perfekt und sehr sauber geschnitten. Kann ich nur weiterempfehlen.',
     name: 'Wade3 Selawi',
-    date: '3 weeks ago',
+    date: 'vor 3 Wochen',
     initials: 'WS',
   },
 ];
@@ -81,17 +81,17 @@ export default function ClientExperiences() {
         {/* Section heading */}
         <div className="mb-14 text-center">
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            Google Reviews
+            Google-Bewertungen
           </p>
 
           <h2 className="mt-4 font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
-            Client Experiences
+            Das sagen unsere Kunden
           </h2>
 
           <div className="gold-divider mt-4" />
 
           <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Real experiences shared by our clients on Google.
+            Echte Erfahrungen unserer Kunden auf Google.
           </p>
         </div>
 
@@ -216,14 +216,14 @@ function ReviewItem({
         <div className="mb-5 flex items-center justify-between">
           <div
             className="flex gap-1"
-            aria-label={`${review.rating} out of 5 stars`}
+            aria-label={`${review.rating} von 5 Sternen`}
           >
             {Array.from({ length: 5 }).map((_, starIndex) => (
               <Star
                 key={starIndex}
                 className={`h-3.5 w-3.5 ${starIndex < review.rating
-                    ? 'fill-brand-cream text-brand-cream'
-                    : 'fill-transparent text-brand-cream/30'
+                  ? 'fill-brand-cream text-brand-cream'
+                  : 'fill-transparent text-brand-cream/30'
                   }`}
               />
             ))}

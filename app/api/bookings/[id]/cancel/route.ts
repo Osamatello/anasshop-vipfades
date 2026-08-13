@@ -48,7 +48,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Too many cancellation attempts. Please wait a few minutes and try again.",
+                        "Zu viele Stornierungsversuche. Bitte warte ein paar Minuten und versuche es erneut.",
                 },
                 {
                     status: 429,
@@ -82,7 +82,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Missing booking ID.",
+                        "Buchungs-ID fehlt.",
                 },
                 {
                     status: 400,
@@ -107,7 +107,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "A valid booking phone number is required.",
+                        "Eine gültige Telefonnummer der Buchung ist erforderlich.",
                 },
                 {
                     status: 400,
@@ -127,7 +127,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Booking not found.",
+                        "Termin wurde nicht gefunden.",
                 },
                 {
                     status: 404,
@@ -144,7 +144,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Booking verification failed.",
+                        "Die Überprüfung des Termins ist fehlgeschlagen.",
                 },
                 {
                     status: 403,
@@ -172,7 +172,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "This booking cannot be cancelled.",
+                        "Dieser Termin kann nicht storniert werden.",
                 },
                 {
                     status: 409,
@@ -231,7 +231,7 @@ export async function POST(
             {
                 success: false,
                 error:
-                    "Failed to cancel booking.",
+                    "Termin konnte nicht storniert werden.",
             },
             {
                 status: 500,

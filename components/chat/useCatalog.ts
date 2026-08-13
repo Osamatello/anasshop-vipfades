@@ -34,8 +34,8 @@ function mapBarber(barber: CatalogBarberRow): Barber {
         return {
             id: barber.id,
             name: barber.name,
-            title: 'Head Barber & Founder',
-            specialty: 'Fades, sharp lines & precision cuts',
+            title: 'Head Barber & Gründer',
+            specialty: 'Fades, scharfe Konturen & Präzisions-Cuts',
         };
     }
 
@@ -43,17 +43,135 @@ function mapBarber(barber: CatalogBarberRow): Barber {
         id: barber.id,
         name: barber.name,
         title: 'Senior Barber',
-        specialty: 'Classic cuts, beard sculpting & styling',
+        specialty: 'Klassische Cuts, Bartstyling & Styling',
     };
 }
 
 function mapService(service: CatalogServiceRow): Service {
+    const normalizedSlug =
+        service.slug
+            .trim()
+            .toLowerCase();
+
+    const normalizedName =
+        service.name
+            .trim()
+            .toLowerCase();
+
+    const matches = (
+        ...values: string[]
+    ) =>
+        values.some(
+            (value) =>
+                normalizedSlug === value ||
+                normalizedName === value
+        );
+
+    let localized:
+        | {
+            name: string;
+            description: string;
+        }
+        | undefined;
+
+    if (
+        matches(
+            'haircut',
+            'mens-haircut',
+            "men's haircut",
+            'mens haircut'
+        )
+    ) {
+        localized = {
+            name: 'Herrenhaarschnitt',
+            description:
+                'Präziser Haarschnitt, abgestimmt auf deinen Style.',
+        };
+    } else if (
+        matches(
+            'beard',
+            'beard-trim',
+            'beard trim'
+        )
+    ) {
+        localized = {
+            name: 'Bart trimmen',
+            description:
+                'Formen, Konturen und ein sauberes Bart-Finish.',
+        };
+    } else if (
+        matches(
+            'haircut-beard',
+            'haircut-and-beard',
+            'haircut + beard'
+        )
+    ) {
+        localized = {
+            name: 'Haarschnitt + Bart',
+            description:
+                'Das komplette Grooming-Erlebnis.',
+        };
+    } else if (
+        matches(
+            'eyebrows',
+            'eyebrow'
+        )
+    ) {
+        localized = {
+            name: 'Augenbrauen',
+            description:
+                'Saubere Form und präzise Konturen.',
+        };
+    } else if (
+        matches(
+            'facial',
+            'facial-cleansing',
+            'facial cleansing'
+        )
+    ) {
+        localized = {
+            name: 'Gesichtsreinigung',
+            description:
+                'Tiefenreinigung für ein frisches Hautgefühl.',
+        };
+    } else if (
+        matches(
+            'hotwax',
+            'hot-wax',
+            'hot wax'
+        )
+    ) {
+        localized = {
+            name: 'Heißwachs',
+            description:
+                'Glattes Finish mit warmer Wachsbehandlung.',
+        };
+    } else if (
+        matches(
+            'ears-nose',
+            'ears-and-nose',
+            'ears & nose'
+        )
+    ) {
+        localized = {
+            name: 'Ohren & Nase',
+            description:
+                'Schnelle und saubere Detailpflege.',
+        };
+    }
+
     return {
         id: service.id,
-        name: service.name,
+        name:
+            localized?.name ??
+            service.name,
         price: service.price,
-        duration: service.duration_minutes,
-        description: service.description ?? '',
+        duration:
+            service.duration_minutes,
+        description:
+            localized?.description ??
+            service.description ??
+            '',
     };
 }
 
@@ -90,7 +208,7 @@ export function useCatalog() {
                 !data.services
             ) {
                 throw new Error(
-                    data.error || 'Failed to load booking catalog.',
+                    data.error || 'Buchungsdaten konnten nicht geladen werden.',
                 );
             }
 
@@ -133,7 +251,7 @@ export function useCatalog() {
                 const message =
                     catalogError instanceof Error
                         ? catalogError.message
-                        : 'Failed to load booking catalog.';
+                        : 'Buchungsdaten konnten nicht geladen werden.';
 
                 setError(message);
                 setBarbers([]);

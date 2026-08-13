@@ -3,24 +3,24 @@
 export default function Statistics() {
   const stats = [
     {
-      eyebrow: 'OUR TEAM',
+      eyebrow: 'UNSER TEAM',
       value: '2',
-      label: 'Professional Barbers',
+      label: 'Professionelle Barber',
     },
     {
-      eyebrow: 'THE MENU',
+      eyebrow: 'LEISTUNGEN',
       value: '7',
       label: 'Signature Services',
     },
     {
-      eyebrow: 'BOOKING',
-      value: 'Mon–Thu',
-      label: 'Appointments',
+      eyebrow: 'TERMINE',
+      value: 'Mo–Do',
+      label: 'Online-Termine',
     },
     {
-      eyebrow: 'FLEXIBILITY',
+      eyebrow: 'FLEXIBILITÄT',
       value: 'Walk-ins',
-      label: 'Welcome Daily',
+      label: 'Täglich willkommen',
     },
   ];
 
@@ -32,8 +32,8 @@ export default function Statistics() {
             <div
               key={index}
               className={`reveal group relative flex flex-col items-center justify-center px-6 py-6 text-center ${index !== stats.length - 1
-                  ? 'md:border-r md:border-brand-border/60'
-                  : ''
+                ? 'md:border-r md:border-brand-border/60'
+                : ''
                 }`}
             >
               {/* Small heading */}

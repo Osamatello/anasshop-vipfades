@@ -126,7 +126,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Too many booking attempts. Please wait a few minutes and try again.",
+                        "Zu viele Buchungsversuche. Bitte warte ein paar Minuten und versuche es erneut.",
                 },
                 {
                     status: 429,
@@ -177,7 +177,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Missing booking information.",
+                        "Buchungsdaten fehlen.",
                 },
                 {
                     status: 400,
@@ -195,7 +195,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Past dates cannot be booked. Please choose another date.",
+                        "Vergangene Tage können nicht gebucht werden. Bitte wähle ein anderes Datum.",
                 },
                 {
                     status: 400,
@@ -214,7 +214,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "This appointment time has already passed. Please choose a later time.",
+                        "Diese Uhrzeit ist bereits vorbei. Bitte wähle eine spätere Zeit.",
                 },
                 {
                     status: 400,
@@ -276,7 +276,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "Service not found.",
+                        "Leistung wurde nicht gefunden.",
                 },
                 {
                     status: 404,
@@ -304,7 +304,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "This appointment time is not available. Please choose another available time.",
+                        "Dieser Termin ist nicht verfügbar. Bitte wähle eine andere freie Zeit.",
                 },
                 {
                     status: 409,
@@ -366,7 +366,7 @@ export async function POST(
                 {
                     success: false,
                     error:
-                        "This time slot is no longer available. Please choose another time.",
+                        "Diese Zeit ist nicht mehr verfügbar. Bitte wähle eine andere Uhrzeit.",
                 },
                 {
                     status: 409,
@@ -472,7 +472,7 @@ export async function POST(
             {
                 success: false,
                 error:
-                    "Failed to create booking.",
+                    "Buchung konnte nicht erstellt werden.",
             },
             {
                 status: 500,

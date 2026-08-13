@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { BARBERS, type Barber } from '@/lib/data';
 
@@ -13,18 +14,18 @@ export default function Barbers() {
         {/* Section heading */}
         <div className="mb-14 text-center">
           <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            The Team
+            Unser Team
           </span>
 
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
-            The Artists Behind Every Cut
+            Die Barber hinter jedem Cut
           </h2>
 
           <div className="gold-divider mt-4" />
 
           <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Two artists. One standard. Select the specialist who aligns with
-            your personal style.
+            Zwei Barber. Ein Standard. Wähle den Barber, der am besten zu
+            deinem persönlichen Style passt.
           </p>
         </div>
 
@@ -55,16 +56,11 @@ function BarberCard({
       ? '/images/anas-barber.jpeg'
       : '/images/abd-barber.jpeg';
 
-  const scrollToBooking = () => {
-    document
-      .querySelector('#booking')
-      ?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const features = [
-    'Fades & precision lines',
-    'Personalised consultation',
-    'Premium grooming products',
+    'Fades & präzise Konturen',
+    'Persönliche Beratung',
+    'Premium-Grooming-Produkte',
   ];
 
   return (
@@ -115,15 +111,16 @@ function BarberCard({
       </ul>
 
       {/* Booking button */}
-      <button
-        type="button"
-        onClick={scrollToBooking}
+      <Link
+        href={`/booking?barber=${encodeURIComponent(
+          barber.name.toLowerCase(),
+        )}`}
         className="mt-auto pt-8"
       >
         <span className="flex w-full items-center justify-center rounded-full border border-brand-cream bg-brand-cream px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary">
-          Book with {barber.name}
+          Termin bei {barber.name} buchen
         </span>
-      </button>
+      </Link>
     </article>
   );
 }

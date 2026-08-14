@@ -7,6 +7,7 @@ import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Leistungen', href: '#services' },
+  { label: 'VIP Look', href: '#vip-look' },
   { label: 'Erlebnis', href: '#experience' },
   { label: 'Barber', href: '#barbers' },
   { label: 'Besuch', href: '#contact' },

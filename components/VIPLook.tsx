@@ -88,7 +88,7 @@ export default function VIPLook() {
     };
 
     return (
-        <section className="relative overflow-hidden bg-brand-bg py-20 md:py-28">
+        <section id="vip-look" className="relative scroll-mt-24 overflow-hidden bg-brand-bg py-20 md:py-28">
             <div
                 aria-hidden="true"
                 className="

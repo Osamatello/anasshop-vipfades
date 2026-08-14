@@ -1,15 +1,31 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
 const SITE_URL = 'https://vip-fades.com';
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+
   title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
+
   description:
     'VIP FADES BY ANAS steht für präzise Haarschnitte, saubere Fades, Bartpflege und modernes Barbering in Koblenz. Buche deinen Termin online bei Anas oder Abd.',
+
   keywords: [
     'VIP FADES',
     'VIP FADES Koblenz',
@@ -22,9 +38,11 @@ export const metadata: Metadata = {
     'Anas Barber',
     'Premium Barbershop',
   ],
+
   authors: [{ name: 'VIP FADES BY ANAS' }],
   creator: 'VIP FADES BY ANAS',
   publisher: 'VIP FADES BY ANAS',
+
   robots: {
     index: true,
     follow: true,
@@ -33,14 +51,17 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+
   alternates: {
     canonical: SITE_URL,
   },
+
   icons: {
     icon: '/images/vip-favicon.png',
     shortcut: '/images/vip-favicon.png',
     apple: '/images/vip-favicon.png',
   },
+
   openGraph: {
     type: 'website',
     locale: 'de_DE',
@@ -59,6 +80,7 @@ export const metadata: Metadata = {
       },
     ],
   },
+
   twitter: {
     card: 'summary_large_image',
     title: 'VIP FADES BY ANAS | Premium Barbershop in Koblenz',
@@ -74,7 +96,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className="scroll-smooth">
+    <html
+      lang="de"
+      className={`${inter.variable} ${cormorant.variable} scroll-smooth`}
+    >
       <body>
         {children}
         <SpeedInsights />

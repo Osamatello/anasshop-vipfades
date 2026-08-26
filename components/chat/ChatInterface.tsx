@@ -458,10 +458,14 @@ export default function ChatInterface({
         formatLocalDate(candidate);
     }
 
-    return dateOptions().find(
-      (option) =>
-        option.value === value,
-    )?.value;
+    const weekday = candidate.getUTCDay();
+
+    // Online booking is available Monday - Thursday only.
+    if (weekday < 1 || weekday > 4) {
+      return undefined;
+    }
+
+    return value;
   };
 
   const resolveWeekday = (

@@ -2,6 +2,8 @@
 
 import { Clock } from 'lucide-react';
 import { SERVICES, type Service } from '@/lib/data';
+import VipPackageCard from '@/components/VipPackageCard';
+import { VIP_PACKAGE_CARDS } from '@/components/chat/constants';
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
   'haircut-beard':
@@ -34,21 +36,27 @@ export default function Services() {
       <div className="mx-auto max-w-7xl px-5">
         <div className="text-center">
           <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            Unsere Leistungen
+            VIP FADES
           </p>
 
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
-            Signature Cuts
+            Unsere Leistungen
           </h2>
 
           <div className="gold-divider mt-4" />
 
           <p className="mx-auto mt-6 max-w-lg text-base font-light text-brand-textPrimary/85">
-            Präzises Handwerk zu transparenten Preisen. Wähle die Behandlung, die zu deinem Style und deiner Routine passt.
+            Präzises Handwerk zu transparenten Preisen. Wähle die Behandlung, die zu deinem Stil und deiner Routine passt.
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+          {VIP_PACKAGE_CARDS.map((vipPackage) => (
+            <VipPackageCard key={vipPackage.id} vipPackage={vipPackage} />
+          ))}
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {orderedServices.map((service: Service, index: number) => (
             <ServiceCard key={service.id} service={service} index={index} />
           ))}

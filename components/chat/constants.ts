@@ -10,6 +10,7 @@ import {
     VIP_PACKAGE_DEFINITIONS,
     type VipPackageSlug,
 } from '@/lib/booking/vipPackages';
+import type { VipPackageCardDetails } from '@/components/VipPackageCard';
 
 export const QUICK_ACTIONS = [
     {
@@ -52,18 +53,8 @@ export const QUICK_ACTIONS = [
  * == display order: most premium first (VIP KÖNIGSKLASSE, then VIP EXKLUSIV).
  * All customer-facing wording is German only.
  */
-export type VipPackage = {
-    id: string;
+export type VipPackage = VipPackageCardDetails & {
     slug: VipPackageSlug;
-    tier: 'koenigsklasse' | 'exklusiv';
-    name: string;
-    badge: string;
-    price: number;
-    durationMinutes: number;
-    description: string;
-    includes: string;
-    originalPrice?: number;
-    discountLabel?: string;
 };
 
 /**
@@ -104,3 +95,9 @@ export const VIP_PACKAGE_ORDER: VipPackageSlug[] = [
     'vip-exklusiv',
 ];
 
+/** Static package cards for customer-facing areas outside the live catalogue. */
+export const VIP_PACKAGE_CARDS: VipPackage[] = VIP_PACKAGE_ORDER.map((slug) => ({
+    ...VIP_PACKAGE_PRESENTATION[slug],
+    ...VIP_PACKAGE_DEFINITIONS[slug],
+    slug,
+}));

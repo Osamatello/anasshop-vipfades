@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 
 import type { Barber, Service } from '@/lib/data';
 
+import {
+    VIP_PACKAGE_ORDER,
+    VIP_PACKAGE_PRESENTATION,
+    type VipPackage,
+} from './constants';
+import { isVipPackageSlug } from '@/lib/booking/vipPackages';
+
 type CatalogBarberRow = {
     id: string;
     name: string;
@@ -175,9 +182,37 @@ function mapService(service: CatalogServiceRow): Service {
     };
 }
 
+/**
+ * Builds the bookable VIP package cards from the catalogue. A package is only
+ * offered when it exists as an ACTIVE services row, so the two packages stay
+ * hidden until they are switched on in the database.
+ */
+function mapVipPackages(rows: CatalogServiceRow[]): VipPackage[] {
+    const bySlug = new Map(rows.map((row) => [row.slug.trim().toLowerCase(), row]));
+
+    return VIP_PACKAGE_ORDER.flatMap((slug) => {
+        const row = bySlug.get(slug);
+
+        if (!row) {
+            return [];
+        }
+
+        return [
+            {
+                ...VIP_PACKAGE_PRESENTATION[slug],
+                slug,
+                name: row.name,
+                price: Number(row.price),
+                durationMinutes: row.duration_minutes,
+            },
+        ];
+    });
+}
+
 export function useCatalog() {
     const [barbers, setBarbers] = useState<Barber[]>([]);
     const [services, setServices] = useState<Service[]>([]);
+    const [vipPackages, setVipPackages] = useState<VipPackage[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -231,7 +266,14 @@ export function useCatalog() {
                         }
 
                         setBarbers(data.barbers!.map(mapBarber));
-                        setServices(data.services!.map(mapService));
+                        // VIP packages are their own products — never list them
+                        // among the individual "Einzelleistungen".
+                        setVipPackages(mapVipPackages(data.services!));
+                        setServices(
+                            data.services!
+                                .filter((service) => !isVipPackageSlug(service.slug))
+                                .map(mapService),
+                        );
                         return;
                     } catch (catalogError) {
                         lastError = catalogError;
@@ -256,6 +298,7 @@ export function useCatalog() {
                 setError(message);
                 setBarbers([]);
                 setServices([]);
+                setVipPackages([]);
             } finally {
                 if (!cancelled) {
                     setLoading(false);
@@ -273,6 +316,7 @@ export function useCatalog() {
     return {
         barbers,
         services,
+        vipPackages,
         loading,
         error,
     };

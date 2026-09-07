@@ -313,7 +313,7 @@ export default async function DashboardPage() {
             ) =>
                 total +
                 Number(
-                    booking.service_price,
+                    booking.total_price,
                 ),
             0,
         );
@@ -793,17 +793,32 @@ function ScheduleRow({
 
                     <p className="mt-1 text-sm text-white/55">
                         {
-                            booking.service_name
+                            booking.service_label
                         }
                     </p>
+
+                    {!booking.calendar_synced && (
+                        <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+                            Kalender nicht synchronisiert
+                        </p>
+                    )}
                 </div>
 
-                <p className="text-sm text-white/70">
-                    €
-                    {
-                        booking.service_price
-                    }
-                </p>
+                <div className="text-sm text-white/70 sm:text-right">
+                    <p>
+                        €
+                        {
+                            booking.total_price
+                        }
+                    </p>
+
+                    <p className="mt-1 text-xs text-white/40">
+                        {
+                            booking.total_duration_minutes
+                        }{' '}
+                        Min.
+                    </p>
+                </div>
             </div>
         </article>
     );
@@ -893,9 +908,22 @@ function UpcomingRow({
                         <span className="rounded-md bg-[#d8b76d] px-2 py-0.5 text-[11px] font-semibold text-[#151515]">
                             €
                             {
-                                booking.service_price
+                                booking.total_price
                             }
                         </span>
+
+                        <span className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-white/60">
+                            {
+                                booking.total_duration_minutes
+                            }{' '}
+                            Min.
+                        </span>
+
+                        {!booking.calendar_synced && (
+                            <span className="rounded-md border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+                                Kalender nicht synchronisiert
+                            </span>
+                        )}
                     </div>
 
                     <p className="mt-2 text-base font-semibold">
@@ -906,7 +934,7 @@ function UpcomingRow({
 
                     <p className="mt-1 text-sm text-white/55">
                         {
-                            booking.service_name
+                            booking.service_label
                         }
                     </p>
 

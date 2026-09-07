@@ -22,6 +22,17 @@ import {
 } from './intentParser';
 import { useAvailability } from './useAvailability';
 import { useCatalog } from './useCatalog';
+import ServicesPicker, { type ServicesSelection } from './ServicesPicker';
+import {
+  selectionLabel,
+  selectionToAvailability,
+  selectionToBookingPayload,
+  selectionTotalDuration,
+  selectionTotalPrice,
+  servicesSelection,
+  vipSelection,
+  type BookingSelection,
+} from './selection';
 
 import {
   validateCustomerName,
@@ -109,6 +120,7 @@ export default function ChatInterface({
   const {
     barbers,
     services,
+    vipPackages,
     loading: catalogLoading,
     error: catalogError,
   } = useCatalog();
@@ -219,7 +231,6 @@ export default function ChatInterface({
     pushBot(
       `Perfekt. ${selectedBarber.name} ist ausgewählt. Welche Leistung möchtest du?`,
       {
-        options: serviceOptions(),
         chips: ['Zurück'],
       },
     );
@@ -238,14 +249,6 @@ export default function ChatInterface({
       behavior: 'smooth',
     });
   }, [messages, typing]);
-
-  const serviceOptions = () =>
-    services.map((service) => ({
-      label: service.name,
-      value: service.id,
-      sub: `€${service.price}${service.duration ? ` · ${service.duration} Min.` : ''
-        }`,
-    }));
 
   const barberOptions = () =>
     barbers.map((barber) => ({
@@ -552,14 +555,14 @@ export default function ChatInterface({
   };
 
   const loadDateAvailability = async ({
-    service,
+    selection,
     barber,
     date,
     timeOfDay,
     slotPreference,
     pushDateAsUser = true,
   }: {
-    service: NonNullable<BookingDraft['service']>;
+    selection: BookingSelection;
     barber: NonNullable<BookingDraft['barber']>;
     date: string;
     timeOfDay?: TimeOfDay;
@@ -579,7 +582,7 @@ export default function ChatInterface({
     if (barberDayOff) {
       setDraft((currentDraft) => ({
         ...currentDraft,
-        service,
+        selection,
         barber,
         date: undefined,
         time: undefined,
@@ -604,7 +607,7 @@ export default function ChatInterface({
     if (isPastInKoblenz(date)) {
       setDraft((currentDraft) => ({
         ...currentDraft,
-        service,
+        selection,
         barber,
         date: undefined,
         time: undefined,
@@ -628,7 +631,7 @@ export default function ChatInterface({
 
     setDraft((currentDraft) => ({
       ...currentDraft,
-      service,
+      selection,
       barber,
       date,
       time: undefined,
@@ -647,8 +650,10 @@ export default function ChatInterface({
     const availableSlots =
       await loadAvailability({
         barberId: barber.id,
-        serviceId: service.id,
         date,
+        // Availability always uses the customer's COMPLETE selection, so the
+        // returned slots already fit the full combined / VIP duration.
+        selection: selectionToAvailability(selection),
       });
 
     if (availabilityError) {
@@ -749,11 +754,11 @@ export default function ChatInterface({
   };
 
   const continueWithPreferredDate = async ({
-    service,
+    selection,
     barber,
     preference = bookingPreference,
   }: {
-    service: NonNullable<BookingDraft['service']>;
+    selection: BookingSelection;
     barber: NonNullable<BookingDraft['barber']>;
     preference?: BookingPreference;
   }) => {
@@ -837,7 +842,7 @@ export default function ChatInterface({
     }
 
     await loadDateAvailability({
-      service,
+      selection,
       barber,
       date: preferredDate,
       timeOfDay:
@@ -861,7 +866,6 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot('Perfekt. Welche Leistung möchtest du buchen?', {
-      options: serviceOptions(),
       chips: ['Zurück'],
     });
   };
@@ -934,7 +938,6 @@ export default function ChatInterface({
     pushBot(
       `Online-Termine sind ${BUSINESS.hours.days} von ${BUSINESS.hours.time} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
       {
-        options: serviceOptions(),
         chips: ['Zurück'],
       },
     );
@@ -1034,14 +1037,8 @@ export default function ChatInterface({
               bookingDate: string;
               startTime: string;
             }) => {
-              const localizedService =
-                services.find(
-                  (service) =>
-                    service.id === booking.serviceId,
-                );
-
               return {
-                label: `${localizedService?.name ?? booking.serviceName} bei ${booking.barberName}`,
+                label: `${booking.serviceName} bei ${booking.barberName}`,
                 value: booking.id,
                 sub: `${booking.bookingDate} · ${booking.startTime}`,
               };
@@ -1175,10 +1172,9 @@ export default function ChatInterface({
       pushBot('Kein Problem. Wähle den Termin aus, den du stornieren möchtest.', {
         options: cancellationBookings.map((booking) => {
           const barber = barbers.find((item) => item.id === booking.barberId);
-          const service = services.find((item) => item.id === booking.serviceId);
 
           return {
-            label: `${service?.name ?? 'Termin'} bei ${barber?.name ?? 'deinem Barber'}`,
+            label: `${booking.serviceName ?? 'Termin'} bei ${barber?.name ?? 'deinem Barber'}`,
             value: booking.id,
             sub: `${booking.bookingDate} · ${booking.startTime}`,
           };
@@ -1227,7 +1223,7 @@ export default function ChatInterface({
     if (step === 'pickBarber') {
       setDraft((currentDraft) => ({
         ...currentDraft,
-        service: undefined,
+        selection: undefined,
         barber: undefined,
         date: undefined,
         time: undefined,
@@ -1239,7 +1235,6 @@ export default function ChatInterface({
       setStep('pickService');
 
       pushBot('Klar. Wähle deine Leistung noch einmal.', {
-        options: serviceOptions(),
         chips: ['Zurück'],
       });
 
@@ -1422,18 +1417,19 @@ export default function ChatInterface({
     return false;
   };
 
-  const pickService = async (id: string) => {
-    const service = services.find((item) => item.id === id);
-
-    if (!service) {
-      return;
-    }
-
+  /**
+   * Accepts the customer's confirmed selection (one service, several services,
+   * or a VIP package) and continues the normal booking flow.
+   */
+  const applySelection = async (
+    selection: BookingSelection,
+    { echoAsUser = true }: { echoAsUser?: boolean } = {},
+  ) => {
     const selectedBarber = draft.barber;
 
     setDraft((currentDraft) => ({
       ...currentDraft,
-      service,
+      selection,
       date: undefined,
       time: undefined,
       name: undefined,
@@ -1441,11 +1437,18 @@ export default function ChatInterface({
     }));
 
     resetAvailability();
-    pushUser(service.name);
+
+    const label = selectionLabel(selection);
+    const totalPrice = selectionTotalPrice(selection);
+    const totalDuration = selectionTotalDuration(selection);
+
+    if (echoAsUser) {
+      pushUser(label);
+    }
 
     if (selectedBarber) {
       await continueWithPreferredDate({
-        service,
+        selection,
         barber: selectedBarber,
       });
 
@@ -1459,15 +1462,27 @@ export default function ChatInterface({
         bookingPreference,
       );
 
+    const summary = `${label} — €${totalPrice} · ${totalDuration} Min.`;
+
     pushBot(
       preferenceText
-        ? `Gute Wahl. ${service.name} kostet €${service.price}. Deine Auswahl ${preferenceText} habe ich übernommen. Jetzt wählst du deinen Barber.`
-        : `Gute Wahl. ${service.name} kostet €${service.price}. Jetzt wählst du deinen Barber.`,
+        ? `Gute Wahl. ${summary}. Deine Auswahl ${preferenceText} habe ich übernommen. Jetzt wählst du deinen Barber.`
+        : `Gute Wahl. ${summary}. Jetzt wählst du deinen Barber.`,
       {
         options: barberOptions(),
         chips: ['Zurück'],
       },
     );
+  };
+
+  const pickService = async (id: string) => {
+    const service = services.find((item) => item.id === id);
+
+    if (!service) {
+      return;
+    }
+
+    await applySelection(servicesSelection([service]));
   };
 
   const preselectBarber = (id: string) => {
@@ -1486,7 +1501,6 @@ export default function ChatInterface({
     pushBot(
       `Perfekt. ${barber.name} ist ausgewählt. Welche Leistung möchtest du?`,
       {
-        options: serviceOptions(),
         chips: ['Zurück'],
       },
     );
@@ -1499,7 +1513,7 @@ export default function ChatInterface({
       return;
     }
 
-    const selectedService = draft.service;
+    const selectedSelection = draft.selection;
 
     setDraft((currentDraft) => ({
       ...currentDraft,
@@ -1514,9 +1528,9 @@ export default function ChatInterface({
 
     pushUser(barber.name);
 
-    if (selectedService) {
+    if (selectedSelection) {
       await continueWithPreferredDate({
-        service: selectedService,
+        selection: selectedSelection,
         barber,
       });
 
@@ -1528,14 +1542,13 @@ export default function ChatInterface({
     pushBot(
       `Perfekt. ${barber.name} ist ausgewählt. Welche Leistung möchtest du?`,
       {
-        options: serviceOptions(),
         chips: ['Zurück'],
       },
     );
   };
 
   const pickDate = async (date: string) => {
-    if (!draft.service || !draft.barber) {
+    if (!draft.selection || !draft.barber) {
       pushBot(
         'Ich brauche noch deine Leistung und deinen Barber, bevor ich die verfügbaren Zeiten prüfen kann.',
         {
@@ -1546,7 +1559,7 @@ export default function ChatInterface({
     }
 
     await loadDateAvailability({
-      service: draft.service,
+      selection: draft.selection,
       barber: draft.barber,
       date,
       timeOfDay:
@@ -1625,7 +1638,7 @@ export default function ChatInterface({
     pushUser('Buchung bestätigen');
 
     if (
-      !draft.service ||
+      !draft.selection ||
       !draft.barber ||
       !draft.date ||
       !draft.time ||
@@ -1646,7 +1659,9 @@ export default function ChatInterface({
         },
         body: JSON.stringify({
           barberId: draft.barber.id,
-          serviceId: draft.service.id,
+          // The server re-resolves prices and durations from this selection;
+          // no totals are ever sent from the browser.
+          selection: selectionToBookingPayload(draft.selection),
           customerName: draft.name,
           customerPhone: draft.phone,
           bookingDate: draft.date,
@@ -1665,7 +1680,7 @@ export default function ChatInterface({
       setStep('done');
 
       pushBot(
-        `Dein Termin ist bestätigt.\n\n${draft.service.name} bei ${draft.barber.name}\n${draft.date} um ${draft.time}\nName: ${draft.name}\nTelefon: ${draft.phone}\n\nWir freuen uns auf dich bei ${BUSINESS.address}. Wenn du vorher etwas brauchst, erreichst du uns unter ${BUSINESS.phoneFormatted}.`,
+        `Dein Termin ist bestätigt.\n\n${selectionLabel(draft.selection)} bei ${draft.barber.name}\n${draft.date} um ${draft.time}\nGesamt: €${selectionTotalPrice(draft.selection)} · ${selectionTotalDuration(draft.selection)} Min.\nName: ${draft.name}\nTelefon: ${draft.phone}\n\nWir freuen uns auf dich bei ${BUSINESS.address}. Wenn du vorher etwas brauchst, erreichst du uns unter ${BUSINESS.phoneFormatted}.`,
       );
 
       onBooked?.(draft);
@@ -1786,7 +1801,11 @@ export default function ChatInterface({
     const changingService =
       activeBooking &&
       Boolean(parsedService) &&
-      parsedService?.id !== draft.service?.id;
+      parsedService?.id !==
+        (draft.selection?.kind === 'services' &&
+          draft.selection.services.length === 1
+          ? draft.selection.services[0].id
+          : undefined);
 
     const changingBarber =
       activeBooking &&
@@ -1827,8 +1846,9 @@ export default function ChatInterface({
 
     const existingDraft = activeBooking ? draft : {};
 
-    const selectedService =
-      parsedService ?? existingDraft.service;
+    const selectedSelection: BookingSelection | undefined = parsedService
+      ? servicesSelection([parsedService])
+      : existingDraft.selection;
 
     const selectedBarber =
       parsedBarber ?? existingDraft.barber;
@@ -1842,7 +1862,7 @@ export default function ChatInterface({
     ) {
       setDraft({
         ...existingDraft,
-        service: selectedService,
+        selection: selectedSelection,
         barber: selectedBarber,
         date:
           changingService || changingBarber || changingDate
@@ -1855,10 +1875,9 @@ export default function ChatInterface({
 
       resetAvailability();
 
-      if (!selectedService) {
+      if (!selectedSelection) {
         setStep('pickService');
         pushBot('Kein Problem. Welche Leistung möchtest du stattdessen?', {
-          options: serviceOptions(),
           chips: ['Zurück'],
         });
         return true;
@@ -1881,7 +1900,7 @@ export default function ChatInterface({
         existingDraft.date
       ) {
         await loadDateAvailability({
-          service: selectedService,
+          selection: selectedSelection,
           barber: selectedBarber,
           date: existingDraft.date,
           timeOfDay: nextPreference.timeOfDay,
@@ -1897,7 +1916,7 @@ export default function ChatInterface({
         !changingDate
       ) {
         await loadDateAvailability({
-          service: selectedService,
+          selection: selectedSelection,
           barber: selectedBarber,
           date: existingDraft.date,
           timeOfDay: nextPreference.timeOfDay,
@@ -1908,7 +1927,7 @@ export default function ChatInterface({
       }
 
       await continueWithPreferredDate({
-        service: selectedService,
+        selection: selectedSelection,
         barber: selectedBarber,
         preference: nextPreference,
       });
@@ -1918,7 +1937,7 @@ export default function ChatInterface({
 
     setDraft({
       ...existingDraft,
-      service: selectedService,
+      selection: selectedSelection,
       barber: selectedBarber,
       date: undefined,
       time: undefined,
@@ -1928,7 +1947,7 @@ export default function ChatInterface({
 
     resetAvailability();
 
-    if (!selectedService) {
+    if (!selectedSelection) {
       setStep('pickService');
 
       const preferenceText = describePreference(
@@ -1941,7 +1960,6 @@ export default function ChatInterface({
           ? `Klar. Ich habe deine Auswahl ${preferenceText}. Welche Leistung möchtest du?`
           : 'Klar. Welche Leistung möchtest du?',
         {
-          options: serviceOptions(),
           chips: ['Zurück'],
         },
       );
@@ -1956,8 +1974,8 @@ export default function ChatInterface({
 
       pushBot(
         preferenceText
-          ? `Perfekt. ${selectedService.name} ist ausgewählt und deine Auswahl ${preferenceText} habe ich übernommen. Bei welchem Barber möchtest du buchen?`
-          : `Perfekt. ${selectedService.name} ist ausgewählt. Bei welchem Barber möchtest du buchen?`,
+          ? `Perfekt. ${selectionLabel(selectedSelection)} ist ausgewählt und deine Auswahl ${preferenceText} habe ich übernommen. Bei welchem Barber möchtest du buchen?`
+          : `Perfekt. ${selectionLabel(selectedSelection)} ist ausgewählt. Bei welchem Barber möchtest du buchen?`,
         {
           options: barberOptions(),
           chips: ['Zurück'],
@@ -1968,12 +1986,60 @@ export default function ChatInterface({
     }
 
     await continueWithPreferredDate({
-      service: selectedService,
+      selection: selectedSelection,
       barber: selectedBarber,
       preference: nextPreference,
     });
 
     return true;
+  };
+
+  /**
+   * The picker hands its confirmed selection here. Individual services and both
+   * VIP packages now continue through the normal flow (barber -> date ->
+   * availability -> time -> name -> phone -> confirmation). The server
+   * re-validates and re-prices everything.
+   */
+  const handleServicesContinue = ({
+    serviceIds,
+    vipPackageId,
+  }: ServicesSelection) => {
+    if (vipPackageId) {
+      const vipPackage = vipPackages.find(
+        (item) => item.id === vipPackageId,
+      );
+
+      if (!vipPackage) {
+        pushBot(
+          'Dieses VIP-Paket ist gerade nicht verfügbar. Bitte wähle eine andere Leistung.',
+          { chips: ['Zurück'] },
+        );
+        return;
+      }
+
+      void applySelection(vipSelection(vipPackage));
+      return;
+    }
+
+    if (serviceIds.length === 0) {
+      return;
+    }
+
+    const selectedServices = serviceIds
+      .map((id) => services.find((service) => service.id === id))
+      .filter((service): service is (typeof services)[number] =>
+        Boolean(service),
+      );
+
+    if (selectedServices.length === 0) {
+      pushBot(
+        'Diese Leistungen sind gerade nicht verfügbar. Bitte wähle erneut.',
+        { chips: ['Zurück'] },
+      );
+      return;
+    }
+
+    void applySelection(servicesSelection(selectedServices));
   };
 
   const handleOption = (value: string) => {
@@ -2148,6 +2214,16 @@ export default function ChatInterface({
         </div>
       )}
 
+      {/* Service selection (local frontend milestone) */}
+      {step === 'pickService' && services.length > 0 && (
+        <ServicesPicker
+          services={services}
+          vipPackages={vipPackages}
+          onContinue={handleServicesContinue}
+          onBack={handleBack}
+        />
+      )}
+
       {/* Input */}
       <form
         onSubmit={handleSubmit}
@@ -2245,7 +2321,11 @@ function MessageBubble({
             <div className="grid grid-cols-2 gap-y-3 text-sm">
               <SummaryItem
                 label="Leistung"
-                value={msg.booking.service?.name}
+                value={
+                  msg.booking.selection
+                    ? selectionLabel(msg.booking.selection)
+                    : undefined
+                }
               />
 
               <SummaryItem
@@ -2260,6 +2340,15 @@ function MessageBubble({
               <SummaryItem label="Name" value={msg.booking.name} />
 
               <SummaryItem label="Telefon" value={msg.booking.phone} />
+
+              <SummaryItem
+                label="Dauer"
+                value={
+                  msg.booking.selection
+                    ? `${selectionTotalDuration(msg.booking.selection)} Min.`
+                    : undefined
+                }
+              />
             </div>
 
             <div className="mt-3 flex items-center justify-between border-t border-brand-border pt-3">
@@ -2268,7 +2357,10 @@ function MessageBubble({
               </span>
 
               <span className="font-serif text-xl text-brand-cream">
-                €{msg.booking.service?.price}
+                €
+                {msg.booking.selection
+                  ? selectionTotalPrice(msg.booking.selection)
+                  : 0}
               </span>
             </div>
           </div>

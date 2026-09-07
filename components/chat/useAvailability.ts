@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { getAvailability } from './booking-api';
+import { getAvailability, type AvailabilitySelection } from './booking-api';
 
 export function useAvailability() {
     const [slots, setSlots] = useState<string[]>([]);
@@ -11,8 +11,8 @@ export function useAvailability() {
 
     async function loadAvailability(params: {
         barberId: string;
-        serviceId: string;
         date: string;
+        selection: AvailabilitySelection;
     }) {
         setLoading(true);
         setError(null);

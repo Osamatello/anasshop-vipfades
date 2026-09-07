@@ -6,6 +6,8 @@ import {
     koblenzLocalDateTimeToUtc,
 } from "@/lib/timezone";
 
+import { buildBookingCalendarEvent } from "./calendarEvent";
+
 const GOOGLE_CALENDAR_SCOPE =
     "https://www.googleapis.com/auth/calendar.events";
 
@@ -17,12 +19,15 @@ const ABD_BARBER_ID =
 
 type CreateCalendarEventInput = {
     barberId: string;
-    serviceName: string;
+    /** Every service in this ONE booking, German, in selection order. */
+    serviceNames: string[];
     customerName: string;
     customerPhone: string;
     bookingDate: string;
     startTime: string;
+    /** Total appointment length — equals bookings.end_time - start_time. */
     durationMinutes: number;
+    totalPrice: number;
 };
 
 type DeleteCalendarEventInput = {
@@ -111,49 +116,22 @@ export async function createGoogleCalendarEvent(
             input.startTime
         );
 
-    if (
-        Number.isNaN(startDate.getTime()) ||
-        !Number.isFinite(input.durationMinutes) ||
-        input.durationMinutes <= 0
-    ) {
-        throw new Error(
-            "Invalid Google Calendar event start time or duration."
-        );
-    }
-
-    // Derive the event end directly from the validated service duration.
-    // This guarantees Google Calendar always receives exactly the same
-    // appointment duration as the service, without a second timezone conversion.
-    const endDate =
-        new Date(
-            startDate.getTime() +
-            input.durationMinutes * 60_000
-        );
+    // ONE booking == ONE event. The body (German summary/description and the
+    // end derived from the total duration) is built by a pure, unit-tested
+    // helper so it can be validated without touching a real calendar.
+    const requestBody = buildBookingCalendarEvent({
+        serviceNames: input.serviceNames,
+        customerName: input.customerName,
+        customerPhone: input.customerPhone,
+        totalDurationMinutes: input.durationMinutes,
+        totalPrice: input.totalPrice,
+        startDate,
+    });
 
     const response =
         await calendar.events.insert({
             calendarId,
-
-            requestBody: {
-                summary: `${input.serviceName} — ${input.customerName}`,
-
-                description: [
-                    `Customer: ${input.customerName}`,
-                    `Phone: ${input.customerPhone}`,
-                    `Service: ${input.serviceName}`,
-                    "Booked through VIP FADES website",
-                ].join("\n"),
-
-                start: {
-                    dateTime:
-                        startDate.toISOString(),
-                },
-
-                end: {
-                    dateTime:
-                        endDate.toISOString(),
-                },
-            },
+            requestBody,
         });
 
     if (!response.data.id) {

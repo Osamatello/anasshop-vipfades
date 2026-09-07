@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import {
-    createBooking,
-    getBookingsByBarberAndDate,
+    createBookingWithServices,
     saveGoogleCalendarEventId,
 } from "@/lib/supabase/bookings";
 
-import { getServiceById } from "@/lib/supabase/services";
-import { getAvailableSlots } from "@/lib/services/availability";
+import { getAvailableSlotsForDuration } from "@/lib/services/availability";
+import { getBarberDayOff } from "@/lib/booking/barberSchedule";
+import { resolveAppointmentSelection } from "@/lib/booking/appointmentSelection";
+import { resolveVipServiceRow } from "@/lib/booking/vipServices";
+import { buildBookingPlan } from "@/lib/booking/bookingPlan";
+
+import {
+    isValidDateString,
+    normalizeTime,
+} from "@/lib/booking/time";
 
 import { createGoogleCalendarEvent } from "@/lib/google/calendar";
 
@@ -26,100 +33,100 @@ import {
     getClientIdentifier,
 } from "@/lib/security/rateLimit";
 
+import { timeToMinutes } from "@/lib/booking/time";
 
-function timeToMinutes(time: string): number {
-    const [hours, minutes] = time
-        .slice(0, 5)
-        .split(":")
-        .map(Number);
+/**
+ * Create ONE booking.
+ *
+ * Accepted body (new contract):
+ *   { barberId, customerName, customerPhone, bookingDate, startTime,
+ *     selection: { kind: "services", serviceIds: string[] } }
+ *   { barberId, customerName, customerPhone, bookingDate, startTime,
+ *     selection: { kind: "vip", vipPackageSlug: "vip-exklusiv" | "vip-koenigsklasse" } }
+ *
+ * Backward compatible: a top-level `serviceId` (the pre-multi-service contract)
+ * is accepted and treated as a one-service selection.
+ *
+ * Everything price/duration related is resolved SERVER-SIDE from trusted data
+ * by resolveAppointmentSelection(); nothing the client sends about prices,
+ * durations, names or totals is trusted.
+ */
 
-    return hours * 60 + minutes;
-}
+const GENERIC_UNAVAILABLE =
+    "Dieser Termin ist nicht mehr verfügbar. Bitte wähle eine andere freie Zeit.";
 
-
-function addMinutesToTime(
-    time: string,
-    minutesToAdd: number
-): string {
-    const totalMinutes =
-        timeToMinutes(time) + minutesToAdd;
-
-    const hoursResult =
-        Math.floor(totalMinutes / 60);
-
-    const minutesResult =
-        totalMinutes % 60;
-
-    return `${hoursResult
-        .toString()
-        .padStart(2, "0")}:${minutesResult
-            .toString()
-            .padStart(2, "0")}`;
-}
-
-
-function periodsOverlap(
-    startOne: number,
-    endOne: number,
-    startTwo: number,
-    endTwo: number
-): boolean {
-    return (
-        startOne < endTwo &&
-        endOne > startTwo
+function badRequest(error: string, code?: string, status = 400) {
+    return NextResponse.json(
+        { success: false, error, ...(code ? { code } : {}) },
+        { status }
     );
 }
-
 
 function isPastDate(date: string): boolean {
     return date < getKoblenzDate();
 }
 
-
 function isPastOrCurrentTimeToday(
     bookingDate: string,
     startTime: string
 ): boolean {
-    if (
-        bookingDate !==
-        getKoblenzDate()
-    ) {
+    if (bookingDate !== getKoblenzDate()) {
         return false;
     }
 
-    const nowInKoblenz =
-        getKoblenzTimeParts(
-            new Date()
-        );
+    const nowInKoblenz = getKoblenzTimeParts(new Date());
+    const currentMinutes = nowInKoblenz.hours * 60 + nowInKoblenz.minutes;
 
-    const currentMinutes =
-        nowInKoblenz.hours * 60 +
-        nowInKoblenz.minutes;
-
-    const bookingStart =
-        timeToMinutes(startTime);
-
-    return (
-        bookingStart <=
-        currentMinutes
-    );
+    return timeToMinutes(startTime) <= currentMinutes;
 }
 
+/** Normalises the new `selection` object and the legacy `serviceId` field. */
+function readSelectionInput(body: Record<string, unknown>): {
+    serviceIds: string[];
+    vipPackageSlugs: string[];
+} {
+    const selection = body.selection as Record<string, unknown> | undefined;
 
-export async function POST(
-    request: NextRequest
-) {
+    if (selection && typeof selection === "object") {
+        if (selection.kind === "vip") {
+            const slug = selection.vipPackageSlug;
+
+            return {
+                serviceIds: [],
+                vipPackageSlugs: typeof slug === "string" ? [slug.trim()] : [""],
+            };
+        }
+
+        if (selection.kind === "services") {
+            const ids = Array.isArray(selection.serviceIds)
+                ? selection.serviceIds
+                : [];
+
+            return {
+                serviceIds: ids.map((value) =>
+                    typeof value === "string" ? value.trim() : ""
+                ),
+                vipPackageSlugs: [],
+            };
+        }
+    }
+
+    // Legacy single-service contract.
+    const legacyServiceId = body.serviceId;
+
+    return {
+        serviceIds:
+            typeof legacyServiceId === "string" && legacyServiceId.trim()
+                ? [legacyServiceId.trim()]
+                : [],
+        vipPackageSlugs: [],
+    };
+}
+
+export async function POST(request: NextRequest) {
     try {
-        const identifier =
-            getClientIdentifier(
-                request.headers
-            );
-
-        const rateLimit =
-            await bookingRateLimit.limit(
-                identifier
-            );
-
+        const identifier = getClientIdentifier(request.headers);
+        const rateLimit = await bookingRateLimit.limit(identifier);
 
         if (!rateLimit.success) {
             return NextResponse.json(
@@ -133,350 +140,232 @@ export async function POST(
                     headers: {
                         "Retry-After": Math.max(
                             1,
-                            Math.ceil(
-                                (
-                                    rateLimit.reset -
-                                    Date.now()
-                                ) / 1000
-                            )
+                            Math.ceil((rateLimit.reset - Date.now()) / 1000)
                         ).toString(),
                     },
                 }
             );
         }
 
+        const body = (await request.json().catch(() => null)) as Record<
+            string,
+            unknown
+        > | null;
 
-        const body =
-            await request.json();
+        if (!body) {
+            return badRequest("Buchungsdaten fehlen.");
+        }
 
-        const {
-            barberId,
-            serviceId,
-            customerName,
-            customerPhone,
-            bookingDate,
-            startTime,
-        } = body;
-
+        const barberId = body.barberId;
+        const bookingDate = body.bookingDate;
+        const startTimeRaw = body.startTime;
 
         if (
-            typeof barberId !==
-            "string" ||
-            typeof serviceId !==
-            "string" ||
-            typeof bookingDate !==
-            "string" ||
-            typeof startTime !==
-            "string" ||
+            typeof barberId !== "string" ||
             !barberId.trim() ||
-            !serviceId.trim() ||
-            !bookingDate.trim() ||
-            !startTime.trim()
+            typeof bookingDate !== "string" ||
+            typeof startTimeRaw !== "string"
         ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Buchungsdaten fehlen.",
-                },
-                {
-                    status: 400,
-                }
+            return badRequest("Buchungsdaten fehlen.");
+        }
+
+        // --- date / time shape -------------------------------------------------
+        if (!isValidDateString(bookingDate)) {
+            return badRequest("Ungültiges Datum.");
+        }
+
+        const startTime = normalizeTime(startTimeRaw);
+
+        if (!startTime) {
+            return badRequest("Ungültige Uhrzeit.");
+        }
+
+        if (isPastDate(bookingDate)) {
+            return badRequest(
+                "Vergangene Tage können nicht gebucht werden. Bitte wähle ein anderes Datum."
             );
         }
 
-
-        if (
-            isPastDate(
-                bookingDate
-            )
-        ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Vergangene Tage können nicht gebucht werden. Bitte wähle ein anderes Datum.",
-                },
-                {
-                    status: 400,
-                }
+        if (isPastOrCurrentTimeToday(bookingDate, startTime)) {
+            return badRequest(
+                "Diese Uhrzeit ist bereits vorbei. Bitte wähle eine spätere Zeit."
             );
         }
 
+        // --- customer details --------------------------------------------------
+        const nameValidation = validateCustomerName(body.customerName);
 
-        if (
-            isPastOrCurrentTimeToday(
-                bookingDate,
-                startTime
-            )
-        ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Diese Uhrzeit ist bereits vorbei. Bitte wähle eine spätere Zeit.",
-                },
-                {
-                    status: 400,
-                }
+        if (!nameValidation.valid) {
+            return badRequest(nameValidation.error);
+        }
+
+        const phoneValidation = validatePhoneNumber(body.customerPhone);
+
+        if (!phoneValidation.valid) {
+            return badRequest(phoneValidation.error);
+        }
+
+        // --- barber availability for that weekday ------------------------------
+        const barberDayOff = getBarberDayOff(barberId, bookingDate);
+
+        if (barberDayOff) {
+            return badRequest(
+                `${barberDayOff.barberName} hat an diesem Wochentag frei. Bitte wähle einen anderen Tag.`,
+                "barber_off",
+                409
             );
         }
 
+        // --- authoritative selection: services / VIP, totals, duration ---------
+        const { serviceIds, vipPackageSlugs } = readSelectionInput(body);
 
-        const nameValidation =
-            validateCustomerName(
-                customerName
-            );
+        const selection = await resolveAppointmentSelection({
+            serviceIds,
+            vipPackageSlugs,
+        });
 
-        if (
-            !nameValidation.valid
-        ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        nameValidation.error,
-                },
-                {
-                    status: 400,
-                }
-            );
+        if (!selection.ok) {
+            return badRequest(selection.error, selection.code);
         }
 
+        // --- VIP packages must resolve to a real, consistent services row ------
+        let vipServiceId: string | undefined;
 
-        const phoneValidation =
-            validatePhoneNumber(
-                customerPhone
+        if (selection.kind === "vip") {
+            const vipResolution = await resolveVipServiceRow(
+                selection.vipPackage
             );
 
-        if (
-            !phoneValidation.valid
-        ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        phoneValidation.error,
-                },
-                {
-                    status: 400,
-                }
-            );
-        }
-
-
-        const service =
-            await getServiceById(
-                serviceId
-            );
-
-
-        if (!service) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Leistung wurde nicht gefunden.",
-                },
-                {
-                    status: 404,
-                }
-            );
-        }
-
-
-        const normalizedStartTime =
-            startTime.slice(0, 5);
-
-        const availableSlots =
-            await getAvailableSlots(
-                barberId,
-                serviceId,
-                bookingDate
-            );
-
-        if (
-            !availableSlots.includes(
-                normalizedStartTime
-            )
-        ) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Dieser Termin ist nicht verfügbar. Bitte wähle eine andere freie Zeit.",
-                },
-                {
-                    status: 409,
-                }
-            );
-        }
-
-
-        const endTime =
-            addMinutesToTime(
-                normalizedStartTime,
-                service.duration_minutes
-            );
-
-
-        const existingBookings =
-            await getBookingsByBarberAndDate(
-                barberId,
-                bookingDate
-            );
-
-
-        const newStart =
-            timeToMinutes(
-                normalizedStartTime
-            );
-
-        const newEnd =
-            timeToMinutes(
-                endTime
-            );
-
-
-        const hasConflict =
-            existingBookings.some(
-                (booking) => {
-                    const existingStart =
-                        timeToMinutes(
-                            booking.start_time
-                        );
-
-                    const existingEnd =
-                        timeToMinutes(
-                            booking.end_time
-                        );
-
-                    return periodsOverlap(
-                        newStart,
-                        newEnd,
-                        existingStart,
-                        existingEnd
-                    );
-                }
-            );
-
-
-        if (hasConflict) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error:
-                        "Diese Zeit ist nicht mehr verfügbar. Bitte wähle eine andere Uhrzeit.",
-                },
-                {
-                    status: 409,
-                }
-            );
-        }
-
-
-        const booking =
-            await createBooking({
-                barberId,
-                serviceId,
-                customerName:
-                    nameValidation.value,
-                customerPhone:
-                    phoneValidation.value,
-                bookingDate,
-                startTime:
-                    normalizedStartTime,
-                endTime,
-            });
-
-
-        let calendarSynced =
-            false;
-
-        let calendarEventId:
-            string | null =
-            null;
-
-
-        try {
-            const calendarEvent =
-                await createGoogleCalendarEvent(
-                    {
-                        barberId,
-                        serviceName:
-                            service.name,
-                        customerName:
-                            nameValidation.value,
-                        customerPhone:
-                            phoneValidation.value,
-                        bookingDate,
-                        startTime:
-                            normalizedStartTime,
-                        durationMinutes:
-                            service.duration_minutes,
-                    }
+            if (!vipResolution.ok) {
+                // Detail stays server-side; the customer sees a safe message.
+                console.error(
+                    "VIP package resolution failed:",
+                    vipResolution.code,
+                    vipResolution.detail
                 );
 
+                return badRequest(vipResolution.error, vipResolution.code, 409);
+            }
 
-            calendarEventId =
-                calendarEvent.eventId;
+            vipServiceId = vipResolution.serviceId;
+        }
 
+        // --- exact rows to write (pure) ----------------------------------------
+        const plan = buildBookingPlan({
+            selection,
+            startTime,
+            vipServiceId,
+        });
 
-            await saveGoogleCalendarEventId(
-                booking.id,
-                calendarEvent.eventId
+        // --- re-validate availability immediately before writing ---------------
+        // The customer may have seen this slot minutes ago; someone else may have
+        // taken it since. This uses the SAME authoritative availability logic,
+        // now with the full combined duration.
+        const availableSlots = await getAvailableSlotsForDuration(
+            barberId,
+            bookingDate,
+            plan.totalDurationMinutes
+        );
+
+        if (!availableSlots.includes(startTime)) {
+            return badRequest(GENERIC_UNAVAILABLE, "slot_unavailable", 409);
+        }
+
+        // --- atomic write: booking + all booking_services lines ----------------
+        const created = await createBookingWithServices({
+            barberId,
+            primaryServiceId: plan.primaryServiceId,
+            customerName: nameValidation.value,
+            customerPhone: phoneValidation.value,
+            bookingDate,
+            startTime: plan.startTime,
+            endTime: plan.endTime,
+            totalPrice: plan.totalPrice,
+            totalDurationMinutes: plan.totalDurationMinutes,
+            lines: plan.lines,
+        });
+
+        if (!created.ok) {
+            if (created.reason === "slot_taken") {
+                // Lost the race against the database exclusion constraint.
+                console.warn("Booking slot race lost:", created.detail);
+                return badRequest(GENERIC_UNAVAILABLE, "slot_unavailable", 409);
+            }
+
+            if (created.reason === "not_migrated") {
+                console.error(
+                    "Booking write blocked — multi-service migration not applied:",
+                    created.detail
+                );
+            } else {
+                console.error("Booking write failed:", created.detail);
+            }
+
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Buchung konnte nicht erstellt werden.",
+                },
+                { status: 500 }
             );
+        }
 
+        const booking = created.booking;
 
-            calendarSynced =
-                true;
+        // --- ONE Google Calendar event for the whole appointment ---------------
+        // The booking is already committed and is authoritative. A calendar
+        // failure must never lose or duplicate it, so it is logged and reported
+        // via calendar.synced instead of failing the request.
+        let calendarSynced = false;
+        let calendarEventId: string | null = null;
 
+        try {
+            const calendarEvent = await createGoogleCalendarEvent({
+                barberId,
+                serviceNames: plan.serviceNames,
+                customerName: nameValidation.value,
+                customerPhone: phoneValidation.value,
+                bookingDate,
+                startTime: plan.startTime,
+                durationMinutes: plan.totalDurationMinutes,
+                totalPrice: plan.totalPrice,
+            });
 
-        } catch (
-        calendarError
-        ) {
+            calendarEventId = calendarEvent.eventId;
+
+            await saveGoogleCalendarEventId(booking.id, calendarEvent.eventId);
+
+            calendarSynced = true;
+        } catch (calendarError) {
             console.error(
-                "Google Calendar sync error:",
+                "Google Calendar sync error for booking",
+                booking.id,
                 calendarError
             );
         }
-
 
         return NextResponse.json({
             success: true,
 
             booking: {
                 ...booking,
-                google_calendar_event_id:
-                    calendarEventId,
+                google_calendar_event_id: calendarEventId,
             },
 
             calendar: {
-                synced:
-                    calendarSynced,
-                eventId:
-                    calendarEventId,
+                synced: calendarSynced,
+                eventId: calendarEventId,
             },
         });
-
-
     } catch (error) {
-
-        console.error(
-            "Create booking error:",
-            error
-        );
-
+        console.error("Create booking error:", error);
 
         return NextResponse.json(
             {
                 success: false,
-                error:
-                    "Buchung konnte nicht erstellt werden.",
+                error: "Buchung konnte nicht erstellt werden.",
             },
-            {
-                status: 500,
-            }
+            { status: 500 }
         );
     }
 }

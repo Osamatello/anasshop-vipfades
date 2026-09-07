@@ -1,0 +1,10 @@
+# Local Supabase config for the vip-fades-booking project.
+#
+# This file exists so the Supabase CLI can associate the local migrations/
+# directory with the remote project. NOTHING here is applied automatically.
+# See supabase/migrations/README.md.
+
+project_id = "ffflhmarvhwpimctjsmx"
+
+[db]
+major_version = 17

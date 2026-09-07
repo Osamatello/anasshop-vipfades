@@ -68,11 +68,36 @@ export function generateTimeSlots(
     return slots;
 }
 
-export async function getAvailableSlots(
+/**
+ * Core availability calculation. Given the FULL required appointment length
+ * (already resolved server-side from the customer's complete selection — one
+ * individual service, several individual services summed, or a fixed-length VIP
+ * package), return every start time on `bookingDate` where the whole
+ * appointment fits.
+ *
+ * All existing scheduling protections are applied unchanged:
+ *   - online booking Monday–Thursday only
+ *   - business hours + is_open
+ *   - past dates rejected; same-day only future start times
+ *   - no overlap with existing bookings for that barber/date
+ *   - no overlap with blocked periods for that barber/date
+ *   - Koblenz timezone handling
+ *
+ * Barber days off are handled by the caller (route) via getBarberDayOff, as
+ * before.
+ */
+export async function getAvailableSlotsForDuration(
     barberId: string,
-    serviceId: string,
-    bookingDate: string
+    bookingDate: string,
+    requiredDurationMinutes: number
 ): Promise<string[]> {
+    if (
+        !Number.isFinite(requiredDurationMinutes) ||
+        requiredDurationMinutes <= 0
+    ) {
+        return [];
+    }
+
     // Past dates cannot be booked.
     // Same-day bookings are allowed if the appointment time
     // has not already passed in Koblenz.
@@ -96,9 +121,8 @@ export async function getAvailableSlots(
         return [];
     }
 
-    const [service, businessHours, bookings, blockedTimes] =
+    const [businessHours, bookings, blockedTimes] =
         await Promise.all([
-            getServiceById(serviceId),
             getBusinessHoursByDay(dayOfWeek),
             getBookingsByBarberAndDate(
                 barberId,
@@ -111,7 +135,6 @@ export async function getAvailableSlots(
         ]);
 
     if (
-        !service ||
         !businessHours ||
         !businessHours.is_open
     ) {
@@ -121,7 +144,7 @@ export async function getAvailableSlots(
     const possibleSlots = generateTimeSlots(
         businessHours.open_time,
         businessHours.close_time,
-        service.duration_minutes
+        requiredDurationMinutes
     );
 
     const todayInKoblenz = getKoblenzDate();
@@ -138,7 +161,7 @@ export async function getAvailableSlots(
     return possibleSlots.filter((slot) => {
         const slotStart = timeToMinutes(slot);
         const slotEnd =
-            slotStart + service.duration_minutes;
+            slotStart + requiredDurationMinutes;
 
         // For same-day bookings, only future appointment
         // start times are available.
@@ -205,4 +228,28 @@ export async function getAvailableSlots(
 
         return !overlapsBlockedTime;
     });
+}
+
+/**
+ * Backward-compatible single-service wrapper. Kept so the existing
+ * single-service booking-create path (app/api/bookings/route.ts) keeps working
+ * unchanged in this milestone. Resolves the service, then delegates to
+ * getAvailableSlotsForDuration with its duration.
+ */
+export async function getAvailableSlots(
+    barberId: string,
+    serviceId: string,
+    bookingDate: string
+): Promise<string[]> {
+    const service = await getServiceById(serviceId);
+
+    if (!service) {
+        return [];
+    }
+
+    return getAvailableSlotsForDuration(
+        barberId,
+        bookingDate,
+        service.duration_minutes
+    );
 }

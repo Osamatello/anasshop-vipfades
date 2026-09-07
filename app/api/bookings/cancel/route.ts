@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getUpcomingBookingsByPhone } from "@/lib/supabase/bookings";
+import {
+    getBookingServiceLines,
+    getUpcomingBookingsByPhone,
+    resolveBookingSelection,
+} from "@/lib/supabase/bookings";
 import { getKoblenzDate } from "@/lib/timezone";
 import { validatePhoneNumber } from "@/lib/validation/booking";
-import { getServiceById } from "@/lib/supabase/services";
+import { getServices } from "@/lib/supabase/services";
 import { getBarbers } from "@/lib/supabase/barbers";
 
 import {
@@ -73,54 +77,51 @@ export async function GET(
                 getKoblenzDate()
             );
 
-        const barbers =
-            await getBarbers();
+        const [barbers, allServices, linesByBooking] = await Promise.all([
+            getBarbers(),
+            getServices(),
+            getBookingServiceLines(bookings.map((booking) => booking.id)),
+        ]);
 
-        const enrichedBookings =
-            await Promise.all(
-                bookings.map(
-                    async (booking) => {
-                        const service =
-                            await getServiceById(
-                                booking.service_id
-                            );
+        const servicesById = new Map(
+            allServices.map((service) => [
+                service.id,
+                {
+                    name: service.name,
+                    price: Number(service.price),
+                    duration: service.duration_minutes,
+                },
+            ])
+        );
 
-                        const barber =
-                            barbers.find(
-                                (item) =>
-                                    item.id ===
-                                    booking.barber_id
-                            );
+        // Show the COMPLETE selection (all services, or the VIP package name),
+        // not just the legacy first service.
+        const enrichedBookings = bookings.map((booking) => {
+            const resolved = resolveBookingSelection({
+                lines: linesByBooking.get(booking.id),
+                servicesById,
+                legacyServiceId: booking.service_id,
+                totalPrice: null,
+                totalDurationMinutes: null,
+                startTime: booking.start_time,
+                endTime: booking.end_time,
+            });
 
-                        return {
-                            id: booking.id,
-
-                            barberId:
-                                booking.barber_id,
-
-                            barberName:
-                                barber?.name ??
-                                "Barber",
-
-                            serviceId:
-                                booking.service_id,
-
-                            serviceName:
-                                service?.name ??
-                                "Termin",
-
-                            bookingDate:
-                                booking.booking_date,
-
-                            startTime:
-                                booking.start_time.slice(
-                                    0,
-                                    5
-                                ),
-                        };
-                    }
-                )
-            );
+            return {
+                id: booking.id,
+                barberId: booking.barber_id,
+                barberName:
+                    barbers.find((item) => item.id === booking.barber_id)
+                        ?.name ?? "Barber",
+                serviceId: booking.service_id,
+                serviceName: resolved.serviceLabel,
+                serviceNames: resolved.serviceNames,
+                totalPrice: resolved.totalPrice,
+                totalDurationMinutes: resolved.totalDurationMinutes,
+                bookingDate: booking.booking_date,
+                startTime: booking.start_time.slice(0, 5),
+            };
+        });
 
         return NextResponse.json({
             success: true,

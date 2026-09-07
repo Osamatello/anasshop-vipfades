@@ -429,7 +429,9 @@ export default async function CalendarPage({
                                                                         key={booking.id}
                                                                         title={`${formatTime(
                                                                             booking.start_time,
-                                                                        )} ${booking.customer_name} — ${booking.service_name}`}
+                                                                        )}–${formatTime(
+                                                                            booking.end_time,
+                                                                        )} ${booking.customer_name} — ${booking.service_label} (${booking.total_duration_minutes} Min., €${booking.total_price})${booking.calendar_synced ? '' : ' — Kalender nicht synchronisiert'}`}
                                                                         className={`overflow-hidden rounded-md border px-1.5 py-1 text-[9px] leading-tight sm:px-2 sm:text-[10px] ${style.event}`}
                                                                     >
                                                                         <div className="flex items-center gap-1">

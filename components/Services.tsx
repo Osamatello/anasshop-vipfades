@@ -2,7 +2,9 @@
 
 import { Clock } from 'lucide-react';
 import { SERVICES, type Service } from '@/lib/data';
-import VipPackageCard from '@/components/VipPackageCard';
+import VipPackageCard, {
+  COMPACT_CARD_LAYOUT,
+} from '@/components/VipPackageCard';
 import { VIP_PACKAGE_CARDS } from '@/components/chat/constants';
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
@@ -52,7 +54,11 @@ export default function Services() {
 
         <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {VIP_PACKAGE_CARDS.map((vipPackage) => (
-            <VipPackageCard key={vipPackage.id} vipPackage={vipPackage} />
+            <VipPackageCard
+              key={vipPackage.id}
+              vipPackage={vipPackage}
+              size="large"
+            />
           ))}
         </div>
 
@@ -77,7 +83,7 @@ function ServiceCard({
 
   return (
     <div
-      className={`reveal reveal-delay-${(index % 3) + 1} group relative flex h-full min-h-[220px] flex-col justify-between rounded-xl border p-7 transition-all duration-300 hover:-translate-y-1 ${isPopular
+      className={`reveal reveal-delay-${(index % 3) + 1} group relative flex flex-col justify-between ${COMPACT_CARD_LAYOUT} transition-all duration-300 hover:-translate-y-1 ${isPopular
         ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
         : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'
         }`}

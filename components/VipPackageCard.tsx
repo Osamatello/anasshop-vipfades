@@ -17,19 +17,29 @@ type VipPackageCardProps = {
   vipPackage: VipPackageCardDetails;
   selected?: boolean;
   onToggle?: () => void;
+  size?: 'compact' | 'large';
 };
+
+export const LARGE_CARD_LAYOUT =
+  'h-full min-h-[220px] justify-between rounded-xl border p-7';
+export const COMPACT_CARD_LAYOUT = 'gap-2 rounded-2xl border p-3.5';
 
 /** Shared VIP package presentation used on the homepage and in booking. */
 export default function VipPackageCard({
   vipPackage,
   selected = false,
   onToggle,
+  size = 'compact',
 }: VipPackageCardProps) {
   const isTopTier = vipPackage.tier === 'koenigsklasse';
 
   const containerClass = [
     'flex w-full flex-col text-left transition-all',
-    isTopTier ? 'gap-2.5 rounded-[20px] border p-4' : 'gap-2 rounded-2xl border p-3.5',
+    size === 'large'
+      ? LARGE_CARD_LAYOUT
+      : isTopTier
+        ? 'gap-2.5 rounded-[20px] border p-4'
+        : COMPACT_CARD_LAYOUT,
     selected
       ? isTopTier
         ? 'border-brand-cream bg-gradient-to-br from-brand-cream/[0.20] to-transparent shadow-[0_0_0_1px_rgba(232,220,200,0.45),0_18px_44px_-18px_rgba(232,220,200,0.5)] ring-1 ring-inset ring-brand-cream/25'

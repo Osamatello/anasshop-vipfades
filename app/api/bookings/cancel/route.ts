@@ -114,6 +114,12 @@ export async function GET(
                     barbers.find((item) => item.id === booking.barber_id)
                         ?.name ?? "Barber",
                 serviceId: booking.service_id,
+                // Ordered ids so the client can render the localised German
+                // service names; serviceName is the raw fallback label.
+                serviceIds:
+                    (linesByBooking.get(booking.id) ?? []).map(
+                        (line) => line.service_id
+                    ),
                 serviceName: resolved.serviceLabel,
                 serviceNames: resolved.serviceNames,
                 totalPrice: resolved.totalPrice,

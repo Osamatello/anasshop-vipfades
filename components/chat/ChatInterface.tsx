@@ -103,6 +103,7 @@ export default function ChatInterface({
     startTime: string;
     barberName?: string;
     serviceName?: string;
+    serviceIds?: string[];
   }[]>([]);
   const [selectedCancellationBookingId, setSelectedCancellationBookingId] =
     useState<string | null>(null);
@@ -249,6 +250,25 @@ export default function ChatInterface({
       behavior: 'smooth',
     });
   }, [messages, typing]);
+
+  /**
+   * Renders a booking's services with the German catalogue names. Falls back to
+   * the label the API produced (raw database names) if a service is unknown.
+   */
+  const localizeSelection = (
+    serviceIds: string[] | undefined,
+    fallback: string | undefined,
+  ) => {
+    const names = (serviceIds ?? [])
+      .map((id) => services.find((service) => service.id === id)?.name)
+      .filter((name): name is string => Boolean(name));
+
+    if (names.length > 0 && names.length === (serviceIds ?? []).length) {
+      return names.join(' + ');
+    }
+
+    return fallback ?? 'Termin';
+  };
 
   const barberOptions = () =>
     barbers.map((barber) => ({
@@ -1032,13 +1052,14 @@ export default function ChatInterface({
               id: string;
               barberId: string;
               serviceId: string;
+              serviceIds?: string[];
               barberName: string;
               serviceName: string;
               bookingDate: string;
               startTime: string;
             }) => {
               return {
-                label: `${booking.serviceName} bei ${booking.barberName}`,
+                label: `${localizeSelection(booking.serviceIds, booking.serviceName)} bei ${booking.barberName}`,
                 value: booking.id,
                 sub: `${booking.bookingDate} · ${booking.startTime}`,
               };
@@ -1174,7 +1195,7 @@ export default function ChatInterface({
           const barber = barbers.find((item) => item.id === booking.barberId);
 
           return {
-            label: `${booking.serviceName ?? 'Termin'} bei ${barber?.name ?? 'deinem Barber'}`,
+            label: `${localizeSelection(booking.serviceIds, booking.serviceName)} bei ${barber?.name ?? 'deinem Barber'}`,
             value: booking.id,
             sub: `${booking.bookingDate} · ${booking.startTime}`,
           };

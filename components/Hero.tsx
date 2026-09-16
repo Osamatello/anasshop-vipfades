@@ -17,10 +17,17 @@ export default function Hero() {
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <img
-          src="/images/ChatGPT_Image_Aug_4,_2026,_09_39_47_AM.png"
-          alt="Innenbereich des VIP FADES Barbershops"
-          className="h-full w-full animate-subtle-zoom object-cover"
+        <video
+          className="h-full w-full object-cover"
+          src="/videos/hero.mp4"
+          poster="/videos/hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
         />
 
         {/* Overlays for readability */}

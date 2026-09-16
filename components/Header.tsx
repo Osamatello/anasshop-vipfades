@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
-  { label: 'Leistungen', href: '#services' },
+  { label: 'Leistungen', href: '/leistungen' },
   { label: 'Erlebnis', href: '#experience' },
   { label: 'VIP Look', href: '#vip-look' },
   { label: 'Barber', href: '#barbers' },
@@ -101,6 +102,7 @@ export default function Header() {
         {/* Desktop navigation */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 lg:flex">
           {NAV_LINKS.map((link) => (
+            link.href === '/leistungen' ? <Link key={link.href} href={link.href} className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">{link.label}</Link> :
             <button
               type="button"
               key={link.href}
@@ -148,6 +150,7 @@ export default function Header() {
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 pb-6 pt-4">
           {NAV_LINKS.map((link) => (
+            link.href === '/leistungen' ? <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-cream">{link.label}</Link> :
             <button
               type="button"
               key={link.href}

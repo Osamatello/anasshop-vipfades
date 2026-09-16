@@ -1,80 +1,17 @@
 'use client';
 
-import { Quote, Star } from 'lucide-react';
-
-const REVIEWS = [
-  {
-    id: 1,
-    rating: 5,
-    text: 'Top Service, top Haarschnitt – kann ich jedem empfehlen.',
-    name: 'Sead Sokolovic',
-    date: 'vor 3 Wochen',
-    initials: 'SS',
-  },
-  {
-    id: 2,
-    rating: 5,
-    text: 'Sehr gut! Bin ohne Termin reingekommen und direkt drangekommen. Die Rasur hat ungefähr acht Minuten gedauert.',
-    name: 'Camden Leslie',
-    date: 'vor 8 Monaten',
-    initials: 'CL',
-  },
-  {
-    id: 3,
-    rating: 5,
-    text: 'Gute Stimmung, starke Barber-Skills und super Service für nur 20 Euro. Klare Empfehlung!',
-    name: 'Daniel Tian',
-    date: 'vor 1 Jahr',
-    initials: 'DT',
-  },
-  {
-    id: 4,
-    rating: 5,
-    text: 'Meine Bedürfnisse werden korrekt wahrgenommen und umgesetzt! Ob Termin oder nicht, ich hatte nie lange Wartezeit. Die Preise sind echt unschlagbar. Kann ich jedem empfehlen.',
-    name: 'Johannes Brunke',
-    date: 'vor 1 Monat',
-    initials: 'JB',
-  },
-  {
-    id: 5,
-    rating: 5,
-    text: 'Ich bin absolut begeistert! Der Service war erstklassig, das Team super freundlich und professionell. Auf meine Wünsche wurde perfekt eingegangen und das Ergebnis ist einfach top.',
-    name: 'Jeremy Menges',
-    date: 'vor 3 Monaten',
-    initials: 'JM',
-  },
-  {
-    id: 6,
-    rating: 5,
-    text: 'Sehr guter Laden, immer gute Haarschnitte und alles sehr sauber. Parfums sind auch sehr hochwertig. Gerne Kunde dort.',
-    name: 'Nicolas Yarro',
-    date: 'vor 3 Wochen',
-    initials: 'NY',
-  },
-  {
-    id: 7,
-    rating: 5,
-    text: 'War zweimal da, alles war perfekt und sehr sauber geschnitten. Kann ich nur weiterempfehlen.',
-    name: 'Wade3 Selawi',
-    date: 'vor 3 Wochen',
-    initials: 'WS',
-  },
-];
-
-const FIRST_ROW = [
-  REVIEWS[0],
-  REVIEWS[3],
-  REVIEWS[2],
-  REVIEWS[5],
-];
-
-const SECOND_ROW = [
-  REVIEWS[1],
-  REVIEWS[4],
-  REVIEWS[6],
-];
+import { Pause, Play, Quote, Star } from 'lucide-react';
+import { useState } from 'react';
+import GoogleRating from '@/components/reviews/GoogleRating';
+import { useGoogleReviews } from '@/components/reviews/GoogleReviewsProvider';
+import { GOOGLE_REVIEWS_LINK, type GoogleReview } from '@/lib/reviews/types';
 
 export default function ClientExperiences() {
+  const { reviews, status } = useGoogleReviews();
+  const [paused, setPaused] = useState(false);
+  const firstRow = reviews.filter((_, index) => index % 2 === 0);
+  const secondRow = reviews.filter((_, index) => index % 2 !== 0);
+
   return (
     <section className="border-t border-brand-border py-24 sm:py-28">
       <div className="mx-auto max-w-7xl px-5">
@@ -90,37 +27,51 @@ export default function ClientExperiences() {
 
           <div className="gold-divider mt-4" />
 
+          <div className="mt-6"><GoogleRating /></div>
+
           <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
             Echte Erfahrungen unserer Kunden auf Google.
           </p>
         </div>
 
         {/* Reviews marquee */}
-        <div className="reviews-window relative overflow-hidden py-8">
+        {reviews.length > 0 ? <>
+        <div className="flex justify-end">
+          <button type="button" onClick={() => setPaused((value) => !value)} className="flex items-center gap-2 rounded text-[11px] text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream" aria-label={paused ? 'Bewertungsanimation fortsetzen' : 'Bewertungsanimation pausieren'}>
+            {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+            {paused ? 'Fortsetzen' : 'Pausieren'}
+          </button>
+        </div>
+        <div className={`reviews-window relative overflow-hidden py-8 ${paused ? 'reviews-paused' : ''}`}>
           {/* First row */}
           <div className="reviews-track-left flex w-max items-stretch gap-10">
-            {[...FIRST_ROW, ...FIRST_ROW, ...FIRST_ROW].map(
+            {[...firstRow, ...firstRow, ...firstRow].map(
               (review, index) => (
                 <ReviewItem
                   key={`first-${review.id}-${index}`}
                   review={review}
+                  duplicate={index >= firstRow.length}
                 />
               )
             )}
           </div>
 
           {/* Second row */}
-          <div className="reviews-track-right mt-8 flex w-max items-stretch gap-10">
-            {[...SECOND_ROW, ...SECOND_ROW, ...SECOND_ROW].map(
+          {secondRow.length > 0 && <div className="reviews-track-right mt-8 flex w-max items-stretch gap-10">
+            {[...secondRow, ...secondRow, ...secondRow].map(
               (review, index) => (
                 <ReviewItem
                   key={`second-${review.id}-${index}`}
                   review={review}
+                  duplicate={index >= secondRow.length}
                 />
               )
             )}
-          </div>
+          </div>}
         </div>
+        </> : <div className="flex min-h-[210px] items-center justify-center text-center text-sm font-light text-brand-textSecondary">
+          {status === 'loading' ? <p>Google-Bewertungen werden geladen …</p> : <a href={GOOGLE_REVIEWS_LINK} target="_blank" rel="noopener noreferrer" className="rounded text-brand-cream underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">Unsere Kundenbewertungen auf Google ansehen</a>}
+        </div>}
       </div>
 
       <style jsx>{`
@@ -161,6 +112,13 @@ export default function ClientExperiences() {
           animation: reviews-scroll-right 120s linear infinite;
         }
 
+        .reviews-paused .reviews-track-left,
+        .reviews-paused .reviews-track-right,
+        .reviews-window:hover .reviews-track-left,
+        .reviews-window:hover .reviews-track-right {
+          animation-play-state: paused;
+        }
+
         @keyframes reviews-scroll-left {
           from {
             transform: translateX(0);
@@ -197,7 +155,11 @@ export default function ClientExperiences() {
           .reviews-track-left,
           .reviews-track-right {
             animation: none;
+            flex-wrap: wrap;
+            width: auto;
+            justify-content: center;
           }
+          .reviews-window::before, .reviews-window::after { display: none; }
         }
       `}</style>
     </section>
@@ -206,11 +168,13 @@ export default function ClientExperiences() {
 
 function ReviewItem({
   review,
+  duplicate,
 }: {
-  review: (typeof REVIEWS)[number];
+  review: GoogleReview;
+  duplicate: boolean;
 }) {
   return (
-    <article className="group flex min-h-[210px] w-[300px] flex-shrink-0 flex-col justify-between py-5 sm:w-[330px]">
+    <article aria-hidden={duplicate || undefined} className={`group flex min-h-[210px] w-[300px] flex-shrink-0 flex-col justify-between py-5 sm:w-[330px] ${duplicate ? 'motion-reduce:hidden' : ''}`}>
       <div>
         {/* Rating and quote */}
         <div className="mb-5 flex items-center justify-between">
@@ -241,7 +205,7 @@ function ReviewItem({
       {/* Client identity */}
       <div className="mt-7 flex items-center gap-3 border-t border-brand-border/30 pt-4">
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.03] text-[9px] font-semibold uppercase tracking-[0.08em] text-brand-cream/80">
-          {review.initials}
+          {review.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join('')}
         </div>
 
         <div>
@@ -250,7 +214,7 @@ function ReviewItem({
           </p>
 
           <p className="mt-1 text-[10px] font-light uppercase tracking-[0.12em] text-brand-cream/55">
-            {review.date}
+            <time dateTime={review.publishedAt}>{new Intl.DateTimeFormat('de-DE', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Berlin' }).format(new Date(review.publishedAt))}</time>
           </p>
         </div>
       </div>

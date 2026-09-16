@@ -1,11 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowDown, Clock, Phone, Scissors } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowDown, Clock, Pause, Phone, Play, Scissors } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
+import GoogleRating from '@/components/reviews/GoogleRating';
 
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [paused, setPaused] = useState(false);
   const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => {
+      if (preference.matches) {
+        videoRef.current?.pause();
+        setPaused(true);
+      }
+    };
+    update();
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
+  }, []);
+
+  const togglePlayback = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      try { await video.play(); } catch { setPaused(true); }
+    } else {
+      video.pause();
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     document
@@ -17,25 +44,34 @@ export default function Hero() {
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <img
-          src="/images/ChatGPT_Image_Aug_4,_2026,_09_39_47_AM.png"
-          alt="Innenbereich des VIP FADES Barbershops"
-          className="h-full w-full animate-subtle-zoom object-cover"
+        <video
+          ref={videoRef}
+          src="/videos/vip-fades-hero.mp4"
+          poster="/images/vip-fades-hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+          onPlay={() => setPaused(false)}
+          onPause={() => setPaused(true)}
+          onError={() => setPaused(true)}
+          className="h-full w-full object-cover"
         />
 
         {/* Overlays for readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/85 via-brand-bg/60 to-brand-bg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/50 to-brand-bg/55" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#070707_90%)] opacity-90" />
-        <div className="film-grain absolute inset-0" />
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-brand-bg" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl px-5 pt-24 text-center sm:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:px-8">
         <div className="reveal visible flex flex-col items-center">
           {/* Location label */}
-          <div className="mb-6 flex items-center gap-3 rounded-full border border-brand-border bg-brand-bgSecondary/70 px-4 py-2 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
+          <div className="mb-6 flex items-center gap-3 px-4 py-2">
+            <span aria-hidden="true" className="hero-asterisk font-serif text-2xl leading-none text-brand-cream">*</span>
 
             <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary">
               Koblenz · {BUSINESS.hours.days}
@@ -58,7 +94,7 @@ export default function Hero() {
           <div className="mt-10 flex flex-col items-center">
             <Link
               href="/booking"
-              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
+              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none]"
             >
               <Scissors className="h-4 w-4" />
               Termin buchen
@@ -95,13 +131,24 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
+      <div className="absolute bottom-6 left-5 z-10 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] sm:left-8">
+        <GoogleRating compact />
+      </div>
       <button
         type="button"
         onClick={() => scrollToSection('#services')}
-        className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-brand-cream/70 transition-colors hover:text-brand-cream"
+        className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 rounded text-brand-cream/70 transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:block"
         aria-label="Zu den Leistungen scrollen"
       >
-        <ArrowDown className="h-5 w-5 animate-bounce" />
+        <ArrowDown className="h-5 w-5 animate-bounce motion-reduce:animate-none" />
+      </button>
+      <button
+        type="button"
+        onClick={togglePlayback}
+        className="absolute bottom-6 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-brand-cream/30 text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:right-8"
+        aria-label={paused ? 'Hintergrundvideo abspielen' : 'Hintergrundvideo pausieren'}
+      >
+        {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
       </button>
     </section >
   );

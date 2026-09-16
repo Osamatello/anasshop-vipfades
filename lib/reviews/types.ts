@@ -20,4 +20,4 @@ export type GoogleReviewsData = {
 };
 
 export const GOOGLE_REVIEWS_LINK =
-  'https://www.google.com/maps/search/?api=1&query=VIP+FADES+An+der+Moselbr%C3%BCcke+9+Koblenz';
+  'https://www.google.com/maps/search/?api=1&query=VIP+FADES+An+der+Moselbr%C3%BCcke+9+Koblenz&query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI';

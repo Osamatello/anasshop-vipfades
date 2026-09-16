@@ -7,7 +7,7 @@ const ts = require('typescript');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 
-const maps = 'https://www.google.com/maps/search/?api=1&query=VIP+FADES+An+der+Moselbr%C3%BCcke+9+Koblenz';
+const maps = 'https://www.google.com/maps/search/?api=1&query=VIP+FADES+An+der+Moselbr%C3%BCcke+9+Koblenz&query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI';
 const icon = (props) => React.createElement('svg', props);
 const icons = new Proxy({}, { get: () => icon });
 const link = ({ href, children, ...props }) => React.createElement('a', { href, ...props }, children);
@@ -70,6 +70,7 @@ test('both testimonial summaries reuse live aggregates and footer block links to
   assert.match(block, /Auf Google ansehen/);
   assert.match(block, /target="_blank" rel="noopener noreferrer"/);
   assert.ok(block.includes(`href="${maps.replace(/&/g, '&amp;')}"`));
+  assert.match(source('lib/reviews/types.ts'), /query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI/);
 });
 
 test('unconfigured Google data never renders invented values or Hero labels', () => {

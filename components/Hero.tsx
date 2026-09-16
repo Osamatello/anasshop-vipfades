@@ -1,14 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, Clock, Pause, Phone, Play, Scissors } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { ArrowDown, Clock, Phone, Scissors } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 import GoogleRating from '@/components/reviews/GoogleRating';
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [paused, setPaused] = useState(false);
   const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
 
   useEffect(() => {
@@ -16,23 +15,12 @@ export default function Hero() {
     const update = () => {
       if (preference.matches) {
         videoRef.current?.pause();
-        setPaused(true);
       }
     };
     update();
     preference.addEventListener('change', update);
     return () => preference.removeEventListener('change', update);
   }, []);
-
-  const togglePlayback = async () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      try { await video.play(); } catch { setPaused(true); }
-    } else {
-      video.pause();
-    }
-  };
 
   const scrollToSection = (sectionId: string) => {
     document
@@ -55,9 +43,6 @@ export default function Hero() {
           preload="metadata"
           aria-hidden="true"
           tabIndex={-1}
-          onPlay={() => setPaused(false)}
-          onPause={() => setPaused(true)}
-          onError={() => setPaused(true)}
           className="h-full w-full object-cover"
         />
 
@@ -141,14 +126,6 @@ export default function Hero() {
         aria-label="Zu den Leistungen scrollen"
       >
         <ArrowDown className="h-5 w-5 animate-bounce motion-reduce:animate-none" />
-      </button>
-      <button
-        type="button"
-        onClick={togglePlayback}
-        className="absolute bottom-6 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-brand-cream/30 text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:right-8"
-        aria-label={paused ? 'Hintergrundvideo abspielen' : 'Hintergrundvideo pausieren'}
-      >
-        {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
       </button>
     </section >
   );

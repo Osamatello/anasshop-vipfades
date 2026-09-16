@@ -61,7 +61,8 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
             </Link>
           ))}
         </div>
-        {!fullCatalogue && <div className="mt-10 flex justify-center">
+        {!fullCatalogue && <div className="mt-10 flex flex-col items-center gap-4">
+          <p className="text-sm font-light tracking-wide text-brand-cream/80">+ {SERVICES.length - visibleServices.length} weitere Leistungen</p>
           <Link href="/leistungen" className="inline-flex items-center justify-center rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">Alle Leistungen ansehen</Link>
         </div>}
       </div>

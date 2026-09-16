@@ -126,6 +126,15 @@ export default function Footer() {
             <p className="mt-3 text-sm font-medium text-brand-cream">
               {BUSINESS.hours.walkins}
             </p>
+
+            <div className="mt-5 flex flex-col items-start gap-2 text-sm font-light text-brand-textPrimary/75">
+              <a href="tel:+4917663782674" className="rounded transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">
+                +49 176 63782674
+              </a>
+              <a href="mailto:vipfadeskoplenz@gmail.com" className="break-all rounded transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">
+                vipfadeskoplenz@gmail.com
+              </a>
+            </div>
           </div>
         </div>
 

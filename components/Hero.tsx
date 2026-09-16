@@ -30,10 +30,11 @@ export default function Hero() {
           tabIndex={-1}
         />
 
-        {/* Overlays for readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/85 via-brand-bg/60 to-brand-bg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/50 to-brand-bg/55" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#070707_90%)] opacity-90" />
+        {/* Overlays: kept intentionally light so the barber, chairs and tools
+            stay clearly visible. One subtle tint for text contrast plus a
+            bottom fade that blends the hero into the next section. */}
+        <div className="absolute inset-0 bg-brand-bg/15" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand-bg" />
         <div className="film-grain absolute inset-0" />
       </div>
 

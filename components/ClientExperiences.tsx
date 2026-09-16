@@ -81,11 +81,7 @@ export default function ClientExperiences() {
       <div className="mx-auto max-w-7xl px-5">
         {/* Section heading */}
         <div className="mb-14 text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            Google-Bewertungen
-          </p>
-
-          <h2 className="mt-4 font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
+          <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Das sagen unsere Kunden
           </h2>
 
@@ -93,9 +89,6 @@ export default function ClientExperiences() {
 
           <div className="mt-6"><GoogleRating /></div>
 
-          <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Echte Erfahrungen unserer Kunden auf Google.
-          </p>
         </div>
 
         {/* Reviews marquee */}

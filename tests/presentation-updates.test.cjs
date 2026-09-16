@@ -37,8 +37,12 @@ test('original seven testimonials, rows, cards, styles and animations are unchan
   const restored = source('components/ClientExperiences.tsx')
     .replace("\nimport GoogleRating from '@/components/reviews/GoogleRating';", '')
     .replace('\n\n          <div className="mt-6"><GoogleRating /></div>', '')
-    .replace('        <div className="mt-10 flex justify-center"><GoogleRating reviewBlock /></div>\n', '');
-  assert.equal(restored.trimEnd(), original.trimEnd());
+    .replace('        <div className="mt-10 flex justify-center"><GoogleRating reviewBlock /></div>\n', '')
+    .replace('<h2 className="font-serif', '<h2 className="mt-4 font-serif');
+  const expected = original
+    .replace('          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">\n            Google-Bewertungen\n          </p>\n\n', '')
+    .replace('          <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">\n            Echte Erfahrungen unserer Kunden auf Google.\n          </p>\n', '');
+  assert.equal(restored.trimEnd(), expected.trimEnd());
   assert.equal((restored.match(/initials:/g) || []).length, 7);
   assert.doesNotMatch(restored, /useGoogleReviews/);
 });

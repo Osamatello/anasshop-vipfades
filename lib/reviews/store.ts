@@ -14,11 +14,16 @@ export function reviewsClient(privileged = false) {
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 }
 
-export async function getGoogleReviews(): Promise<GoogleReviewsData> {
+export async function getGoogleReviews(): Promise<GoogleReviewsData & { diagnostics?: { databaseErrorCode: string } }> {
   const client = reviewsClient();
   if (!client) return { stats: null, reviews: [], status: 'pending' };
   // Both stats and cards are read in a single database snapshot.
   const { data, error } = await client.rpc('get_google_reviews');
-  if (error || !data) return { stats: null, reviews: [], status: 'pending' };
+  if (error || !data) return {
+    stats: null, reviews: [], status: 'pending',
+    ...(process.env.VERCEL_ENV === 'preview' ? { diagnostics: {
+      databaseErrorCode: error ? /^(PGRST\d{3}|[0-9A-Z]{5})$/.test(error.code) ? error.code : 'review_read_failed' : 'empty_cache',
+    } } : {}),
+  };
   return data as GoogleReviewsData;
 }

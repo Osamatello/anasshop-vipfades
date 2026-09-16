@@ -12,7 +12,7 @@ function load(relativePath, dependencies = {}, env = {}) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   vm.runInNewContext(js, {
-    module, exports: module.exports, process: { env }, URL, Date, Map, Set, Buffer,
+    module, exports: module.exports, process: { env }, URL, Date, Map, Set, Buffer, Response,
     require(name) {
       if (name === 'server-only') return {};
       if (Object.hasOwn(dependencies, name)) return dependencies[name];
@@ -26,6 +26,41 @@ const googleEnv = {
   GOOGLE_REVIEWS_CLIENT_ID: 'test-client', GOOGLE_REVIEWS_CLIENT_SECRET: 'test-secret',
   GOOGLE_REVIEWS_REFRESH_TOKEN: 'test-refresh', GOOGLE_REVIEWS_LOCATION_NAME: 'accounts/123/locations/456',
 };
+
+test('Preview readiness identifies missing configuration without revealing secrets', async () => {
+  const env = {
+    VERCEL_ENV: 'preview', NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: 'private-anon-test-value', SUPABASE_SECRET_KEY: 'private-secret-test-value',
+  };
+  const api = load('app/api/google-reviews/route.ts', {
+    '@/lib/reviews/store': { getGoogleReviews: async () => ({ stats: null, reviews: [], status: 'pending', diagnostics: { databaseErrorCode: 'PGRST202' } }) },
+  }, env);
+  const response = await api.GET();
+  const data = await response.json();
+  assert.equal(data.status, 'pending');
+  assert.equal(data.diagnostics.databaseErrorCode, 'PGRST202');
+  assert.deepEqual(data.diagnostics.missingEnvironmentVariables, [...Object.keys(googleEnv), 'GOOGLE_REVIEWS_SYNC_SECRET']);
+  assert.equal(data.diagnostics.locationIdentifierStatus, 'missing');
+  assert.equal(data.diagnostics.databaseUsesOverride, false);
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
+  assert.doesNotMatch(JSON.stringify(data), /private-anon-test-value|private-secret-test-value/);
+  const production = load('app/api/google-reviews/route.ts', {
+    '@/lib/reviews/store': { getGoogleReviews: async () => ({ stats: null, reviews: [], status: 'pending' }) },
+  }, { ...env, VERCEL_ENV: 'production' });
+  assert.equal((await (await production.GET()).json()).diagnostics, undefined);
+});
+
+test('read diagnostics sanitize upstream errors and never mutate the database', async () => {
+  const api = load('lib/reviews/store.ts', {
+    '@supabase/supabase-js': { createClient: () => ({ rpc: async (name) => {
+      assert.equal(name, 'get_google_reviews');
+      return { data: null, error: { code: 'private-secret-error', message: 'private-secret-message' } };
+    } }) },
+  }, { VERCEL_ENV: 'preview', NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-reader' });
+  const data = await api.getGoogleReviews();
+  assert.equal(data.diagnostics.databaseErrorCode, 'review_read_failed');
+  assert.doesNotMatch(JSON.stringify(data), /private-secret/);
+});
 
 function setupSync(pages, env = googleEnv) {
   const requests = [];

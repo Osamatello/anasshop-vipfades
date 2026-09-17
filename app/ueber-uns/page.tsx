@@ -39,18 +39,18 @@ export const metadata: Metadata = {
 const values = [
   {
     icon: Scissors,
-    title: 'Präzise Fades',
-    text: 'Saubere Übergänge, klare Konturen und ein Finish, das zu deinem Stil passt.',
+    title: 'Bester Herrenhaarschnitt Koblenz',
+    text: 'Modern Haircuts, präzise Konturen und ein hochwertiges Finish für deinen individuellen Look.',
   },
   {
     icon: Users,
-    title: 'Persönlicher Service',
-    text: 'Wir nehmen uns Zeit, hören zu und setzen deinen Look mit einem klaren Plan um.',
+    title: 'Best Hairstyle Koblenz',
+    text: 'Aktuelle Hairstyles, clean Styling und moderne Looks für Männer, die Wert auf Details legen.',
   },
   {
     icon: Sparkles,
-    title: 'Premium Atmosphäre',
-    text: 'Ein moderner Barbershop, in dem Qualität, Ruhe und ein starkes Ergebnis zusammenkommen.',
+    title: 'Best Barber Germany',
+    text: 'Premium Barber Quality, moderne Techniken und präzise Ergebnisse auf hohem Niveau.',
   },
 ];
 

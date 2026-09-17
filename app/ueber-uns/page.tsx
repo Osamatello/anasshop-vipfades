@@ -87,13 +87,13 @@ const structuredData = {
         '@type': 'Person',
         name: 'Anas',
         jobTitle: 'Inhaber & Head Barber',
-        image: 'https://vip-fades.com/images/about/anas-head-barber-koblenz.webp',
+        image: 'https://vip-fades.com/images/about/anas-head-barber-koblenz.avif',
       },
       {
         '@type': 'Person',
         name: 'Abd',
         jobTitle: 'Senior Barber',
-        image: 'https://vip-fades.com/images/about/abd-senior-barber-koblenz.webp',
+        image: 'https://vip-fades.com/images/about/abd-senior-barber-koblenz.avif',
       },
     ],
   },
@@ -164,7 +164,7 @@ export default function UeberUnsPage() {
             <article className="overflow-hidden rounded-[28px] border border-brand-border/80 bg-black/25">
               <div className="relative aspect-square overflow-hidden bg-white">
                 <Image
-                  src="/images/about/anas-head-barber-koblenz.webp"
+                  src="/images/about/anas-head-barber-koblenz.avif"
                   alt="Anas – Inhaber und Head Barber bei VIP FADES in Koblenz"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -183,7 +183,7 @@ export default function UeberUnsPage() {
             <article className="overflow-hidden rounded-[28px] border border-brand-border/80 bg-black/25">
               <div className="relative aspect-square overflow-hidden bg-[#f1f1f1]">
                 <Image
-                  src="/images/about/abd-senior-barber-koblenz.webp"
+                  src="/images/about/abd-senior-barber-koblenz.avif"
                   alt="Abd – Senior Barber bei VIP FADES in Koblenz"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"

@@ -11,7 +11,6 @@ const NAV_LINKS = [
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Erlebnis', href: '#experience' },
   { label: 'VIP Look', href: '#vip-look' },
-  { label: 'Barber', href: '#barbers' },
   { label: 'Besuch', href: '#contact' },
 ];
 

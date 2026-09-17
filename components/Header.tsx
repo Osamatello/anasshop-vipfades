@@ -66,9 +66,11 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${scrolled
-        ? 'border-b border-brand-border bg-brand-bg/90 py-3 backdrop-blur-xl'
-        : 'bg-transparent py-5'
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${open
+        ? 'border-b border-brand-border bg-brand-bg py-5'
+        : scrolled
+          ? 'border-b border-brand-border bg-brand-bg/90 py-3 backdrop-blur-xl'
+          : 'bg-transparent py-5'
         }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5">
@@ -144,7 +146,7 @@ export default function Header() {
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${open
-          ? 'max-h-96 border-b border-brand-border bg-brand-bg/95'
+          ? 'max-h-96 border-b border-brand-border bg-brand-bg'
           : 'max-h-0'
           }`}
       >

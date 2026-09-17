@@ -8,6 +8,7 @@ import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Leistungen', href: '/leistungen' },
+  { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Erlebnis', href: '#experience' },
   { label: 'VIP Look', href: '#vip-look' },
   { label: 'Barber', href: '#barbers' },
@@ -102,17 +103,26 @@ export default function Header() {
         </button>
 
         {/* Desktop navigation */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 lg:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 xl:gap-10 lg:flex">
           {NAV_LINKS.map((link) => (
-            link.href === '/leistungen' ? <Link key={link.href} href={link.href} className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">{link.label}</Link> :
-            <button
-              type="button"
-              key={link.href}
-              onClick={() => handleNav(link.href)}
-              className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
-            >
-              {link.label}
-            </button>
+            link.href.startsWith('/') ? (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                key={link.href}
+                onClick={() => handleNav(link.href)}
+                className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
+              >
+                {link.label}
+              </button>
+            )
           ))}
         </nav>
 
@@ -146,21 +156,31 @@ export default function Header() {
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${open
-          ? 'max-h-96 border-b border-brand-border bg-brand-bg'
+          ? 'max-h-[28rem] border-b border-brand-border bg-brand-bg'
           : 'max-h-0'
           }`}
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 pb-6 pt-4">
           {NAV_LINKS.map((link) => (
-            link.href === '/leistungen' ? <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-cream">{link.label}</Link> :
-            <button
-              type="button"
-              key={link.href}
-              onClick={() => handleNav(link.href)}
-              className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
-            >
-              {link.label}
-            </button>
+            link.href.startsWith('/') ? (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-cream"
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                key={link.href}
+                onClick={() => handleNav(link.href)}
+                className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
+              >
+                {link.label}
+              </button>
+            )
           ))}
 
           <button
@@ -170,7 +190,6 @@ export default function Header() {
           >
             Termin buchen
           </button>
-
         </nav>
       </div>
     </header>

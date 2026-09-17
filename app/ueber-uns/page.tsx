@@ -265,23 +265,16 @@ export default function UeberUnsPage() {
               saubere Details, moderne Styles und einen persönlichen Service legst, bist
               du bei uns richtig.
             </p>
+            <h3 className="mt-9 font-serif text-3xl font-light sm:text-4xl">
+              Bereit für deinen nächsten Look?
+            </h3>
+            <Link
+              href="/booking"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-colors hover:bg-brand-textPrimary"
+            >
+              Jetzt Termin buchen <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </section>
-
-        <section className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-8 sm:py-20">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            Dein nächster Termin
-          </p>
-          <h2 className="mt-4 font-serif text-4xl font-light sm:text-5xl">Bereit für deinen nächsten Look?</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-            Wähle deine Leistung, deinen Barber und buche deinen Termin bei VIP FADES direkt online.
-          </p>
-          <Link
-            href="/booking"
-            className="mt-8 inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-colors hover:bg-brand-textPrimary"
-          >
-            Jetzt Termin buchen <ArrowRight className="h-4 w-4" />
-          </Link>
         </section>
 
         <Footer />

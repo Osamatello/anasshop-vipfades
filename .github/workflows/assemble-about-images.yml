@@ -1,0 +1,44 @@
+name: Assemble About team images
+
+on:
+  push:
+    branches:
+      - feature/hero-services-google-reviews
+    paths:
+      - '.tmp-about-images/**'
+      - '.github/workflows/assemble-about-images.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/hero-services-google-reviews
+
+      - name: Assemble high-quality images
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .tmp-about-images/anas-00.b64 .tmp-about-images/anas-01.b64 .tmp-about-images/anas-02.b64 | base64 --decode > public/images/about/anas-head-barber-koblenz.avif
+          cat .tmp-about-images/abd-00.b64 .tmp-about-images/abd-01.b64 .tmp-about-images/abd-02.b64 | base64 --decode > public/images/about/abd-senior-barber-koblenz.avif
+          sed -i 's/anas-head-barber-koblenz\.webp/anas-head-barber-koblenz.avif/g' app/ueber-uns/page.tsx
+          sed -i 's/abd-senior-barber-koblenz\.webp/abd-senior-barber-koblenz.avif/g' app/ueber-uns/page.tsx
+          rm -f public/images/about/anas-head-barber-koblenz.webp
+          rm -f public/images/about/abd-senior-barber-koblenz.webp
+          rm -rf .tmp-about-images
+          rm -f .github/workflows/assemble-about-images.yml
+
+      - name: Commit assembled images
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Use high-quality team images'
+          git push origin HEAD:feature/hero-services-google-reviews

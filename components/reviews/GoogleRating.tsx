@@ -1,9 +1,12 @@
 'use client';
 
 import { Star } from 'lucide-react';
+import { Oswald } from 'next/font/google';
 import { useGoogleReviews } from '@/components/reviews/GoogleReviewsProvider';
 import { GOOGLE_REVIEWS_LINK } from '@/lib/reviews/types';
 import { TEMPORARY_GOOGLE_RATING } from '@/lib/reviews/manual-rating';
+
+const ratingFont = Oswald({ subsets: ['latin'], weight: '700', display: 'swap' });
 
 export default function GoogleRating({ compact = false, reviewBlock = false }: { compact?: boolean; reviewBlock?: boolean }) {
   const { stats: liveStats } = useGoogleReviews();
@@ -19,7 +22,7 @@ export default function GoogleRating({ compact = false, reviewBlock = false }: {
           className="inline-flex items-center gap-3 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
           aria-label={`${stats.rating.toFixed(1)} von 5 Sternen bei ${stats.totalReviewCount} Google-Bewertungen – auf Google ansehen`}
         >
-          <span className={`font-serif leading-none tabular-nums ${compact ? 'order-last text-[42px] sm:text-5xl' : 'text-3xl'}`}>{stats.rating.toFixed(1)}</span>
+          <span className={`${ratingFont.className} leading-none tabular-nums ${compact ? 'order-last text-[42px] sm:text-5xl' : 'text-3xl'}`}>{stats.rating.toFixed(1)}</span>
           <span className={compact ? 'text-right' : 'text-left'}>
             <span aria-hidden="true" className="flex gap-0.5">
               {Array.from({ length: 5 }, (_, index) => (
@@ -31,7 +34,7 @@ export default function GoogleRating({ compact = false, reviewBlock = false }: {
                 </span>
               ))}
             </span>
-            <span className={`mt-1.5 block font-medium tabular-nums ${compact ? 'text-[11px] tracking-wide' : 'text-[9px] uppercase tracking-[0.12em]'}`}>
+            <span className={`mt-1.5 block font-sans font-bold uppercase tracking-[0.12em] tabular-nums ${compact ? 'text-[11px]' : 'text-[9px]'}`}>
               {new Intl.NumberFormat('de-DE').format(stats.totalReviewCount)} Google-Bewertungen
             </span>
           </span>

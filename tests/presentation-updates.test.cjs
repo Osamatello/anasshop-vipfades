@@ -25,6 +25,7 @@ function load(path, mocks = {}, exportName = 'default') {
 }
 function rating(data, props = {}) {
   const Component = load('components/reviews/GoogleRating.tsx', {
+    'next/font/google': { Oswald: () => ({ className: 'oswald' }) },
     '@/components/reviews/GoogleReviewsProvider': { useGoogleReviews: () => data },
     '@/lib/reviews/types': { GOOGLE_REVIEWS_LINK: maps },
     '@/lib/reviews/manual-rating': { TEMPORARY_GOOGLE_RATING: load('lib/reviews/manual-rating.ts', {}, 'TEMPORARY_GOOGLE_RATING') },

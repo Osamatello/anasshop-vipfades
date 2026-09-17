@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, MapPin, Scissors, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, Scissors, Sparkles, Users } from 'lucide-react';
 
 import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
-import { BUSINESS } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Über uns | VIP FADES – Barbershop Koblenz',
@@ -251,38 +250,21 @@ export default function UeberUnsPage() {
         </section>
 
         <section className="border-y border-brand-border/70 bg-black/20">
-          <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-                Barber in Koblenz
-              </p>
-              <h2 className="mt-4 max-w-3xl font-serif text-4xl font-light leading-tight sm:text-5xl">
-                Bester Barber in Koblenz? Dein Look beginnt bei VIP FADES.
-              </h2>
-              <p className="mt-6 max-w-3xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base sm:leading-8">
-                Du suchst den besten Barber in Koblenz oder einen Barbershop in Koblenz für
-                einen sauberen Skin Fade? Bei VIP FADES bekommst du moderne
-                Herrenhaarschnitte, präzise Fade-Techniken, Bartpflege und exklusive
-                VIP-Services. Wenn du einen Herrenfriseur in Koblenz suchst und Wert auf
-                saubere Details, moderne Styles und einen persönlichen Service legst, bist
-                du bei uns richtig.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-brand-border/80 bg-brand-bg/80 p-6 sm:p-7">
-              <div className="flex gap-3">
-                <MapPin className="mt-0.5 h-5 w-5 flex-shrink-0 text-brand-cream" />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-cream">Besuch uns</p>
-                  <p className="mt-3 text-sm font-light leading-6 text-brand-textSecondary">{BUSINESS.address}</p>
-                </div>
-              </div>
-              <Link
-                href="/booking"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-6 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-brand-bg transition-colors hover:bg-brand-textPrimary"
-              >
-                Termin buchen <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+          <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-8 sm:py-20">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
+              Barber in Koblenz
+            </p>
+            <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-light leading-tight sm:text-5xl">
+              Bester Barber in Koblenz? Dein Look beginnt bei VIP FADES.
+            </h2>
+            <p className="mx-auto mt-6 max-w-3xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base sm:leading-8">
+              Du suchst den besten Barber in Koblenz oder einen Barbershop in Koblenz für
+              einen sauberen Skin Fade? Bei VIP FADES bekommst du moderne
+              Herrenhaarschnitte, präzise Fade-Techniken, Bartpflege und exklusive
+              VIP-Services. Wenn du einen Herrenfriseur in Koblenz suchst und Wert auf
+              saubere Details, moderne Styles und einen persönlichen Service legst, bist
+              du bei uns richtig.
+            </p>
           </div>
         </section>
 

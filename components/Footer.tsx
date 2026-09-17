@@ -50,6 +50,10 @@ export default function Footer() {
                 </span>
               </div>
             </button>
+
+            <p className="mt-4 hidden max-w-sm text-sm font-light leading-7 text-brand-textPrimary/70 lg:block">
+              Premium Cuts. Saubere Fades. Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz.
+            </p>
           </div>
 
           {/* Navigation */}

@@ -16,11 +16,13 @@ export default function PageAtmosphere({
         <div className="global-glow-three absolute bottom-[-35%] left-[35%] h-[800px] w-[800px] rounded-full bg-brand-cream/[0.035] blur-[200px]" />
 
         {showRings && (
-          <>
-            <div className="page-atmosphere-ring-one absolute left-[-22%] top-[-8%] h-[900px] w-[900px] rounded-[50%] border border-brand-cream/[0.10]" />
+          <div className="page-booking-ribbon absolute left-[4%] top-[40px] h-[850px] w-[720px] max-w-[92vw]">
+            <div className="page-ribbon-glow absolute -right-[320px] top-[40px] h-[720px] w-[720px] rounded-[48%] border-[2px] border-brand-cream/[0.08]" />
 
-            <div className="page-atmosphere-ring-two absolute left-[5%] top-[8%] h-[760px] w-[760px] rounded-[50%] border border-brand-cream/[0.06]" />
-          </>
+            <div className="page-ribbon-glow-two absolute -right-[260px] top-[100px] h-[620px] w-[620px] rounded-[48%] border border-brand-cream/[0.08]" />
+
+            <div className="page-ribbon-static-glow absolute right-[-200px] top-[140px] h-[500px] w-[500px] rounded-full bg-brand-cream/[0.055] blur-[130px]" />
+          </div>
         )}
 
         <div className="booking-radial-background absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,220,200,0.035),transparent_35%)]" />
@@ -60,29 +62,25 @@ export default function PageAtmosphere({
           }
         }
 
-        @keyframes pageAtmosphereRingOne {
+        @keyframes ribbonMove {
           0%,
           100% {
-            transform: translate3d(-120px, -40px, 0) rotate(-18deg) scale(1);
-            opacity: 0.25;
+            transform: translate3d(0, -60px, 0) rotate(-10deg) scale(1);
           }
 
           50% {
-            transform: translate3d(650px, 100px, 0) rotate(20deg) scale(1.18);
-            opacity: 0.55;
+            transform: translate3d(-100px, 80px, 0) rotate(12deg) scale(1.08);
           }
         }
 
-        @keyframes pageAtmosphereRingTwo {
+        @keyframes ribbonMoveTwo {
           0%,
           100% {
-            transform: translate3d(0, 0, 0) rotate(15deg);
-            opacity: 0.15;
+            transform: translate3d(20px, 40px, 0) rotate(8deg);
           }
 
           50% {
-            transform: translate3d(550px, 120px, 0) rotate(-18deg);
-            opacity: 0.35;
+            transform: translate3d(-80px, -60px, 0) rotate(-12deg);
           }
         }
 
@@ -98,12 +96,12 @@ export default function PageAtmosphere({
           animation: globalGlowThree 24s ease-in-out infinite;
         }
 
-        .page-atmosphere-ring-one {
-          animation: pageAtmosphereRingOne 24s ease-in-out infinite;
+        .page-ribbon-glow {
+          animation: ribbonMove 16s ease-in-out infinite;
         }
 
-        .page-atmosphere-ring-two {
-          animation: pageAtmosphereRingTwo 28s ease-in-out infinite;
+        .page-ribbon-glow-two {
+          animation: ribbonMoveTwo 19s ease-in-out infinite;
         }
 
         @media (max-width: 768px) {
@@ -112,8 +110,10 @@ export default function PageAtmosphere({
           .global-glow-one,
           .global-glow-two,
           .global-glow-three,
-          .page-atmosphere-ring-one,
-          .page-atmosphere-ring-two {
+          .page-booking-ribbon,
+          .page-ribbon-glow,
+          .page-ribbon-glow-two,
+          .page-ribbon-static-glow {
             display: none !important;
             animation: none !important;
             filter: none !important;
@@ -124,8 +124,8 @@ export default function PageAtmosphere({
           .global-glow-one,
           .global-glow-two,
           .global-glow-three,
-          .page-atmosphere-ring-one,
-          .page-atmosphere-ring-two {
+          .page-ribbon-glow,
+          .page-ribbon-glow-two {
             animation: none;
           }
         }

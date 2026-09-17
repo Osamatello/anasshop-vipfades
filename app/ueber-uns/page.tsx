@@ -55,12 +55,12 @@ const values = [
 ];
 
 const services = [
-  'Skin Fade & Fade Haarschnitte',
-  'Moderne Herrenhaarschnitte',
-  'Bartpflege & Konturen',
-  'Haarschnitt + Bart',
-  'VIP EXKLUSIV',
-  'VIP KÖNIGSKLASSE',
+  'Men’s Grooming Koblenz',
+  'Gentlemen’s Cut Koblenz',
+  'Beard Styling Koblenz',
+  'Hair Styling Koblenz',
+  'Luxury Grooming Koblenz',
+  'Men’s Hair Salon Koblenz',
 ];
 
 const structuredData = {
@@ -231,8 +231,8 @@ export default function UeberUnsPage() {
               Dein Style. Unser Handwerk.
             </h2>
             <p className="mt-5 max-w-xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-              Vom klassischen Herrenhaarschnitt bis zum präzisen Skin Fade und unseren
-              VIP-Paketen: Wir kombinieren modernes Barbering mit sauberem Handwerk.
+              Professional Grooming, Precision Styling und Premium Men’s Care für einen
+              gepflegten, modernen Look.
             </p>
             <Link
               href="/leistungen"

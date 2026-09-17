@@ -20,6 +20,7 @@ type ServicesPickerProps = {
   vipPackages: VipPackage[];
   onContinue: (selection: ServicesSelection) => void;
   onBack: () => void;
+  initialServiceSlug?: string;
 };
 
 /**
@@ -39,10 +40,18 @@ export default function ServicesPicker({
   vipPackages,
   onContinue,
   onBack,
+  initialServiceSlug,
 }: ServicesPickerProps) {
   // null = no VIP package selected; otherwise the selected package id.
-  const [selectedVipId, setSelectedVipId] = useState<string | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedVipId, setSelectedVipId] = useState<string | null>(() =>
+    initialServiceSlug ? vipPackages.find((item) => item.slug === initialServiceSlug)?.id ?? null : null,
+  );
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => {
+    if (!initialServiceSlug) return [];
+    if (vipPackages.some((item) => item.slug === initialServiceSlug)) return [];
+    const service = services.find((item) => item.slug === initialServiceSlug);
+    return service ? [service.id] : [];
+  });
 
   const activeVipPackage = vipPackages.find(
     (vipPackage) => vipPackage.id === selectedVipId,

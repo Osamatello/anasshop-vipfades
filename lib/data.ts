@@ -17,6 +17,7 @@ export const BUSINESS = {
 
 export type Service = {
   id: string;
+  slug?: string;
   name: string;
   price: number;
   duration?: number;
@@ -26,6 +27,7 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     id: "haircut",
+    slug: "mens-haircut",
     name: "Herrenhaarschnitt",
     price: 20,
     duration: 30,
@@ -33,6 +35,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: "beard",
+    slug: "beard-trim",
     name: "Bart trimmen",
     price: 15,
     duration: 20,
@@ -40,6 +43,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: "haircut-beard",
+    slug: "haircut-beard",
     name: "Haarschnitt + Bart",
     price: 35,
     duration: 40,
@@ -47,6 +51,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: "eyebrows",
+    slug: "eyebrows",
     name: "Augenbrauen",
     price: 7,
     duration: 10,
@@ -54,12 +59,14 @@ export const SERVICES: Service[] = [
   },
   {
     id: "facial",
+    slug: "facial-cleansing",
     name: "Gesichtsreinigung",
     price: 20,
     description: "Tiefenreinigung für ein frisches Hautgefühl.",
   },
   {
     id: "hotwax",
+    slug: "hot-wax",
     name: "Heißwachs",
     price: 10,
     duration: 10,
@@ -67,6 +74,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: "ears-nose",
+    slug: "ears-nose",
     name: "Ohren & Nase",
     price: 5,
     description: "Schnelle und saubere Detailpflege.",

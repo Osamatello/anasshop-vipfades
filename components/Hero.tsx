@@ -56,7 +56,7 @@ export default function Hero() {
         <div className="reveal visible flex flex-col items-center">
           {/* Location label */}
           <div className="mb-6 flex items-center gap-3 px-4 py-2">
-            <span aria-hidden="true" className="hero-asterisk font-serif text-2xl leading-none text-brand-cream">·</span>
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
 
             <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary">
               Koblenz · {BUSINESS.hours.days}

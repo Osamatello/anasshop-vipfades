@@ -41,12 +41,12 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
 
         <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {VIP_PACKAGE_CARDS.map((vipPackage) => (
-            fullCatalogue ? <div key={vipPackage.id} id={vipPackage.slug} className="h-full scroll-mt-28">
+            fullCatalogue ? <Link key={vipPackage.id} id={vipPackage.slug} href={`/booking?service=${encodeURIComponent(vipPackage.slug)}`} className={`${FOCUS} scroll-mt-28`} aria-label={`${vipPackage.name} – Termin buchen`}>
             <VipPackageCard
               vipPackage={vipPackage}
               size="large"
             />
-            </div> : <Link key={vipPackage.id} href={`/leistungen#${vipPackage.slug}`} className={FOCUS} aria-label={`${vipPackage.name} – Leistungen ansehen`}>
+            </Link> : <Link key={vipPackage.id} href={`/leistungen#${vipPackage.slug}`} className={FOCUS} aria-label={`${vipPackage.name} – Leistungen ansehen`}>
               <VipPackageCard vipPackage={vipPackage} size="large" />
             </Link>
           ))}
@@ -54,9 +54,9 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
 
         <div className="mt-8 grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {visibleServices.map((service, index) => (
-            fullCatalogue ? <div key={service.id} id={serviceAnchor(service)} className="h-full scroll-mt-28">
+            fullCatalogue ? <Link key={service.id} id={serviceAnchor(service)} href={`/booking?service=${encodeURIComponent(service.slug ?? service.id)}`} className={`${FOCUS} scroll-mt-28`} aria-label={`${service.name} – Termin buchen`}>
               <ServiceCard service={service} index={index} />
-            </div> : <Link key={service.id} href={`/leistungen#${serviceAnchor(service)}`} className={`${FOCUS} sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.75rem)] lg:col-span-1 lg:col-start-2 lg:mx-0 lg:w-full`} aria-label={`${service.name} – Leistungen ansehen`}>
+            </Link> : <Link key={service.id} href={`/leistungen#${serviceAnchor(service)}`} className={`${FOCUS} sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.75rem)] lg:col-span-1 lg:col-start-2 lg:mx-0 lg:w-full`} aria-label={`${service.name} – Leistungen ansehen`}>
               <ServiceCard service={service} index={index} />
             </Link>
           ))}

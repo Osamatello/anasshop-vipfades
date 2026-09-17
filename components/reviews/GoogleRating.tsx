@@ -11,6 +11,7 @@ const ratingFont = Oswald({ subsets: ['latin'], weight: '700', display: 'swap' }
 export default function GoogleRating({ compact = false, reviewBlock = false }: { compact?: boolean; reviewBlock?: boolean }) {
   const { stats: liveStats } = useGoogleReviews();
   const stats = liveStats ?? TEMPORARY_GOOGLE_RATING;
+  const starSize = reviewBlock ? 'h-3.5 w-3.5' : 'h-5 w-5';
 
   return (
     <div className={`inline-flex min-h-12 items-center gap-4 text-brand-cream ${compact ? 'text-left' : 'flex-wrap justify-center'}`}>
@@ -26,10 +27,10 @@ export default function GoogleRating({ compact = false, reviewBlock = false }: {
           <span className={compact ? 'text-right' : 'text-left'}>
             <span aria-hidden="true" className="flex gap-0.5">
               {Array.from({ length: 5 }, (_, index) => (
-                <span key={index} className="relative block h-3.5 w-3.5">
-                  <Star className="absolute h-3.5 w-3.5 text-brand-cream/30" />
+                <span key={index} className={`relative block ${starSize}`}>
+                  <Star className={`absolute ${starSize} text-brand-cream/30`} />
                   <span className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${Math.max(0, Math.min(1, stats.rating - index)) * 100}%` }}>
-                    <Star className="h-3.5 w-3.5 fill-brand-cream text-brand-cream" />
+                    <Star className={`${starSize} fill-brand-cream text-brand-cream`} />
                   </span>
                 </span>
               ))}

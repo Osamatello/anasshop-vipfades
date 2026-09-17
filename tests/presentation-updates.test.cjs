@@ -54,7 +54,7 @@ test('Hero uses right-hand rating, five fractional stars and Google review count
   assert.match(html, /order-last text-\[42px\]/);
   assert.match(html, />4\.6<\/span>/);
   assert.match(html, />211 Google-Bewertungen<\/span>/);
-  assert.equal((html.match(/relative block h-3\.5/g) || []).length, 5);
+  assert.equal((html.match(/relative block h-5/g) || []).length, 5);
   assert.match(html, /width:59\.999999999999964%/);
   const visible = html.replace(/<[^>]*>/g, '');
   assert.equal(visible, '4.6211 Google-Bewertungen');
@@ -125,4 +125,36 @@ test('Footer contact details have exact clickable phone and email links', () => 
   assert.match(footer, /\+49 176 63782674/);
   assert.match(footer, /href="mailto:vipfadeskoplenz@gmail\.com"/);
   assert.match(footer, /focus-visible:outline/);
+});
+
+test('all nine catalogue links preselect only their stable service slug', () => {
+  const services = load('lib/data.ts', {}, 'SERVICES');
+  const definitions = load('lib/booking/vipPackages.ts', {}, 'VIP_PACKAGE_DEFINITIONS');
+  const vipPackages = Object.values(definitions).map((item) => ({ ...item, id: item.slug, tier: item.slug === 'vip-koenigsklasse' ? 'koenigsklasse' : 'exklusiv' }));
+  const vipCard = load('components/VipPackageCard.tsx');
+  const Picker = load('components/chat/ServicesPicker.tsx', {
+    '@/components/VipPackageCard': { default: vipCard, __esModule: true },
+  });
+  const Catalogue = load('components/Services.tsx', {
+    '@/lib/data': { SERVICES: services },
+    '@/components/chat/constants': { VIP_PACKAGE_CARDS: vipPackages },
+    '@/components/VipPackageCard': { default: vipCard, __esModule: true },
+    '@/components/ServiceCard': { default: () => null, __esModule: true },
+    '@/lib/services/presentation': { serviceAnchor: (item) => item.id },
+  });
+  const catalogue = renderToStaticMarkup(React.createElement(Catalogue, { fullCatalogue: true }));
+  for (const item of [...services, ...vipPackages]) {
+    assert.ok(catalogue.includes(`href="/booking?service=${item.slug}"`));
+    const html = renderToStaticMarkup(React.createElement(Picker, { services, vipPackages, initialServiceSlug: item.slug }));
+    assert.equal((html.match(/aria-checked="true"/g) || []).length, 1);
+    const checked = html.match(/<button[^>]*aria-checked="true"[\s\S]*?<\/button>/)[0];
+    assert.ok(checked.includes(item.name.replace(/&/g, '&amp;')));
+    assert.equal((html.match(/aria-disabled="true"/g) || []).length, item.slug.startsWith('vip-') ? 7 : 0);
+  }
+  for (const initialServiceSlug of [undefined, 'not-a-service']) {
+    const html = renderToStaticMarkup(React.createElement(Picker, { services, vipPackages, initialServiceSlug }));
+    assert.doesNotMatch(html, /aria-checked="true"/);
+  }
+  const unavailable = renderToStaticMarkup(React.createElement(Picker, { services, vipPackages: [], initialServiceSlug: 'vip-exklusiv' }));
+  assert.doesNotMatch(unavailable, /aria-checked="true"/);
 });

@@ -169,6 +169,7 @@ function mapService(service: CatalogServiceRow): Service {
 
     return {
         id: service.id,
+        slug: service.slug,
         name:
             localized?.name ??
             service.name,

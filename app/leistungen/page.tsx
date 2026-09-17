@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function LeistungenPage() {
   return <main className="relative isolate min-h-screen overflow-hidden bg-brand-bg pt-12">
-    <PageAtmosphere />
+    <PageAtmosphere showRings />
     <div className="relative z-10">
     <Header />
     <LeistungenContent />

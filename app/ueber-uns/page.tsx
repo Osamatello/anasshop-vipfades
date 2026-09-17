@@ -160,41 +160,41 @@ export default function UeberUnsPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
-            <article className="overflow-hidden rounded-[28px] border border-brand-border/80 bg-black/25">
+          <div className="mx-auto grid max-w-[620px] gap-5 sm:grid-cols-2 sm:gap-6">
+            <article className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[24px] border border-brand-border/80 bg-black/25 sm:max-w-[300px]">
               <div className="relative aspect-square overflow-hidden bg-white">
                 <Image
                   src="/images/about/anas-head-barber-koblenz.avif"
                   alt="Anas – Inhaber und Head Barber bei VIP FADES in Koblenz"
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 640px) 280px, 300px"
                   className="object-cover"
                   priority
                 />
               </div>
-              <div className="p-6 sm:p-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-cream">
+              <div className="p-4 sm:p-5">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-cream sm:text-[10px]">
                   Inhaber & Head Barber
                 </p>
-                <h3 className="mt-2 font-serif text-3xl font-medium">Anas</h3>
+                <h3 className="mt-1.5 font-serif text-2xl font-medium">Anas</h3>
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-[28px] border border-brand-border/80 bg-black/25">
+            <article className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[24px] border border-brand-border/80 bg-black/25 sm:max-w-[300px]">
               <div className="relative aspect-square overflow-hidden bg-[#f1f1f1]">
                 <Image
                   src="/images/about/abd-senior-barber-koblenz.avif"
                   alt="Abd – Senior Barber bei VIP FADES in Koblenz"
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 640px) 280px, 300px"
                   className="object-cover object-top"
                 />
               </div>
-              <div className="p-6 sm:p-7">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-cream">
+              <div className="p-4 sm:p-5">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-cream sm:text-[10px]">
                   Senior Barber
                 </p>
-                <h3 className="mt-2 font-serif text-3xl font-medium">Abd</h3>
+                <h3 className="mt-1.5 font-serif text-2xl font-medium">Abd</h3>
               </div>
             </article>
           </div>

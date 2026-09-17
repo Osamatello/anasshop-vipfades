@@ -151,11 +151,11 @@ export default function ClientExperiences() {
         }
 
         .reviews-track-left {
-          animation: reviews-scroll-left 120s linear infinite;
+          animation: reviews-scroll-left 70s linear infinite;
         }
 
         .reviews-track-right {
-          animation: reviews-scroll-right 120s linear infinite;
+          animation: reviews-scroll-right 70s linear infinite;
         }
 
         @keyframes reviews-scroll-left {

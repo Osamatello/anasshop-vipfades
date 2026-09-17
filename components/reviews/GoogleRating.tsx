@@ -11,19 +11,19 @@ const ratingFont = Oswald({ subsets: ['latin'], weight: '700', display: 'swap' }
 export default function GoogleRating({ compact = false, reviewBlock = false }: { compact?: boolean; reviewBlock?: boolean }) {
   const { stats: liveStats } = useGoogleReviews();
   const stats = liveStats ?? TEMPORARY_GOOGLE_RATING;
-  const starSize = reviewBlock ? 'h-3.5 w-3.5' : 'h-5 w-5';
+  const starSize = reviewBlock ? 'h-3.5 w-3.5' : compact ? 'h-4 w-4 sm:h-5 sm:w-5' : 'h-5 w-5';
 
   return (
-    <div className={`inline-flex min-h-12 items-center gap-4 text-brand-cream ${compact ? 'text-left' : 'flex-wrap justify-center'}`}>
+    <div className={`inline-flex items-center text-brand-cream ${compact ? 'min-h-9 gap-2.5 text-left sm:min-h-12 sm:gap-4' : 'min-h-12 flex-wrap justify-center gap-4'}`}>
       {(
         <a
           href={GOOGLE_REVIEWS_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
+          className={`inline-flex items-center rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream ${compact ? 'gap-2 sm:gap-3' : 'gap-3'}`}
           aria-label={`${stats.rating.toFixed(1)} von 5 Sternen bei ${stats.totalReviewCount} Google-Bewertungen – auf Google ansehen`}
         >
-          <span className={`${ratingFont.className} leading-none tabular-nums ${compact ? 'order-last text-[42px] sm:text-5xl' : 'text-3xl'}`}>{stats.rating.toFixed(1)}</span>
+          <span className={`${ratingFont.className} leading-none tabular-nums ${compact ? 'order-last text-[32px] sm:text-5xl' : 'text-3xl'}`}>{stats.rating.toFixed(1)}</span>
           <span className={compact ? 'text-right' : 'text-left'}>
             <span aria-hidden="true" className="flex gap-0.5">
               {Array.from({ length: 5 }, (_, index) => (
@@ -35,7 +35,7 @@ export default function GoogleRating({ compact = false, reviewBlock = false }: {
                 </span>
               ))}
             </span>
-            <span className={`mt-1.5 block font-sans font-bold uppercase tracking-[0.12em] tabular-nums ${compact ? 'text-[11px]' : 'text-[9px]'}`}>
+            <span className={`block font-sans font-bold uppercase tracking-[0.12em] tabular-nums ${compact ? 'mt-1 text-[9px] sm:mt-1.5 sm:text-[11px]' : 'mt-1.5 text-[9px]'}`}>
               {new Intl.NumberFormat('de-DE').format(stats.totalReviewCount)} Google-Bewertungen
             </span>
           </span>

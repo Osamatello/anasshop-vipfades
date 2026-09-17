@@ -135,18 +135,12 @@ export default function UeberUnsPage() {
             </div>
             <div className="space-y-5 text-sm font-light leading-7 text-brand-textSecondary sm:text-base sm:leading-8">
               <p>
-                Vor rund drei Jahren ist VIP FADES mit einem klaren Ziel gestartet: in
-                Koblenz einen Barbershop aufzubauen, der moderne Styles, Präzision und
-                Persönlichkeit miteinander verbindet.
+                VIP FADES ist dein moderner Barbershop in Koblenz für präzise Fades, Skin Fades,
+                Herrenhaarschnitte und Bartpflege.
               </p>
               <p>
-                Mit viel Einsatz, Disziplin und dem Anspruch, jeden Schnitt sauber
-                abzuliefern, ist aus einer Idee ein starkes Team und ein Ort geworden, an
-                dem Qualität nicht nur versprochen, sondern bei jedem Termin gezeigt wird.
-              </p>
-              <p>
-                Heute arbeiten wir als Team daran, jedem Kunden einen Look zu geben, der
-                wirklich zu ihm passt – modern, sauber und mit Liebe zum Detail.
+                Unser Ziel: hochwertige Barber-Qualität in Koblenz, moderne Styles und saubere
+                Ergebnisse bei jedem Termin.
               </p>
             </div>
           </div>

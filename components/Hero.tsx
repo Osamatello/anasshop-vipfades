@@ -31,7 +31,10 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div
+        className="absolute inset-0 overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/vip-fades-hero-poster.jpg')" }}
+      >
         <video
           ref={videoRef}
           src="/videos/vip-fades-hero.mp4"
@@ -43,7 +46,7 @@ export default function Hero() {
           preload="metadata"
           aria-hidden="true"
           tabIndex={-1}
-          className="h-full w-full object-cover"
+          className="absolute left-0 top-1/2 h-[96%] w-full -translate-y-1/2 object-cover object-[48%_center] sm:static sm:h-full sm:translate-y-0 sm:object-center"
         />
 
         {/* Overlays for readability */}
@@ -52,7 +55,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl -translate-y-5 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
           {/* Location label */}
           <div className="mb-6 flex items-center gap-3 px-4 py-2">

@@ -146,8 +146,8 @@ export default function UeberUnsPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:py-24">
-          <div className="mb-10 max-w-2xl sm:mb-14">
+        <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:py-14">
+          <div className="mb-7 max-w-2xl sm:mb-8">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
               Unser Team
             </p>

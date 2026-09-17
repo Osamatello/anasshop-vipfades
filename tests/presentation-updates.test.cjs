@@ -12,7 +12,7 @@ const icon = (props) => React.createElement('svg', props);
 const icons = new Proxy({}, { get: () => icon });
 const link = ({ href, children, ...props }) => React.createElement('a', { href, ...props }, children);
 const source = (path) => fs.readFileSync(path, 'utf8');
-function load(path, mocks = {}) {
+function load(path, mocks = {}, exportName = 'default') {
   const module = { exports: {} };
   const output = ts.transpileModule(source(path), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2020, esModuleInterop: true },
@@ -21,12 +21,13 @@ function load(path, mocks = {}) {
     module, exports: module.exports,
     require: (name) => mocks[name] ?? (name === 'lucide-react' ? icons : name === 'next/link' ? link : require(name)),
   }, { filename: path });
-  return module.exports.default;
+  return module.exports[exportName];
 }
 function rating(data, props = {}) {
   const Component = load('components/reviews/GoogleRating.tsx', {
     '@/components/reviews/GoogleReviewsProvider': { useGoogleReviews: () => data },
     '@/lib/reviews/types': { GOOGLE_REVIEWS_LINK: maps },
+    '@/lib/reviews/manual-rating': { TEMPORARY_GOOGLE_RATING: load('lib/reviews/manual-rating.ts', {}, 'TEMPORARY_GOOGLE_RATING') },
   });
   return renderToStaticMarkup(React.createElement(Component, props));
 }
@@ -47,16 +48,16 @@ test('original seven testimonials, rows, cards, styles and animations are unchan
   assert.doesNotMatch(restored, /useGoogleReviews/);
 });
 
-test('Hero uses right-hand rating, five fractional stars and numeric-only count', () => {
+test('Hero uses right-hand rating, five fractional stars and Google review count', () => {
   const html = rating(ready, { compact: true });
   assert.match(html, /order-last text-\[42px\]/);
   assert.match(html, />4\.6<\/span>/);
-  assert.match(html, />211<\/span>/);
+  assert.match(html, />211 Google-Bewertungen<\/span>/);
   assert.equal((html.match(/relative block h-3\.5/g) || []).length, 5);
   assert.match(html, /width:59\.999999999999964%/);
   const visible = html.replace(/<[^>]*>/g, '');
-  assert.equal(visible, '4.6211');
-  assert.doesNotMatch(visible, /GOOGLE-BEWERTUNGEN|Auf Google ansehen/i);
+  assert.equal(visible, '4.6211 Google-Bewertungen');
+  assert.doesNotMatch(visible, /Auf Google ansehen/i);
 });
 
 test('both testimonial summaries reuse live aggregates and footer block links to Maps', () => {
@@ -73,14 +74,18 @@ test('both testimonial summaries reuse live aggregates and footer block links to
   assert.match(source('lib/reviews/types.ts'), /query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI/);
 });
 
-test('unconfigured Google data never renders invented values or Hero labels', () => {
+test('all three summaries use shared owner-verified fallback without loading text', () => {
   for (const status of ['loading', 'pending', 'unavailable']) {
-    const hero = rating({ stats: null, status }, { compact: true });
-    assert.match(hero, /role="status" class="sr-only"/);
-    assert.doesNotMatch(hero, /tabular-nums|Auf Google ansehen/);
+    for (const props of [{ compact: true }, {}, { reviewBlock: true }]) {
+      const html = rating({ stats: null, status }, props);
+      assert.match(html, />5\.0<\/span>/);
+      assert.match(html, />167 Google-Bewertungen<\/span>/);
+      assert.equal((html.match(/width:100%/g) || []).length, 5);
+      assert.doesNotMatch(html, /role="status"|werden geladen|pending|nicht verfügbar/i);
+    }
     const block = rating({ stats: null, status }, { reviewBlock: true });
     assert.match(block, /Auf Google ansehen/);
-    assert.doesNotMatch(block, /tabular-nums/);
+    assert.ok(block.includes(`href="${maps.replace(/&/g, '&amp;')}"`));
   }
 });
 

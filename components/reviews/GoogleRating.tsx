@@ -3,13 +3,15 @@
 import { Star } from 'lucide-react';
 import { useGoogleReviews } from '@/components/reviews/GoogleReviewsProvider';
 import { GOOGLE_REVIEWS_LINK } from '@/lib/reviews/types';
+import { TEMPORARY_GOOGLE_RATING } from '@/lib/reviews/manual-rating';
 
 export default function GoogleRating({ compact = false, reviewBlock = false }: { compact?: boolean; reviewBlock?: boolean }) {
-  const { stats, status } = useGoogleReviews();
+  const { stats: liveStats } = useGoogleReviews();
+  const stats = liveStats ?? TEMPORARY_GOOGLE_RATING;
 
   return (
     <div className={`inline-flex min-h-12 items-center gap-4 text-brand-cream ${compact ? 'text-left' : 'flex-wrap justify-center'}`}>
-      {stats ? (
+      {(
         <a
           href={GOOGLE_REVIEWS_LINK}
           target="_blank"
@@ -30,14 +32,10 @@ export default function GoogleRating({ compact = false, reviewBlock = false }: {
               ))}
             </span>
             <span className={`mt-1.5 block font-medium tabular-nums ${compact ? 'text-[11px] tracking-wide' : 'text-[9px] uppercase tracking-[0.12em]'}`}>
-              {new Intl.NumberFormat('de-DE').format(stats.totalReviewCount)}{!compact && ' Google-Bewertungen'}
+              {new Intl.NumberFormat('de-DE').format(stats.totalReviewCount)} Google-Bewertungen
             </span>
           </span>
         </a>
-      ) : (
-        <span role="status" className={compact ? 'sr-only' : 'text-[10px] font-light text-brand-textPrimary/70'}>
-          {status === 'loading' ? 'Bewertungen werden geladen …' : 'Google-Bewertungen derzeit nicht verfügbar'}
-        </span>
       )}
       {reviewBlock && (
         <>

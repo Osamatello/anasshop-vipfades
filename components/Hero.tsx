@@ -58,20 +58,20 @@ export default function Hero() {
           <div className="mb-6 flex items-center gap-3 px-4 py-2">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
 
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary">
+            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary sm:text-[11px]">
               Koblenz · {BUSINESS.hours.days}
             </span>
           </div>
 
           {/* Main heading */}
-          <h1 className="font-serif text-5xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
+          <h1 className="font-serif text-4xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
             {firstTagline}.
             <br />
             <span className="text-brand-cream">{secondTagline}.</span>
           </h1>
 
           {/* Description */}
-          <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textPrimary sm:text-xl">
+          <p className="mt-7 max-w-xl text-base font-light leading-relaxed text-brand-textPrimary sm:text-xl">
             {BUSINESS.description}
           </p>
 
@@ -79,17 +79,17 @@ export default function Hero() {
           <div className="mt-10 flex flex-col items-center">
             <Link
               href="/booking"
-              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none]"
+              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none] sm:text-sm"
             >
               <Scissors className="h-4 w-4" />
               Termin buchen
             </Link>
 
             <div className="mt-8 text-center">
-              <p className="font-serif text-2xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
+              <p className="font-serif text-xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
                 DEINE ZEIT. DEIN STUHL.
               </p>
-              <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
+              <p className="mx-auto mt-2 max-w-md text-[13px] font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
                 Von der ersten Beratung bis zum letzten Blick in den Spiegel.
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function Hero() {
 
           {/* Business information */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
-            <span className="flex items-center gap-2 text-sm font-medium">
+            <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
               <Clock className="h-4 w-4 text-brand-textPrimary" />
               {BUSINESS.hours.time}
             </span>
@@ -106,7 +106,7 @@ export default function Hero() {
 
             <a
               href={`tel:${BUSINESS.phone}`}
-              className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-brand-cream"
+              className="flex items-center gap-2 text-[13px] font-medium transition-colors hover:text-brand-cream sm:text-sm"
             >
               <Phone className="h-4 w-4 text-brand-textPrimary" />
               {BUSINESS.phoneFormatted}

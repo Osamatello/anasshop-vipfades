@@ -46,7 +46,7 @@ export default function Hero() {
           preload="metadata"
           aria-hidden="true"
           tabIndex={-1}
-          className="absolute left-0 top-1/2 h-[96%] w-full -translate-y-1/2 object-cover object-[48%_center] sm:static sm:h-full sm:translate-y-0 sm:object-center"
+          className="absolute left-0 top-1/2 h-[90%] w-full -translate-y-1/2 object-cover object-[48%_center] sm:static sm:h-full sm:translate-y-0 sm:object-center"
         />
 
         {/* Overlays for readability */}
@@ -55,7 +55,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl -translate-y-5 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
           {/* Location label */}
           <div className="mb-6 flex items-center gap-3 px-4 py-2">

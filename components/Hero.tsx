@@ -71,7 +71,7 @@ export default function Hero() {
           </h1>
 
           {/* Description */}
-          <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textPrimary/95 sm:text-xl">
+          <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textPrimary sm:text-xl">
             {BUSINESS.description}
           </p>
 
@@ -89,7 +89,7 @@ export default function Hero() {
               <p className="font-serif text-2xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
                 DEINE ZEIT. DEIN STUHL.
               </p>
-              <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/85 sm:text-base">
+              <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
                 Von der ersten Beratung bis zum letzten Blick in den Spiegel.
               </p>
             </div>

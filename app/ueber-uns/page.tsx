@@ -14,16 +14,12 @@ export const metadata: Metadata = {
   description:
     'Lerne VIP FADES BY ANAS kennen: moderner Barbershop in Koblenz für präzise Fades, Herrenhaarschnitte, Bartpflege und VIP-Services. Mit Anas als Inhaber & Head Barber und Abd als Senior Barber.',
   keywords: [
-    'Bester Barber Koblenz',
-    'Bester Barbershop Koblenz',
     'Barbershop Koblenz',
     'Barber Koblenz',
     'Herrenfriseur Koblenz',
     'Skin Fade Koblenz',
-    'Fade Koblenz',
     'Herrenhaarschnitt Koblenz',
     'Bartpflege Koblenz',
-    'Barber Termin Koblenz',
   ],
   alternates: { canonical: '/ueber-uns' },
   openGraph: {
@@ -46,28 +42,28 @@ export const metadata: Metadata = {
 const values = [
   {
     icon: Scissors,
-    title: 'Bester Herrenhaarschnitt Koblenz',
-    text: 'Modern Haircuts, präzise Konturen und ein hochwertiges Finish für deinen individuellen Look.',
+    title: 'Präzise Herrenhaarschnitte',
+    text: 'Moderne Schnitte, saubere Konturen und ein hochwertiges Finish, abgestimmt auf deinen Stil.',
   },
   {
     icon: Users,
-    title: 'Best Hairstyle Koblenz',
-    text: 'Aktuelle Hairstyles, clean Styling und moderne Looks für Männer, die Wert auf Details legen.',
+    title: 'Moderne Styles & Fades',
+    text: 'Von klassischen Looks bis zu Skin Fades: Wir arbeiten detailgenau und orientieren uns an deinem gewünschten Ergebnis.',
   },
   {
     icon: Sparkles,
-    title: 'Best Barber Germany',
-    text: 'Premium Barber Quality, moderne Techniken und präzise Ergebnisse auf hohem Niveau.',
+    title: 'Barber-Handwerk mit Anspruch',
+    text: 'Saubere Techniken, persönliche Beratung und ein gepflegtes Ergebnis stehen bei jedem Termin im Mittelpunkt.',
   },
 ];
 
 const services = [
-  'Men’s Grooming Koblenz',
-  'Gentlemen’s Cut Koblenz',
-  'Beard Styling Koblenz',
-  'Hair Styling Koblenz',
-  'Luxury Grooming Koblenz',
-  'Men’s Hair Salon Koblenz',
+  'Herrenhaarschnitt',
+  'Skin Fade & Fade Cuts',
+  'Bart trimmen & Konturen',
+  'Haarschnitt + Bart',
+  'Premium Styling',
+  'VIP Barber-Services',
 ];
 
 const structuredData = {
@@ -238,8 +234,8 @@ export default function UeberUnsPage() {
               Dein Style. Unser Handwerk.
             </h2>
             <p className="mt-5 max-w-xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-              Professional Grooming, Precision Styling und Premium Men’s Care für einen
-              gepflegten, modernen Look.
+              Herrenhaarschnitte, präzise Fades, Bartpflege und Styling für einen
+              gepflegten, modernen Look in Koblenz.
             </p>
             <Link
               href="/leistungen"
@@ -263,15 +259,12 @@ export default function UeberUnsPage() {
               Barber in Koblenz
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl font-serif text-4xl font-light leading-tight sm:text-5xl">
-              Bester Barber in Koblenz? Dein Look beginnt bei VIP FADES.
+              Dein Barbershop in Koblenz für präzise Cuts und saubere Fades.
             </h2>
             <p className="mx-auto mt-6 max-w-3xl text-sm font-light leading-7 text-brand-textSecondary sm:text-base sm:leading-8">
-              Du suchst den besten Barber in Koblenz oder einen Barbershop in Koblenz für
-              einen sauberen Skin Fade? Bei VIP FADES bekommst du moderne
-              Herrenhaarschnitte, präzise Fade-Techniken, Bartpflege und exklusive
-              VIP-Services. Wenn du einen Herrenfriseur in Koblenz suchst und Wert auf
-              saubere Details, moderne Styles und einen persönlichen Service legst, bist
-              du bei uns richtig.
+              Bei VIP FADES in Koblenz bekommst du moderne Herrenhaarschnitte, Skin Fades,
+              Bartpflege und ausgewählte VIP-Services. Wir legen Wert auf saubere Details,
+              persönliche Beratung und einen Look, der zu dir passt.
             </p>
             <h3 className="mt-9 font-serif text-3xl font-light sm:text-4xl">
               Bereit für deinen nächsten Look?

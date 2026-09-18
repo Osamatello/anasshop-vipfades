@@ -508,7 +508,7 @@ export async function cancelBooking(
         })
         .eq("id", bookingId)
         .eq("status", "booked")
-        .select("id")
+        .select("id, status")
         .maybeSingle();
 
     if (error) {
@@ -517,7 +517,10 @@ export async function cancelBooking(
         );
     }
 
-    return Boolean(data?.id);
+    return Boolean(
+        data?.id &&
+        data.status === "cancelled"
+    );
 }
 
 export async function clearGoogleCalendarEventId(

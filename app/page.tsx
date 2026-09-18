@@ -12,11 +12,13 @@ import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import { useReveal } from '@/lib/use-reveal';
+import GoogleReviewsProvider from '@/components/reviews/GoogleReviewsProvider';
 
 export default function Home() {
   useReveal();
 
   return (
+    <GoogleReviewsProvider>
     <main className="min-h-screen bg-brand-bg">
       <Header />
       <Hero />
@@ -30,5 +32,6 @@ export default function Home() {
       <Footer />
       <FloatingChat />
     </main>
+    </GoogleReviewsProvider>
   );
 }

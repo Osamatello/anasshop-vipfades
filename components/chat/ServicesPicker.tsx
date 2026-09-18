@@ -20,7 +20,11 @@ type ServicesPickerProps = {
   vipPackages: VipPackage[];
   onContinue: (selection: ServicesSelection) => void;
   onBack: () => void;
+  initialServiceSlug?: string;
 };
+
+// Presentation only: identifiers, pricing and booking selection stay unchanged.
+const SERVICE_ORDER = ['haircut-beard', 'mens-haircut', 'premium-haircut-styling', 'facial-cleansing', 'hot-wax', 'ears-nose', 'beard-trim', 'eyebrows'];
 
 /**
  * Local frontend milestone: checkbox-style multi service selection with a live
@@ -39,10 +43,18 @@ export default function ServicesPicker({
   vipPackages,
   onContinue,
   onBack,
+  initialServiceSlug,
 }: ServicesPickerProps) {
   // null = no VIP package selected; otherwise the selected package id.
-  const [selectedVipId, setSelectedVipId] = useState<string | null>(null);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedVipId, setSelectedVipId] = useState<string | null>(() =>
+    initialServiceSlug ? vipPackages.find((item) => item.slug === initialServiceSlug)?.id ?? null : null,
+  );
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => {
+    if (!initialServiceSlug) return [];
+    if (vipPackages.some((item) => item.slug === initialServiceSlug)) return [];
+    const service = services.find((item) => item.slug === initialServiceSlug);
+    return service ? [service.id] : [];
+  });
 
   const activeVipPackage = vipPackages.find(
     (vipPackage) => vipPackage.id === selectedVipId,
@@ -110,14 +122,26 @@ export default function ServicesPicker({
     });
   };
 
+  const orderedServices = [...services].sort((a, b) => {
+    const position = (service: Service) => {
+      const index = SERVICE_ORDER.indexOf(service.slug ?? '');
+      return index < 0 ? SERVICE_ORDER.length : index;
+    };
+    return position(a) - position(b);
+  });
+  const orderedVipPackages = [...vipPackages].sort((a, b) =>
+    Number(b.slug === 'vip-koenigsklasse') - Number(a.slug === 'vip-koenigsklasse'),
+  );
+
   return (
     <div className="border-t border-brand-border/40 bg-[#0e0f11] px-4 pb-3 pt-3">
-      <div className="max-h-[264px] space-y-2.5 overflow-y-auto pr-1 sm:max-h-[300px]">
+      <div className="max-h-[min(42dvh,340px)] space-y-1.5 overflow-y-auto pr-1">
         {/* VIP packages — most premium first, mutually exclusive */}
-        {vipPackages.map((vipPackage) => (
+        {orderedVipPackages.map((vipPackage) => (
           <VipPackageCard
             key={vipPackage.id}
             vipPackage={vipPackage}
+            size="booking"
             selected={selectedVipId === vipPackage.id}
             onToggle={() => toggleVipPackage(vipPackage.id)}
           />
@@ -132,7 +156,7 @@ export default function ServicesPicker({
           <span className="h-px flex-1 bg-brand-border/60" />
         </div>
 
-        {services.map((service) => {
+        {orderedServices.map((service) => {
           const checked = selectedIds.includes(service.id);
 
           return (
@@ -143,7 +167,7 @@ export default function ServicesPicker({
               aria-checked={checked}
               aria-disabled={vipActive}
               onClick={() => toggleService(service.id)}
-              className={`flex w-full items-center justify-between gap-3 rounded-xl border px-3.5 py-3 text-left transition-all ${
+              className={`flex min-h-12 w-full items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cream ${
                 vipActive
                   ? 'cursor-not-allowed border-brand-border/50 opacity-40'
                   : checked
@@ -172,6 +196,7 @@ export default function ServicesPicker({
                       {service.duration} Min.
                     </span>
                   ) : null}
+                  {service.slug === 'premium-haircut-styling' && <span className="text-[11px] font-light leading-snug text-brand-textSecondary">Beratung · Haarwäsche · Haarschnitt · Styling</span>}
                 </span>
               </span>
 

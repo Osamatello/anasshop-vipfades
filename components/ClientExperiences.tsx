@@ -1,6 +1,7 @@
 'use client';
 
 import { Quote, Star } from 'lucide-react';
+import GoogleRating from '@/components/reviews/GoogleRating';
 
 const REVIEWS = [
   {
@@ -80,19 +81,14 @@ export default function ClientExperiences() {
       <div className="mx-auto max-w-7xl px-5">
         {/* Section heading */}
         <div className="mb-14 text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            Google-Bewertungen
-          </p>
-
-          <h2 className="mt-4 font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
+          <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Das sagen unsere Kunden
           </h2>
 
           <div className="gold-divider mt-4" />
 
-          <p className="mx-auto mt-6 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Echte Erfahrungen unserer Kunden auf Google.
-          </p>
+          <div className="mt-6"><GoogleRating /></div>
+
         </div>
 
         {/* Reviews marquee */}
@@ -121,6 +117,7 @@ export default function ClientExperiences() {
             )}
           </div>
         </div>
+        <div className="mt-10 flex justify-center"><GoogleRating reviewBlock /></div>
       </div>
 
       <style jsx>{`
@@ -154,11 +151,11 @@ export default function ClientExperiences() {
         }
 
         .reviews-track-left {
-          animation: reviews-scroll-left 120s linear infinite;
+          animation: reviews-scroll-left 55s linear infinite;
         }
 
         .reviews-track-right {
-          animation: reviews-scroll-right 120s linear infinite;
+          animation: reviews-scroll-right 55s linear infinite;
         }
 
         @keyframes reviews-scroll-left {
@@ -189,7 +186,7 @@ export default function ClientExperiences() {
 
           .reviews-track-left,
           .reviews-track-right {
-            gap: 2rem;
+            gap: 1.4rem;
           }
         }
 
@@ -210,18 +207,18 @@ function ReviewItem({
   review: (typeof REVIEWS)[number];
 }) {
   return (
-    <article className="group flex min-h-[210px] w-[300px] flex-shrink-0 flex-col justify-between py-5 sm:w-[330px]">
+    <article className="group flex min-h-[147px] w-[210px] flex-shrink-0 flex-col justify-between py-3.5 sm:min-h-[210px] sm:w-[330px] sm:py-5">
       <div>
         {/* Rating and quote */}
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-3.5 flex items-center justify-between sm:mb-5">
           <div
-            className="flex gap-1"
+            className="flex gap-0.5 sm:gap-1"
             aria-label={`${review.rating} von 5 Sternen`}
           >
             {Array.from({ length: 5 }).map((_, starIndex) => (
               <Star
                 key={starIndex}
-                className={`h-3.5 w-3.5 ${starIndex < review.rating
+                className={`h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 ${starIndex < review.rating
                   ? 'fill-brand-cream text-brand-cream'
                   : 'fill-transparent text-brand-cream/30'
                   }`}
@@ -229,27 +226,27 @@ function ReviewItem({
             ))}
           </div>
 
-          <Quote className="h-4 w-4 text-brand-cream/20" />
+          <Quote className="h-3 w-3 text-brand-cream/20 sm:h-4 sm:w-4" />
         </div>
 
         {/* Review text */}
-        <p className="text-[13px] font-light leading-6 text-brand-textPrimary/75">
+        <p className="text-[11px] font-light leading-[1.15rem] text-brand-textPrimary/75 sm:text-[13px] sm:leading-6">
           “{review.text}”
         </p>
       </div>
 
       {/* Client identity */}
-      <div className="mt-7 flex items-center gap-3 border-t border-brand-border/30 pt-4">
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.03] text-[9px] font-semibold uppercase tracking-[0.08em] text-brand-cream/80">
+      <div className="mt-5 flex items-center gap-2 border-t border-brand-border/30 pt-3 sm:mt-7 sm:gap-3 sm:pt-4">
+        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.03] text-[8px] font-semibold uppercase tracking-[0.08em] text-brand-cream/80 sm:h-9 sm:w-9 sm:text-[9px]">
           {review.initials}
         </div>
 
         <div>
-          <p className="text-[13px] font-medium text-brand-textPrimary/90">
+          <p className="text-[11px] font-medium text-brand-textPrimary/90 sm:text-[13px]">
             {review.name}
           </p>
 
-          <p className="mt-1 text-[10px] font-light uppercase tracking-[0.12em] text-brand-cream/55">
+          <p className="mt-0.5 text-[9px] font-light uppercase tracking-[0.1em] text-brand-cream/55 sm:mt-1 sm:text-[10px] sm:tracking-[0.12em]">
             {review.date}
           </p>
         </div>

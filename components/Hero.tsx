@@ -1,11 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 import { ArrowDown, Clock, Phone, Scissors } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
+import GoogleRating from '@/components/reviews/GoogleRating';
 
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => {
+      if (preference.matches) {
+        videoRef.current?.pause();
+      }
+    };
+    update();
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     document
@@ -16,41 +31,50 @@ export default function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <img
-          src="/images/ChatGPT_Image_Aug_4,_2026,_09_39_47_AM.png"
-          alt="Innenbereich des VIP FADES Barbershops"
-          className="h-full w-full animate-subtle-zoom object-cover"
+      <div
+        className="absolute inset-0 overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/vip-fades-hero-poster.jpg')" }}
+      >
+        <video
+          ref={videoRef}
+          src="/videos/vip-fades-hero.mp4"
+          poster="/images/vip-fades-hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+          className="absolute left-0 top-1/2 h-[90%] w-full -translate-y-1/2 object-cover object-[48%_center] sm:static sm:h-full sm:translate-y-0 sm:object-center"
         />
 
         {/* Overlays for readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-bg/85 via-brand-bg/60 to-brand-bg" />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-bg/90 via-brand-bg/50 to-brand-bg/55" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#070707_90%)] opacity-90" />
-        <div className="film-grain absolute inset-0" />
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-brand-bg" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl px-5 pt-24 text-center sm:px-8">
+      <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
           {/* Location label */}
-          <div className="mb-6 flex items-center gap-3 rounded-full border border-brand-border bg-brand-bgSecondary/70 px-4 py-2 backdrop-blur-sm">
+          <div className="mb-6 flex items-center gap-3 px-4 py-2">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
 
-            <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary">
+            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary sm:text-[11px]">
               Koblenz · {BUSINESS.hours.days}
             </span>
           </div>
 
           {/* Main heading */}
-          <h1 className="font-serif text-5xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
+          <h1 className="font-serif text-4xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
             {firstTagline}.
             <br />
             <span className="text-brand-cream">{secondTagline}.</span>
           </h1>
 
           {/* Description */}
-          <p className="mt-7 max-w-xl text-lg font-light leading-relaxed text-brand-textPrimary/90 sm:text-xl">
+          <p className="mt-7 max-w-xl text-base font-light leading-relaxed text-brand-textPrimary sm:text-xl">
             {BUSINESS.description}
           </p>
 
@@ -58,17 +82,17 @@ export default function Hero() {
           <div className="mt-10 flex flex-col items-center">
             <Link
               href="/booking"
-              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
+              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none] sm:text-sm"
             >
               <Scissors className="h-4 w-4" />
               Termin buchen
             </Link>
 
             <div className="mt-8 text-center">
-              <p className="font-serif text-2xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
+              <p className="font-serif text-xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
                 DEINE ZEIT. DEIN STUHL.
               </p>
-              <p className="mx-auto mt-2 max-w-md text-sm font-light leading-relaxed text-brand-textPrimary/75 sm:text-base">
+              <p className="mx-auto mt-2 max-w-md text-[13px] font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
                 Von der ersten Beratung bis zum letzten Blick in den Spiegel.
               </p>
             </div>
@@ -76,7 +100,7 @@ export default function Hero() {
 
           {/* Business information */}
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
-            <span className="flex items-center gap-2 text-sm font-medium">
+            <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
               <Clock className="h-4 w-4 text-brand-textPrimary" />
               {BUSINESS.hours.time}
             </span>
@@ -85,7 +109,7 @@ export default function Hero() {
 
             <a
               href={`tel:${BUSINESS.phone}`}
-              className="flex items-center gap-2 text-sm font-medium transition-colors hover:text-brand-cream"
+              className="flex items-center gap-2 text-[13px] font-medium transition-colors hover:text-brand-cream sm:text-sm"
             >
               <Phone className="h-4 w-4 text-brand-textPrimary" />
               {BUSINESS.phoneFormatted}
@@ -95,13 +119,16 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
+      <div className="absolute bottom-6 left-5 z-10 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] sm:left-8">
+        <GoogleRating compact />
+      </div>
       <button
         type="button"
         onClick={() => scrollToSection('#services')}
-        className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-brand-cream/70 transition-colors hover:text-brand-cream"
+        className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 rounded text-brand-cream/70 transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:block"
         aria-label="Zu den Leistungen scrollen"
       >
-        <ArrowDown className="h-5 w-5 animate-bounce" />
+        <ArrowDown className="h-5 w-5 animate-bounce motion-reduce:animate-none" />
       </button>
     </section >
   );

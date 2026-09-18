@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 
 import Header from '@/components/Header';
+import PageAtmosphere from '@/components/PageAtmosphere';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { BUSINESS } from '@/lib/data';
 
@@ -13,6 +14,7 @@ export default async function BookingPage({
 }: {
     searchParams?: Promise<{
         barber?: string;
+        service?: string;
     }>;
 }) {
     const params =
@@ -26,16 +28,7 @@ export default async function BookingPage({
         <main className="relative min-h-screen overflow-hidden bg-[#070707] text-brand-textPrimary">
             <Header />
 
-            {/* Global moving atmosphere */}
-            <div className="booking-global-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="global-glow-one absolute -left-[20%] top-[5%] h-[850px] w-[850px] rounded-full bg-brand-cream/[0.065] blur-[180px]" />
-
-                <div className="global-glow-two absolute right-[-25%] top-[18%] h-[950px] w-[950px] rounded-full bg-brand-cream/[0.045] blur-[210px]" />
-
-                <div className="global-glow-three absolute bottom-[-35%] left-[35%] h-[800px] w-[800px] rounded-full bg-brand-cream/[0.035] blur-[200px]" />
-
-                <div className="booking-radial-background absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(232,220,200,0.035),transparent_35%)]" />
-            </div>
+            <PageAtmosphere />
 
             <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 pb-5 pt-28 sm:px-6 sm:pb-6 sm:pt-32 lg:px-8 lg:pb-8 lg:pt-32">
                 {/* Split booking experience */}
@@ -180,7 +173,11 @@ export default async function BookingPage({
                             <div className="chat-top-light pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-brand-cream/70 to-transparent" />
 
                             <div className="h-full min-h-[620px]">
-                                <ChatInterface initialBarber={initialBarber} />
+                                <ChatInterface
+                                    key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}`}
+                                    initialBarber={initialBarber}
+                                    initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
+                                />
                             </div>
                         </div>
 
@@ -199,39 +196,6 @@ export default async function BookingPage({
             </div>
 
             <style>{`
-                @keyframes globalGlowOne {
-                    0%,
-                    100% {
-                        transform: translate3d(-40px, -20px, 0) scale(1);
-                    }
-
-                    50% {
-                        transform: translate3d(420px, 160px, 0) scale(1.25);
-                    }
-                }
-
-                @keyframes globalGlowTwo {
-                    0%,
-                    100% {
-                        transform: translate3d(80px, 0, 0) scale(1);
-                    }
-
-                    50% {
-                        transform: translate3d(-450px, 180px, 0) scale(1.2);
-                    }
-                }
-
-                @keyframes globalGlowThree {
-                    0%,
-                    100% {
-                        transform: translate3d(0, 40px, 0);
-                    }
-
-                    50% {
-                        transform: translate3d(180px, -180px, 0);
-                    }
-                }
-
                 @keyframes goldWaveOne {
                     0%,
                     100% {
@@ -381,18 +345,6 @@ export default async function BookingPage({
                     }
                 }
 
-                .global-glow-one {
-                    animation: globalGlowOne 18s ease-in-out infinite;
-                }
-
-                .global-glow-two {
-                    animation: globalGlowTwo 22s ease-in-out infinite;
-                }
-
-                .global-glow-three {
-                    animation: globalGlowThree 24s ease-in-out infinite;
-                }
-
                 .gold-wave-one {
                     animation: goldWaveOne 24s ease-in-out infinite;
                 }
@@ -439,14 +391,9 @@ export default async function BookingPage({
 
                 /* Mobile performance mode */
                 @media (max-width: 768px) {
-                    .booking-global-atmosphere,
                     .booking-gold-atmosphere,
                     .booking-local-atmosphere,
                     .booking-right-atmosphere,
-                    .booking-radial-background,
-                    .global-glow-one,
-                    .global-glow-two,
-                    .global-glow-three,
                     .gold-wave-one,
                     .gold-wave-two,
                     .moving-gold-glow,
@@ -486,9 +433,6 @@ export default async function BookingPage({
                 }
 
                 @media (prefers-reduced-motion: reduce) {
-                    .global-glow-one,
-                    .global-glow-two,
-                    .global-glow-three,
                     .gold-wave-one,
                     .gold-wave-two,
                     .moving-gold-glow,

@@ -83,10 +83,12 @@ export default function ChatInterface({
   onBooked,
   onClose,
   initialBarber,
+  initialServiceSlug,
 }: {
   onBooked?: (booking: BookingDraft) => void;
   onClose?: () => void;
   initialBarber?: string;
+  initialServiceSlug?: string;
 }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [step, setStep] = useState<Step>('welcome');
@@ -132,6 +134,8 @@ export default function ChatInterface({
   const timeoutIdsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const pendingBotMessagesRef = useRef(0);
   const initialBarberHandledRef = useRef(false);
+  const initialServiceHandledRef = useRef(false);
+  const [pendingServiceSlug, setPendingServiceSlug] = useState<string>();
 
   const pushBot = useCallback((text: string, extra?: Partial<Msg>) => {
     if (!mountedRef.current) {
@@ -243,6 +247,16 @@ export default function ChatInterface({
     pushBot,
     resetAvailability,
   ]);
+
+  useEffect(() => {
+    if (initialServiceHandledRef.current || !initialServiceSlug || catalogLoading || catalogError) return;
+    initialServiceHandledRef.current = true;
+    const available = services.some((service) => service.slug === initialServiceSlug)
+      || vipPackages.some((vipPackage) => vipPackage.slug === initialServiceSlug);
+    if (!available) return;
+    setPendingServiceSlug(initialServiceSlug);
+    setStep('pickService');
+  }, [initialServiceSlug, catalogLoading, catalogError, services, vipPackages]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -2240,8 +2254,15 @@ export default function ChatInterface({
         <ServicesPicker
           services={services}
           vipPackages={vipPackages}
-          onContinue={handleServicesContinue}
-          onBack={handleBack}
+          initialServiceSlug={pendingServiceSlug}
+          onContinue={(selection) => {
+            setPendingServiceSlug(undefined);
+            handleServicesContinue(selection);
+          }}
+          onBack={() => {
+            setPendingServiceSlug(undefined);
+            handleBack();
+          }}
         />
       )}
 

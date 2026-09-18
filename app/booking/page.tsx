@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import {
     Clock3,
     MapPin,
@@ -8,6 +9,28 @@ import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
 import ChatInterface from '@/components/chat/ChatInterface';
 import { BUSINESS } from '@/lib/data';
+
+export const metadata: Metadata = {
+    title: 'Termin buchen | VIP FADES BY ANAS – Barbershop Koblenz',
+    description:
+        'Buche deinen Termin bei VIP FADES BY ANAS in Koblenz online. Wähle deinen Barber und deinen Service für Haarschnitt, Fade oder Bartpflege.',
+    alternates: { canonical: '/booking' },
+    openGraph: {
+        title: 'Termin buchen | VIP FADES BY ANAS',
+        description:
+            'Buche deinen Barber-Termin bei VIP FADES BY ANAS in Koblenz online.',
+        url: '/booking',
+        type: 'website',
+        images: ['/images/og-image.png'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Termin buchen | VIP FADES BY ANAS',
+        description:
+            'Buche deinen Barber-Termin bei VIP FADES BY ANAS in Koblenz online.',
+        images: ['/images/og-image.png'],
+    },
+};
 
 export default async function BookingPage({
     searchParams,

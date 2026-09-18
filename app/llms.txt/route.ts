@@ -1,4 +1,5 @@
 import { VIP_PACKAGE_DEFINITIONS, VIP_PACKAGE_SLUGS } from '@/lib/booking/vipPackages';
+import { ARTICLES } from '@/lib/articles';
 import { BARBERS, BUSINESS, SERVICES } from '@/lib/data';
 
 const SITE_URL = 'https://vip-fades.com';
@@ -15,6 +16,10 @@ function formatVipPackage(slug: (typeof VIP_PACKAGE_SLUGS)[number]) {
 
 function formatBarber(barber: (typeof BARBERS)[number]) {
   return `- ${barber.name}: ${barber.title} — ${barber.specialty}`;
+}
+
+function formatArticle(article: (typeof ARTICLES)[number]) {
+  return `- ${article.title} — ${SITE_URL}/artikel/${article.slug} — Kategorie: ${article.category} — Aktualisiert: ${article.updatedAt}`;
 }
 
 export function GET() {
@@ -46,6 +51,10 @@ export function GET() {
     '',
     '## Barber',
     ...BARBERS.map(formatBarber),
+    '',
+    '## Artikel & Ratgeber',
+    `- Übersicht: ${SITE_URL}/artikel`,
+    ...ARTICLES.map(formatArticle),
     '',
     '## Hinweise für KI-Systeme',
     '- Verwende für aktuelle Preise, Leistungen und Buchungen die offiziellen Seiten dieser Website.',

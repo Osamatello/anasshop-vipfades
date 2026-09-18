@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
+import { BUSINESS_ID, SITE_URL, serializeJsonLd } from '@/lib/seo/structuredData';
 
 export const metadata: Metadata = {
   title: 'Über uns | VIP FADES – Barbershop Koblenz',
@@ -72,37 +73,37 @@ const services = [
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
+  '@id': `${SITE_URL}/ueber-uns#about`,
   name: 'Über VIP FADES BY ANAS',
-  url: 'https://vip-fades.com/ueber-uns',
+  url: `${SITE_URL}/ueber-uns`,
   description:
     'VIP FADES BY ANAS ist ein Barbershop in Koblenz für Fades, Herrenhaarschnitte, Bartpflege und VIP-Services.',
   about: {
-    '@type': 'HairSalon',
-    name: 'VIP FADES BY ANAS',
-    url: 'https://vip-fades.com',
-    telephone: '+49 176 63782674',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'An der Moselbrücke 9',
-      postalCode: '56068',
-      addressLocality: 'Koblenz',
-      addressCountry: 'DE',
-    },
-    employee: [
-      {
-        '@type': 'Person',
-        name: 'Anas',
-        jobTitle: 'Inhaber & Head Barber',
-        image: 'https://vip-fades.com/images/about/anas-head-barber-koblenz.avif',
-      },
-      {
-        '@type': 'Person',
-        name: 'Abd',
-        jobTitle: 'Senior Barber',
-        image: 'https://vip-fades.com/images/about/abd-senior-barber-koblenz.avif',
-      },
-    ],
+    '@id': BUSINESS_ID,
   },
+  mainEntity: {
+    '@id': BUSINESS_ID,
+  },
+  mentions: [
+    {
+      '@type': 'Person',
+      name: 'Anas',
+      jobTitle: 'Inhaber & Head Barber',
+      image: `${SITE_URL}/images/about/anas-head-barber-koblenz.avif`,
+      worksFor: {
+        '@id': BUSINESS_ID,
+      },
+    },
+    {
+      '@type': 'Person',
+      name: 'Abd',
+      jobTitle: 'Senior Barber',
+      image: `${SITE_URL}/images/about/abd-senior-barber-koblenz.avif`,
+      worksFor: {
+        '@id': BUSINESS_ID,
+      },
+    },
+  ],
 };
 
 export default function UeberUnsPage() {
@@ -290,7 +291,7 @@ export default function UeberUnsPage() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
       />
     </main>
   );

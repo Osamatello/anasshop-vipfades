@@ -1,8 +1,8 @@
 export const BUSINESS = {
   name: "VIP FADES BY ANAS",
-  tagline: "Premium Cuts. Saubere Fades.",
+  tagline: "Premium Cuts. Saubere Fades in Koblenz.",
   description:
-    "Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz.",
+    "Barbershop in Koblenz für präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling.",
   address: "An der Moselbrücke 9, 56068 Koblenz",
   phone: "017663782674",
   phoneFormatted: "+49 176 63782674",

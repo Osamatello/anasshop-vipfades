@@ -211,7 +211,7 @@ export default function FAQ() {
 
           <div className="mt-5 h-px w-12 bg-brand-cream" />
 
-          <p className="mt-6 max-w-lg text-sm font-light leading-7 text-brand-textPrimary/75 sm:text-base">
+          <p className="mt-6 max-w-lg text-base font-light leading-8 text-brand-textPrimary/75 sm:text-lg">
             Hier findest du direkte Antworten zu Terminen, Preisen, Leistungen,
             Öffnungszeiten und deinem Besuch bei VIP FADES.
           </p>
@@ -224,11 +224,11 @@ export default function FAQ() {
               value={'faq-' + (index + 1)}
               className="border-brand-border/70"
             >
-              <AccordionTrigger className="py-5 text-left text-sm font-medium leading-6 text-brand-textPrimary hover:no-underline hover:text-brand-cream sm:text-base">
+              <AccordionTrigger className="py-6 text-left text-base font-medium leading-7 text-brand-textPrimary hover:no-underline hover:text-brand-cream sm:py-7 sm:text-lg lg:text-xl">
                 {faq.question}
               </AccordionTrigger>
 
-              <AccordionContent className="max-w-3xl pb-6 pr-8 text-sm font-light leading-7 text-brand-textPrimary/70 sm:text-[15px]">
+              <AccordionContent className="max-w-3xl pb-7 pr-8 text-[15px] font-light leading-8 text-brand-textPrimary/75 sm:pb-8 sm:text-base lg:text-[17px]">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

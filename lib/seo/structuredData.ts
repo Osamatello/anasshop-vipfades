@@ -117,3 +117,53 @@ export function buildFaqPageStructuredData(
 export function serializeJsonLd(data: unknown) {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
+
+
+export function buildArticleStructuredData({
+  title,
+  description,
+  url,
+  datePublished,
+  dateModified,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: title,
+    description,
+    url,
+    mainEntityOfPage: url,
+    inLanguage: 'de-DE',
+    datePublished,
+    dateModified,
+    author: {
+      '@id': BUSINESS_ID,
+    },
+    publisher: {
+      '@id': BUSINESS_ID,
+    },
+    image: `${SITE_URL}/images/og-image.png`,
+  };
+}
+
+export function buildBreadcrumbStructuredData(
+  items: Array<{ name: string; url: string }>,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}

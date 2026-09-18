@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { BUSINESS } from '@/lib/data';
 
 export default function ShopExperience() {
@@ -12,11 +13,14 @@ export default function ShopExperience() {
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Image */}
           <div className="reveal lg:col-span-7">
-            <div className="group relative overflow-hidden rounded-2xl border border-brand-border bg-brand-card">
-              <img
+            <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-brand-border bg-brand-card sm:aspect-[16/10]">
+              <Image
                 src="/images/vip-experience-shop.png"
                 alt="Premium-Innenbereich von VIP FADES"
-                className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.025] sm:aspect-[16/10]"
+                fill
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                quality={90}
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.025]"
               />
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-bg/35 via-transparent to-transparent" />

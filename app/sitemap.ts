@@ -24,5 +24,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/artikel`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/artikel/skin-fade-koblenz`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
   ];
 }

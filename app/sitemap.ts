@@ -36,5 +36,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.75,
     },
+    {
+      url: `${SITE_URL}/artikel/skin-fade-vs-taper-fade`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${SITE_URL}/artikel/wie-oft-zum-barber`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${SITE_URL}/artikel/herrenhaarschnitt-gesichtsform`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${SITE_URL}/artikel/bart-richtig-pflegen`,
+      lastModified: new Date('2026-09-18T00:00:00Z'),
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
   ];
 }

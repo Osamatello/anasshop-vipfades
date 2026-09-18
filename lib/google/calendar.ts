@@ -147,9 +147,54 @@ export async function createGoogleCalendarEvent(
     };
 }
 
+export type DeleteCalendarEventResult =
+    | "deleted"
+    | "already_missing";
+
+function getHttpStatus(error: unknown): number | null {
+    if (
+        typeof error !== "object" ||
+        error === null
+    ) {
+        return null;
+    }
+
+    const candidate = error as {
+        code?: unknown;
+        status?: unknown;
+        response?: {
+            status?: unknown;
+        };
+    };
+
+    const values = [
+        candidate.code,
+        candidate.status,
+        candidate.response?.status,
+    ];
+
+    for (const value of values) {
+        if (
+            typeof value === "number" &&
+            Number.isFinite(value)
+        ) {
+            return value;
+        }
+
+        if (
+            typeof value === "string" &&
+            /^\\d{3}$/.test(value)
+        ) {
+            return Number(value);
+        }
+    }
+
+    return null;
+}
+
 export async function deleteGoogleCalendarEvent(
     input: DeleteCalendarEventInput
-): Promise<void> {
+): Promise<DeleteCalendarEventResult> {
     const auth = getGoogleAuth();
 
     const calendar = google.calendar({
@@ -161,8 +206,18 @@ export async function deleteGoogleCalendarEvent(
         input.barberId
     );
 
-    await calendar.events.delete({
-        calendarId,
-        eventId: input.eventId,
-    });
+    try {
+        await calendar.events.delete({
+            calendarId,
+            eventId: input.eventId,
+        });
+
+        return "deleted";
+    } catch (error) {
+        if (getHttpStatus(error) === 404) {
+            return "already_missing";
+        }
+
+        throw error;
+    }
 }

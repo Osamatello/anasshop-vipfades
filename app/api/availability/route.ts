@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAvailableSlotsForDuration } from "@/lib/services/availability";
 import { getBarberDayOff } from "@/lib/booking/barberSchedule";
 import { resolveAppointmentSelection } from "@/lib/booking/appointmentSelection";
+import { getActiveBarberById } from "@/lib/supabase/barbers-server";
+import {
+    isValidCalendarDate,
+    isValidUuid,
+} from "@/lib/validation/availability";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +36,44 @@ export async function GET(request: NextRequest) {
                     error: "Erforderliche Buchungsdaten fehlen.",
                 },
                 { status: 400 }
+            );
+        }
+
+        if (!isValidUuid(barberId)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Ungültige Barber-ID.",
+                    code: "invalid_barber_id",
+                },
+                { status: 400 }
+            );
+        }
+
+        if (!isValidCalendarDate(date)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Ungültiges Datum.",
+                    code: "invalid_date",
+                },
+                { status: 400 }
+            );
+        }
+
+        const barber =
+            await getActiveBarberById(
+                barberId
+            );
+
+        if (!barber) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: "Dieser Barber ist nicht verfügbar.",
+                    code: "barber_not_found",
+                },
+                { status: 404 }
             );
         }
 

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
+import { businessStructuredData, serializeJsonLd } from '@/lib/seo/structuredData';
 
 const SITE_URL = 'https://vip-fades.com';
 
@@ -88,6 +89,10 @@ export default function RootLayout({
       className={`${inter.variable} ${cormorant.variable} scroll-smooth`}
     >
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(businessStructuredData) }}
+        />
         {children}
         <SpeedInsights />
         <Analytics />

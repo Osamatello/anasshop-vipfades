@@ -111,9 +111,21 @@ const FAQS = [
       'Der Premium Haarschnitt & Styling umfasst eine persönliche Beratung, Haarwäsche, einen präzisen Haarschnitt und professionelles Styling für ein komplettes Finish.',
   },
   {
-    question: 'Wie kurzfristig kann ich meinen Termin stornieren oder verschieben?',
-    answer:
-      'Bitte storniere oder verschiebe deinen Termin mindestens 2 Stunden vorher. So kann der Termin noch an einen anderen Kunden vergeben werden.',
+    question: 'Wie kann ich meinen Termin stornieren?',
+    answer: (
+      <>
+        Öffne unsere{' '}
+        <Link
+          href="/booking"
+          className="text-brand-cream underline-offset-4 transition-colors hover:text-brand-textPrimary hover:underline"
+        >
+          Online-Buchung
+        </Link>{' '}
+        und wähle „Termin stornieren“. Gib deine Telefonnummer ein und wähle den Termin aus,
+        den du absagen möchtest. Wenn du deinen Termin ändern möchtest, storniere den
+        bestehenden Termin und buche anschließend einen neuen.
+      </>
+    ),
   },
 ];
 
@@ -183,9 +195,9 @@ const faqStructuredData = buildFaqPageStructuredData([
       'Der Premium Haarschnitt & Styling umfasst eine persönliche Beratung, Haarwäsche, einen präzisen Haarschnitt und professionelles Styling für ein komplettes Finish.',
   },
   {
-    question: 'Wie kurzfristig kann ich meinen Termin stornieren oder verschieben?',
+    question: 'Wie kann ich meinen Termin stornieren?',
     answer:
-      'Bitte storniere oder verschiebe deinen Termin mindestens 2 Stunden vorher. So kann der Termin noch an einen anderen Kunden vergeben werden.',
+      'Öffne unsere Online-Buchung und wähle „Termin stornieren“. Gib deine Telefonnummer ein und wähle den Termin aus, den du absagen möchtest. Wenn du deinen Termin ändern möchtest, storniere den bestehenden Termin und buche anschließend einen neuen.',
   },
 ]);
 

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 
 import { BARBERS, BUSINESS, SERVICES } from '@/lib/data';
+import { buildFaqPageStructuredData, serializeJsonLd } from '@/lib/seo/structuredData';
 import {
   Accordion,
   AccordionContent,
@@ -116,6 +117,78 @@ const FAQS = [
   },
 ];
 
+const faqStructuredData = buildFaqPageStructuredData([
+  {
+    question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
+    answer:
+      'Nein. Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
+  },
+  {
+    question: 'Wie kann ich einen Termin bei VIP FADES buchen?',
+    answer:
+      'Du kannst deinen Termin online über unsere Buchungsseite vereinbaren. Dort wählst du deinen Service, deinen Barber und einen verfügbaren Termin.',
+  },
+  {
+    question: 'Was kostet ein Haarschnitt bei VIP FADES?',
+    answer:
+      'Ein Herrenhaarschnitt kostet aktuell ' +
+      haircutPrice +
+      ' €, Bart trimmen ' +
+      beardPrice +
+      ' € und Haarschnitt + Bart ' +
+      haircutBeardPrice +
+      ' €. Der Premium Haarschnitt & Styling kostet ' +
+      premiumHaircutPrice +
+      ' €. Alle aktuellen Leistungen und Preise findest du auf unserer Leistungsseite.',
+  },
+  {
+    question: 'Welche Leistungen bietet VIP FADES an?',
+    answer:
+      'VIP FADES bietet Herrenhaarschnitte, präzise Fades, Bartpflege, Premium Haarschnitt & Styling, Gesichtsreinigung, Augenbrauenpflege, Heißwachs sowie Pflege für Ohren und Nase.',
+  },
+  {
+    question: 'Wo befindet sich VIP FADES in Koblenz?',
+    answer: 'Du findest VIP FADES BY ANAS in ' + BUSINESS.address + '.',
+  },
+  {
+    question: 'Wie sind die Öffnungszeiten von VIP FADES?',
+    answer:
+      'Aktuell sind wir ' +
+      BUSINESS.hours.days +
+      ' von ' +
+      BUSINESS.hours.time +
+      ' für dich da. ' +
+      BUSINESS.hours.walkins +
+      '.',
+  },
+  {
+    question: 'Welche Barber arbeiten bei VIP FADES?',
+    answer:
+      BARBERS[0].name +
+      ' ist ' +
+      BARBERS[0].title +
+      ' mit Fokus auf ' +
+      BARBERS[0].specialty +
+      '. ' +
+      BARBERS[1].name +
+      ' ist ' +
+      BARBERS[1].title +
+      ' und spezialisiert auf ' +
+      BARBERS[1].specialty +
+      '.',
+  },
+  {
+    question: 'Was ist beim Premium Haarschnitt & Styling enthalten?',
+    answer:
+      'Der Premium Haarschnitt & Styling umfasst eine persönliche Beratung, Haarwäsche, einen präzisen Haarschnitt und professionelles Styling für ein komplettes Finish.',
+  },
+  {
+    question: 'Wie kurzfristig kann ich meinen Termin stornieren oder verschieben?',
+    answer:
+      'Bitte storniere oder verschiebe deinen Termin mindestens 2 Stunden vorher. So kann der Termin noch an einen anderen Kunden vergeben werden.',
+  },
+]);
+
 export default function FAQ() {
   return (
     <section
@@ -162,6 +235,11 @@ export default function FAQ() {
           ))}
         </Accordion>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqStructuredData) }}
+      />
     </section>
   );
 }

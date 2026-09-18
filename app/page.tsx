@@ -9,6 +9,7 @@ import Statistics from '@/components/Statistics';
 import Barbers from '@/components/Barbers';
 import ClientExperiences from '@/components/ClientExperiences';
 import Contact from '@/components/Contact';
+import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import { useReveal } from '@/lib/use-reveal';
@@ -28,6 +29,7 @@ export default function Home() {
       <Statistics />
       <Barbers />
       <ClientExperiences />
+      <FAQ />
       <Contact />
       <Footer />
       <FloatingChat />

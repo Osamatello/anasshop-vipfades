@@ -103,6 +103,12 @@
     transform: translateY(0);
   }
 
+  .service-card-hover.reveal {
+    transition-property: opacity, transform, translate, border-color, box-shadow, background-color, color;
+    transition-duration: 0.75s, 0.75s, 0.3s, 0.3s, 0.3s, 0.3s, 0.3s;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.22, 1, 0.36, 1), ease, ease, ease, ease, ease;
+  }
+
   .service-card-hover:hover {
     box-shadow: 0 12px 40px rgba(232, 220, 200, 0.10);
   }

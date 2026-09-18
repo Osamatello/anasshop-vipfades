@@ -97,12 +97,13 @@ export const serviceCatalogStructuredData = {
 
 export function buildFaqPageStructuredData(
   items: Array<{ question: string; answer: string }>,
+  pageUrl = SITE_URL,
 ) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    '@id': `${SITE_URL}/#faq`,
-    url: `${SITE_URL}/#faq`,
+    '@id': `${pageUrl}#faq`,
+    url: `${pageUrl}#faq`,
     mainEntity: items.map((item) => ({
       '@type': 'Question',
       name: item.question,

@@ -24,6 +24,15 @@ export type Service = {
   description: string;
 };
 
+export const PREMIUM_HAIRCUT_SERVICE: Service = {
+  id: "premium-haircut-styling",
+  slug: "premium-haircut-styling",
+  name: "Premium Haarschnitt & Styling",
+  price: 28,
+  duration: 40,
+  description: "Persönliche Beratung, Haarwäsche, präziser Haarschnitt und professionelles Styling für ein komplettes Finish.",
+};
+
 export const SERVICES: Service[] = [
   {
     id: "haircut",
@@ -41,6 +50,7 @@ export const SERVICES: Service[] = [
     duration: 20,
     description: "Formen, Konturen und ein sauberes Bart-Finish.",
   },
+  PREMIUM_HAIRCUT_SERVICE,
   {
     id: "haircut-beard",
     slug: "haircut-beard",

@@ -127,7 +127,7 @@ test('Footer contact details have exact clickable phone and email links', () => 
   assert.match(footer, /focus-visible:outline/);
 });
 
-test('all nine catalogue links preselect only their stable service slug', () => {
+test('all ten catalogue links preselect only their stable service slug', () => {
   const services = load('lib/data.ts', {}, 'SERVICES');
   const definitions = load('lib/booking/vipPackages.ts', {}, 'VIP_PACKAGE_DEFINITIONS');
   const vipPackages = Object.values(definitions).map((item) => ({ ...item, id: item.slug, tier: item.slug === 'vip-koenigsklasse' ? 'koenigsklasse' : 'exklusiv' }));
@@ -135,21 +135,32 @@ test('all nine catalogue links preselect only their stable service slug', () => 
   const Picker = load('components/chat/ServicesPicker.tsx', {
     '@/components/VipPackageCard': { default: vipCard, __esModule: true },
   });
-  const Catalogue = load('components/Services.tsx', {
+  const Catalogue = load('components/LeistungenCatalogue.tsx', {
+    '@/lib/data': { SERVICES: services },
+    '@/components/chat/constants': { VIP_PACKAGE_CARDS: vipPackages },
+    '@/components/VipPackageCard': { default: vipCard, __esModule: true },
+    '@/components/ServiceCard': { default: () => null, __esModule: true },
+    '@/lib/services/presentation': { serviceAnchor: (item) => item.id, serviceDescription: (item) => item.description },
+  });
+  const catalogue = renderToStaticMarkup(React.createElement(Catalogue, { fullCatalogue: true }));
+  const Home = load('components/Services.tsx', {
     '@/lib/data': { SERVICES: services },
     '@/components/chat/constants': { VIP_PACKAGE_CARDS: vipPackages },
     '@/components/VipPackageCard': { default: vipCard, __esModule: true },
     '@/components/ServiceCard': { default: () => null, __esModule: true },
     '@/lib/services/presentation': { serviceAnchor: (item) => item.id },
   });
-  const catalogue = renderToStaticMarkup(React.createElement(Catalogue, { fullCatalogue: true }));
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(Home)), /booking\?service=premium-haircut-styling|Premium Haarschnitt/);
+  const ordered = renderToStaticMarkup(React.createElement(Picker, { services: [...services].reverse(), vipPackages: [...vipPackages].reverse() }));
+  const names = [...ordered.matchAll(/role="checkbox"[\s\S]*?<\/button>/g)].map((item) => [...services, ...vipPackages].find((service) => item[0].includes(service.name.replace(/&/g, '&amp;')))?.slug);
+  assert.deepEqual(names, ['vip-koenigsklasse', 'vip-exklusiv', 'haircut-beard', 'mens-haircut', 'premium-haircut-styling', 'facial-cleansing', 'hot-wax', 'ears-nose', 'beard-trim', 'eyebrows']);
   for (const item of [...services, ...vipPackages]) {
     assert.ok(catalogue.includes(`href="/booking?service=${item.slug}"`));
     const html = renderToStaticMarkup(React.createElement(Picker, { services, vipPackages, initialServiceSlug: item.slug }));
     assert.equal((html.match(/aria-checked="true"/g) || []).length, 1);
     const checked = html.match(/<button[^>]*aria-checked="true"[\s\S]*?<\/button>/)[0];
     assert.ok(checked.includes(item.name.replace(/&/g, '&amp;')));
-    assert.equal((html.match(/aria-disabled="true"/g) || []).length, item.slug.startsWith('vip-') ? 7 : 0);
+    assert.equal((html.match(/aria-disabled="true"/g) || []).length, item.slug.startsWith('vip-') ? 8 : 0);
   }
   for (const initialServiceSlug of [undefined, 'not-a-service']) {
     const html = renderToStaticMarkup(React.createElement(Picker, { services, vipPackages, initialServiceSlug }));

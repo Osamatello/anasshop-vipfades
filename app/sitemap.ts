@@ -1,8 +1,23 @@
 import type { MetadataRoute } from 'next';
 
+import { ARTICLES } from '@/lib/articles';
+
 const SITE_URL = 'https://vip-fades.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const articleEntries: MetadataRoute.Sitemap = ARTICLES.map((article) => ({
+    url: `${SITE_URL}/artikel/${article.slug}`,
+    lastModified: new Date(`${article.updatedAt}T00:00:00Z`),
+    changeFrequency: 'monthly',
+    priority: 0.75,
+  }));
+
+  const latestArticleUpdate = ARTICLES.reduce<string | undefined>(
+    (latest, article) =>
+      !latest || article.updatedAt > latest ? article.updatedAt : latest,
+    undefined,
+  );
+
   return [
     {
       url: `${SITE_URL}/`,
@@ -26,39 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${SITE_URL}/artikel`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
+      ...(latestArticleUpdate
+        ? { lastModified: new Date(`${latestArticleUpdate}T00:00:00Z`) }
+        : {}),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: `${SITE_URL}/artikel/skin-fade-koblenz`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
-    {
-      url: `${SITE_URL}/artikel/skin-fade-vs-taper-fade`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
-    {
-      url: `${SITE_URL}/artikel/wie-oft-zum-barber`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
-    {
-      url: `${SITE_URL}/artikel/herrenhaarschnitt-gesichtsform`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
-    {
-      url: `${SITE_URL}/artikel/bart-richtig-pflegen`,
-      lastModified: new Date('2026-09-18T00:00:00Z'),
-      changeFrequency: 'monthly',
-      priority: 0.75,
-    },
+    ...articleEntries,
   ];
 }

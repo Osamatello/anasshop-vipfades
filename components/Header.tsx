@@ -87,6 +87,8 @@ export default function Header() {
             alt="VIP FADES"
             width={48}
             height={48}
+            sizes="48px"
+            quality={90}
             priority
             className="h-12 w-12 rounded-full object-cover"
           />

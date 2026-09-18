@@ -8,6 +8,7 @@ const NAV = [
   { label: 'Signature Cuts', href: '/#services' },
   { label: 'Das VIP Erlebnis', href: '/#experience' },
   { label: 'Unsere Barber', href: '/#barbers' },
+  { label: 'Artikel', href: '/artikel' },
   { label: 'Termin buchen', href: '/booking' },
   { label: 'Besuch uns', href: '/#contact' },
 ];

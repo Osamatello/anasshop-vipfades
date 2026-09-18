@@ -1,21 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 
 const NAV = [
-  { label: 'Signature Cuts', href: '#services' },
-  { label: 'Das VIP Erlebnis', href: '#experience' },
-  { label: 'Unsere Barber', href: '#barbers' },
-  { label: 'Termin buchen', href: '#booking' },
-  { label: 'Besuch uns', href: '#contact' },
+  { label: 'Signature Cuts', href: '/#services' },
+  { label: 'Das VIP Erlebnis', href: '/#experience' },
+  { label: 'Unsere Barber', href: '/#barbers' },
+  { label: 'Termin buchen', href: '/booking' },
+  { label: 'Besuch uns', href: '/#contact' },
 ];
 
 export default function Footer() {
-  const go = (href: string) => {
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     BUSINESS.address,
   )}`;
@@ -65,13 +62,12 @@ export default function Footer() {
             <ul className="mt-2 space-y-1.5">
               {NAV.map((item) => (
                 <li key={item.href}>
-                  <button
-                    type="button"
-                    onClick={() => go(item.href)}
+                  <Link
+                    href={item.href}
                     className="relative text-[12px] font-light leading-5 text-brand-textPrimary/75 transition-colors duration-300 hover:text-brand-cream after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full sm:text-[13px]"
                   >
                     {item.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
@@ -31,9 +32,13 @@ export default function Footer() {
               aria-label="Nach oben"
             >
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm sm:h-11 sm:w-11">
-                <img
+                <Image
                   src="/images/favicon.png"
                   alt="VIP FADES logo"
+                  width={44}
+                  height={44}
+                  sizes="44px"
+                  quality={90}
                   className="h-full w-full object-cover"
                 />
               </div>

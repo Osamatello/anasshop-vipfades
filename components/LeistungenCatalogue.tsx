@@ -40,7 +40,7 @@ export default function LeistungenCatalogue() {
                 key={vipPackage.id}
                 id={vipPackage.slug}
                 href={`/booking?service=${encodeURIComponent(vipPackage.slug)}`}
-                className={`group relative scroll-mt-28 overflow-hidden rounded-2xl border p-5 transition-all duration-300 sm:p-6 lg:p-7 ${focusClass} ${
+                className={`service-card-hover group relative scroll-mt-28 overflow-hidden rounded-2xl border p-5 transition-all duration-300 sm:p-6 lg:p-7 ${focusClass} ${
                   isTopTier
                     ? 'border-brand-cream/55 bg-gradient-to-br from-brand-cream/[0.12] via-brand-card/50 to-transparent shadow-[0_18px_50px_-30px_rgba(232,220,200,0.45)] hover:border-brand-cream/80'
                     : 'border-brand-cream/25 bg-brand-card/45 hover:border-brand-cream/50'
@@ -94,7 +94,7 @@ export default function LeistungenCatalogue() {
                 key={service.id}
                 id={serviceAnchor(service)}
                 href={`/booking?service=${encodeURIComponent(service.slug ?? service.id)}`}
-                className={`reveal reveal-delay-${(index % 3) + 1} group relative scroll-mt-28 rounded-xl border p-4 transition-all duration-300 sm:p-5 ${focusClass} ${
+                className={`reveal reveal-delay-${(index % 3) + 1} service-card-hover group relative scroll-mt-28 rounded-xl border p-4 transition-all duration-300 sm:p-5 ${focusClass} ${
                   isPopular
                     ? 'border-brand-cream/45 bg-brand-bgSecondary/70 hover:border-brand-cream/75'
                     : 'border-brand-border/80 bg-brand-card/35 hover:border-brand-cream/45'
@@ -115,7 +115,7 @@ export default function LeistungenCatalogue() {
                           <Scissors className="h-3.5 w-3.5" />
                           <span className="text-[8px] font-medium uppercase tracking-[0.18em]">VIP FADES</span>
                         </div>
-                        <h3 className="mt-2 font-serif text-[19px] font-light leading-tight text-brand-textPrimary sm:text-xl">
+                        <h3 className="mt-2 font-serif text-[19px] font-light leading-tight text-brand-textPrimary transition-colors duration-300 group-hover:text-brand-cream sm:text-xl">
                           {service.name}
                         </h3>
                       </div>

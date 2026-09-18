@@ -7,7 +7,7 @@ import { serviceDescription } from '@/lib/services/presentation';
 export default function ServiceCard({ service, index }: { service: Service; index: number }) {
   const isPopular = service.id === 'haircut-beard';
   return (
-    <article className={`reveal reveal-delay-${(index % 3) + 1} group relative flex h-full flex-col justify-between ${COMPACT_CARD_LAYOUT} transition-all duration-300 motion-safe:hover:-translate-y-1 ${isPopular
+    <article className={`reveal reveal-delay-${(index % 3) + 1} service-card-hover group relative flex h-full flex-col justify-between ${COMPACT_CARD_LAYOUT} transition-all duration-300 ${isPopular
       ? 'border-brand-cream/50 bg-brand-bgSecondary/70 hover:border-brand-cream hover:shadow-[0_12px_40px_rgba(232,220,200,0.10)]'
       : 'border-brand-border bg-brand-card/30 hover:border-brand-cream/60 hover:shadow-[0_12px_40px_rgba(232,220,200,0.08)]'}`}>
       {isPopular && <span className="absolute -top-3 left-6 rounded-full bg-brand-cream px-4 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-bg">Am beliebtesten</span>}

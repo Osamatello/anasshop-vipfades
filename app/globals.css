@@ -103,6 +103,17 @@
     transform: translateY(0);
   }
 
+  .service-card-hover:hover {
+    box-shadow: 0 12px 40px rgba(232, 220, 200, 0.10);
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .service-card-hover:hover {
+      /* Keep hover lift independent of the reveal animation's transform. */
+      translate: 0 -4px;
+    }
+  }
+
   .reveal-delay-1 {
     transition-delay: 0.1s;
   }

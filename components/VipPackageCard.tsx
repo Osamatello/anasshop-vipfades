@@ -133,7 +133,7 @@ export default function VipPackageCard({
   );
 
   if (!onToggle) {
-    return <article className={containerClass}>{content}</article>;
+    return <article className={`${containerClass} service-card-hover duration-300`}>{content}</article>;
   }
 
   if (size === 'booking') {

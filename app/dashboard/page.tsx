@@ -29,6 +29,10 @@ import {
 } from '@/lib/supabase/bookings';
 
 import {
+    getActiveServiceCount,
+} from '@/lib/supabase/dashboard';
+
+import {
     getKoblenzDate,
 } from '@/lib/timezone';
 
@@ -46,7 +50,6 @@ const ABD_BARBER_ID =
 
 const WORKING_HOURS = '10:00 - 19:00';
 const WORKING_DAYS = 'Mo - Do';
-const ACTIVE_SERVICES = 7;
 
 const formatTime = (value: string) =>
     value.slice(0, 5);
@@ -243,10 +246,16 @@ export default async function DashboardPage() {
     const today =
         getKoblenzDate();
 
-    const bookings =
-        await getDashboardBookings(
-            today,
-        );
+    const [
+        bookings,
+        activeServiceCount,
+    ] =
+        await Promise.all([
+            getDashboardBookings(
+                today,
+            ),
+            getActiveServiceCount(),
+        ]);
 
     const todayTermine =
         bookings.filter(
@@ -578,7 +587,7 @@ export default async function DashboardPage() {
                                         }
                                         label="Services"
                                         value={String(
-                                            ACTIVE_SERVICES,
+                                            activeServiceCount,
                                         )}
                                         note="Active services"
                                     />

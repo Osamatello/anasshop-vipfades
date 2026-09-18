@@ -500,18 +500,41 @@ export async function saveGoogleCalendarEventId(
 
 export async function cancelBooking(
     bookingId: string
-): Promise<void> {
-    const { error } = await supabaseServer
+): Promise<boolean> {
+    const { data, error } = await supabaseServer
         .from("bookings")
         .update({
             status: "cancelled",
         })
         .eq("id", bookingId)
-        .eq("status", "booked");
+        .eq("status", "booked")
+        .select("id")
+        .maybeSingle();
 
     if (error) {
         throw new Error(
             `Failed to cancel booking: ${error.message}`
+        );
+    }
+
+    return Boolean(data?.id);
+}
+
+export async function clearGoogleCalendarEventId(
+    bookingId: string,
+    eventId: string
+): Promise<void> {
+    const { error } = await supabaseServer
+        .from("bookings")
+        .update({
+            google_calendar_event_id: null,
+        })
+        .eq("id", bookingId)
+        .eq("google_calendar_event_id", eventId);
+
+    if (error) {
+        throw new Error(
+            `Failed to clear Google Calendar event ID: ${error.message}`
         );
     }
 }

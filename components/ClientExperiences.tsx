@@ -1,85 +1,51 @@
 'use client';
 
 import { Quote, Star } from 'lucide-react';
+
 import GoogleRating from '@/components/reviews/GoogleRating';
+import { useGoogleReviews } from '@/components/reviews/GoogleReviewsProvider';
+import {
+  GOOGLE_REVIEWS_LINK,
+  type GoogleReview,
+} from '@/lib/reviews/types';
 
-const REVIEWS = [
-  {
-    id: 1,
-    rating: 5,
-    text: 'Top Service, top Haarschnitt – kann ich jedem empfehlen.',
-    name: 'Sead Sokolovic',
-    date: 'vor 3 Wochen',
-    initials: 'SS',
-  },
-  {
-    id: 2,
-    rating: 5,
-    text: 'Sehr gut! Bin ohne Termin reingekommen und direkt drangekommen. Die Rasur hat ungefähr acht Minuten gedauert.',
-    name: 'Camden Leslie',
-    date: 'vor 8 Monaten',
-    initials: 'CL',
-  },
-  {
-    id: 3,
-    rating: 5,
-    text: 'Gute Stimmung, starke Barber-Skills und super Service für nur 20 Euro. Klare Empfehlung!',
-    name: 'Daniel Tian',
-    date: 'vor 1 Jahr',
-    initials: 'DT',
-  },
-  {
-    id: 4,
-    rating: 5,
-    text: 'Meine Bedürfnisse werden korrekt wahrgenommen und umgesetzt! Ob Termin oder nicht, ich hatte nie lange Wartezeit. Die Preise sind echt unschlagbar. Kann ich jedem empfehlen.',
-    name: 'Johannes Brunke',
-    date: 'vor 1 Monat',
-    initials: 'JB',
-  },
-  {
-    id: 5,
-    rating: 5,
-    text: 'Ich bin absolut begeistert! Der Service war erstklassig, das Team super freundlich und professionell. Auf meine Wünsche wurde perfekt eingegangen und das Ergebnis ist einfach top.',
-    name: 'Jeremy Menges',
-    date: 'vor 3 Monaten',
-    initials: 'JM',
-  },
-  {
-    id: 6,
-    rating: 5,
-    text: 'Sehr guter Laden, immer gute Haarschnitte und alles sehr sauber. Parfums sind auch sehr hochwertig. Gerne Kunde dort.',
-    name: 'Nicolas Yarro',
-    date: 'vor 3 Wochen',
-    initials: 'NY',
-  },
-  {
-    id: 7,
-    rating: 5,
-    text: 'War zweimal da, alles war perfekt und sehr sauber geschnitten. Kann ich nur weiterempfehlen.',
-    name: 'Wade3 Selawi',
-    date: 'vor 3 Wochen',
-    initials: 'WS',
-  },
-];
+const reviewDateFormatter = new Intl.DateTimeFormat('de-DE', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'Europe/Berlin',
+});
 
-const FIRST_ROW = [
-  REVIEWS[0],
-  REVIEWS[3],
-  REVIEWS[2],
-  REVIEWS[5],
-];
+function reviewerInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('') || 'G';
+}
 
-const SECOND_ROW = [
-  REVIEWS[1],
-  REVIEWS[4],
-  REVIEWS[6],
-];
+function formatReviewDate(value: string) {
+  const date = new Date(value);
+
+  if (!Number.isFinite(date.getTime())) {
+    return 'Google-Bewertung';
+  }
+
+  return reviewDateFormatter.format(date);
+}
 
 export default function ClientExperiences() {
+  const { reviews, status } = useGoogleReviews();
+
+  const firstRow = reviews.slice(0, 4);
+  const secondRow = reviews.slice(4, 7);
+  const hasReviews = reviews.length > 0;
+
   return (
     <section className="border-t border-brand-border py-24 sm:py-28">
       <div className="mx-auto max-w-7xl px-5">
-        {/* Section heading */}
         <div className="mb-14 text-center">
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Das sagen unsere Kunden
@@ -87,37 +53,55 @@ export default function ClientExperiences() {
 
           <div className="gold-divider mt-4" />
 
-          <div className="mt-6"><GoogleRating /></div>
-
+          <div className="mt-6">
+            <GoogleRating />
+          </div>
         </div>
 
-        {/* Reviews marquee */}
-        <div className="reviews-window relative overflow-hidden py-8">
-          {/* First row */}
-          <div className="reviews-track-left flex w-max items-stretch gap-10">
-            {[...FIRST_ROW, ...FIRST_ROW, ...FIRST_ROW].map(
-              (review, index) => (
+        {hasReviews ? (
+          <div className="reviews-window relative overflow-hidden py-8">
+            <div className="reviews-track-left flex w-max items-stretch gap-10">
+              {[...firstRow, ...firstRow, ...firstRow].map((review, index) => (
                 <ReviewItem
                   key={`first-${review.id}-${index}`}
                   review={review}
                 />
-              )
-            )}
-          </div>
+              ))}
+            </div>
 
-          {/* Second row */}
-          <div className="reviews-track-right mt-8 flex w-max items-stretch gap-10">
-            {[...SECOND_ROW, ...SECOND_ROW, ...SECOND_ROW].map(
-              (review, index) => (
-                <ReviewItem
-                  key={`second-${review.id}-${index}`}
-                  review={review}
-                />
-              )
+            {secondRow.length > 0 && (
+              <div className="reviews-track-right mt-8 flex w-max items-stretch gap-10">
+                {[...secondRow, ...secondRow, ...secondRow].map((review, index) => (
+                  <ReviewItem
+                    key={`second-${review.id}-${index}`}
+                    review={review}
+                  />
+                ))}
+              </div>
             )}
           </div>
+        ) : (
+          <div className="mx-auto max-w-xl py-6 text-center">
+            <p className="text-sm font-light leading-7 text-brand-textPrimary/70 sm:text-base">
+              {status === 'loading'
+                ? 'Google-Bewertungen werden geladen.'
+                : 'Aktuelle Google-Bewertungen findest du direkt auf unserem Google-Profil.'}
+            </p>
+
+            <a
+              href={GOOGLE_REVIEWS_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex rounded-full border border-brand-cream/50 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-brand-cream transition-colors hover:border-brand-cream hover:text-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
+            >
+              Google-Bewertungen ansehen
+            </a>
+          </div>
+        )}
+
+        <div className="mt-10 flex justify-center">
+          <GoogleRating reviewBlock />
         </div>
-        <div className="mt-10 flex justify-center"><GoogleRating reviewBlock /></div>
       </div>
 
       <style jsx>{`
@@ -204,12 +188,11 @@ export default function ClientExperiences() {
 function ReviewItem({
   review,
 }: {
-  review: (typeof REVIEWS)[number];
+  review: GoogleReview;
 }) {
   return (
     <article className="group flex min-h-[147px] w-[210px] flex-shrink-0 flex-col justify-between py-3.5 sm:min-h-[210px] sm:w-[330px] sm:py-5">
       <div>
-        {/* Rating and quote */}
         <div className="mb-3.5 flex items-center justify-between sm:mb-5">
           <div
             className="flex gap-0.5 sm:gap-1"
@@ -218,10 +201,11 @@ function ReviewItem({
             {Array.from({ length: 5 }).map((_, starIndex) => (
               <Star
                 key={starIndex}
-                className={`h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 ${starIndex < review.rating
-                  ? 'fill-brand-cream text-brand-cream'
-                  : 'fill-transparent text-brand-cream/30'
-                  }`}
+                className={`h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 ${
+                  starIndex < review.rating
+                    ? 'fill-brand-cream text-brand-cream'
+                    : 'fill-transparent text-brand-cream/30'
+                }`}
               />
             ))}
           </div>
@@ -229,16 +213,14 @@ function ReviewItem({
           <Quote className="h-3 w-3 text-brand-cream/20 sm:h-4 sm:w-4" />
         </div>
 
-        {/* Review text */}
         <p className="text-[11px] font-light leading-[1.15rem] text-brand-textPrimary/75 sm:text-[13px] sm:leading-6">
           “{review.text}”
         </p>
       </div>
 
-      {/* Client identity */}
       <div className="mt-5 flex items-center gap-2 border-t border-brand-border/30 pt-3 sm:mt-7 sm:gap-3 sm:pt-4">
         <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.03] text-[8px] font-semibold uppercase tracking-[0.08em] text-brand-cream/80 sm:h-9 sm:w-9 sm:text-[9px]">
-          {review.initials}
+          {reviewerInitials(review.name)}
         </div>
 
         <div>
@@ -247,7 +229,7 @@ function ReviewItem({
           </p>
 
           <p className="mt-0.5 text-[9px] font-light uppercase tracking-[0.1em] text-brand-cream/55 sm:mt-1 sm:text-[10px] sm:tracking-[0.12em]">
-            {review.date}
+            {formatReviewDate(review.publishedAt)}
           </p>
         </div>
       </div>

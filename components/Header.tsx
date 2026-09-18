@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Erlebnis', href: '#experience' },
   { label: 'VIP Look', href: '#vip-look' },
+  { label: 'FAQ', href: '#faq' },
   { label: 'Besuch', href: '#contact' },
 ];
 

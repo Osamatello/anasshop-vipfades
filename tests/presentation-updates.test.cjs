@@ -34,20 +34,21 @@ function rating(data, props = {}) {
 }
 const ready = { stats: { rating: 4.6, totalReviewCount: 211 }, status: 'ready' };
 
-test('testimonial cards are sourced from the live Google review snapshot', () => {
+test('original seven testimonials remain static and unchanged', () => {
   const reviews = source('components/ClientExperiences.tsx');
-  assert.match(reviews, /useGoogleReviews/);
-  assert.match(reviews, /reviews\.slice\(0, 4\)/);
-  assert.match(reviews, /reviews\.slice\(4, 7\)/);
-  assert.match(reviews, /type GoogleReview/);
-  assert.match(reviews, /review\.text/);
-  assert.match(reviews, /review\.name/);
-  assert.match(reviews, /review\.publishedAt/);
-  assert.match(reviews, /GOOGLE_REVIEWS_LINK/);
-  assert.doesNotMatch(reviews, /Sead Sokolovic|Camden Leslie|Daniel Tian|Johannes Brunke|Jeremy Menges|Nicolas Yarro|Wade3 Selawi/);
-  assert.doesNotMatch(reviews, /const REVIEWS =/);
+  for (const name of [
+    'Sead Sokolovic',
+    'Camden Leslie',
+    'Daniel Tian',
+    'Johannes Brunke',
+    'Jeremy Menges',
+    'Nicolas Yarro',
+    'Wade3 Selawi',
+  ]) assert.ok(reviews.includes(name));
+  assert.equal((reviews.match(/initials:/g) || []).length, 7);
+  assert.match(reviews, /const REVIEWS =/);
+  assert.doesNotMatch(reviews, /useGoogleReviews/);
 });
-
 test('Hero uses right-hand rating, five fractional stars and Google review count', () => {
   const html = rating(ready, { compact: true });
   assert.match(html, /order-last text-\[42px\]/);
@@ -79,7 +80,7 @@ test('all three summaries use shared owner-verified fallback without loading tex
     for (const props of [{ compact: true }, {}, { reviewBlock: true }]) {
       const html = rating({ stats: null, status }, props);
       assert.match(html, />5\.0<\/span>/);
-      assert.match(html, />167 Google-Bewertungen<\/span>/);
+      assert.match(html, />169 Google-Bewertungen<\/span>/);
       assert.equal((html.match(/width:100%/g) || []).length, 5);
       assert.doesNotMatch(html, /role="status"|werden geladen|pending|nicht verfügbar/i);
     }

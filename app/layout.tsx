@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: '/images/vip-favicon.png',
-    shortcut: '/images/vip-favicon.png',
+    icon: '/images/favicon-48.png',
+    shortcut: '/images/favicon-48.png',
     apple: '/images/vip-favicon.png',
   },
 
@@ -60,11 +60,11 @@ export const metadata: Metadata = {
       'Barbershop in Koblenz für Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling. Buche deinen Termin online.',
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'VIP FADES BY ANAS — Barbershop in Koblenz',
-        type: 'image/png',
+        type: 'image/jpeg',
       },
     ],
   },
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     title: 'VIP FADES BY ANAS | Barbershop & Barber in Koblenz',
     description:
       'Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling bei VIP FADES in Koblenz.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

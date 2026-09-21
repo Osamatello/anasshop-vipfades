@@ -7,19 +7,47 @@ import { BUSINESS } from '@/lib/data';
 import GoogleRating from '@/components/reviews/GoogleRating';
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => {
-      if (preference.matches) {
-        videoRef.current?.pause();
+    let isVisible = true;
+
+    const syncPlayback = () => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (preference.matches || !isVisible) {
+        video.pause();
+        return;
       }
+
+      void video.play().catch(() => {
+        // Autoplay can be blocked by the browser; the poster remains visible.
+      });
     };
-    update();
-    preference.addEventListener('change', update);
-    return () => preference.removeEventListener('change', update);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        syncPlayback();
+      },
+      { threshold: 0.1 },
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    syncPlayback();
+    preference.addEventListener('change', syncPlayback);
+
+    return () => {
+      observer.disconnect();
+      preference.removeEventListener('change', syncPlayback);
+    };
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -29,7 +57,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
+    >
       {/* Background */}
       <div
         className="absolute inset-0 overflow-hidden bg-cover bg-center"

@@ -5,6 +5,7 @@ import {
 
 import {
     cancelBooking,
+    clearGoogleCalendarEventId,
     getBookingById,
 } from "@/lib/supabase/bookings";
 
@@ -153,20 +154,12 @@ export async function POST(
         }
 
 
-        if (
-            booking.status ===
-            "cancelled"
-        ) {
-            return NextResponse.json({
-                success: true,
-                alreadyCancelled: true,
-            });
-        }
-
+        const alreadyCancelled =
+            booking.status === "cancelled";
 
         if (
-            booking.status !==
-            "booked"
+            booking.status !== "booked" &&
+            !alreadyCancelled
         ) {
             return NextResponse.json(
                 {
@@ -180,31 +173,95 @@ export async function POST(
             );
         }
 
+        let confirmedBooking = booking;
 
-        if (
-            booking.google_calendar_event_id
-        ) {
-            await deleteGoogleCalendarEvent({
-                barberId:
-                    booking.barber_id,
+        if (!alreadyCancelled) {
+            const cancellationConfirmed =
+                await cancelBooking(
+                    booking.id
+                );
 
-                eventId:
-                    booking.google_calendar_event_id,
-            });
+            if (!cancellationConfirmed) {
+                const latestBooking =
+                    await getBookingById(
+                        booking.id
+                    );
+
+                if (
+                    !latestBooking ||
+                    latestBooking.customer_phone !==
+                        phoneResult.value ||
+                    latestBooking.status !==
+                        "cancelled"
+                ) {
+                    return NextResponse.json(
+                        {
+                            success: false,
+                            error:
+                                "Der Termin konnte nicht storniert werden. Bitte versuche es erneut.",
+                        },
+                        {
+                            status: 409,
+                        }
+                    );
+                }
+
+                confirmedBooking =
+                    latestBooking;
+            } else {
+                confirmedBooking = {
+                    ...booking,
+                    status: "cancelled",
+                };
+            }
         }
 
+        let calendarDeleted = false;
+        let calendarAlreadyMissing = false;
+        let calendarCleanupPending = false;
 
-        await cancelBooking(
-            booking.id
-        );
+        const calendarEventId =
+            confirmedBooking.google_calendar_event_id;
 
+        if (calendarEventId) {
+            try {
+                const deletionResult =
+                    await deleteGoogleCalendarEvent({
+                        barberId:
+                            confirmedBooking.barber_id,
+
+                        eventId:
+                            calendarEventId,
+                    });
+
+                calendarDeleted =
+                    deletionResult === "deleted";
+
+                calendarAlreadyMissing =
+                    deletionResult ===
+                    "already_missing";
+
+                await clearGoogleCalendarEventId(
+                    confirmedBooking.id,
+                    calendarEventId
+                );
+            } catch (calendarError) {
+                calendarCleanupPending = true;
+
+                console.error(
+                    "Cancelled booking, but Google Calendar cleanup is pending:",
+                    calendarError
+                );
+            }
+        }
 
         return NextResponse.json({
             success: true,
+            alreadyCancelled,
 
             booking: {
                 id:
-                    booking.id,
+                    confirmedBooking.id,
 
                 status:
                     "cancelled",
@@ -212,12 +269,15 @@ export async function POST(
 
             calendar: {
                 deleted:
-                    Boolean(
-                        booking.google_calendar_event_id
-                    ),
+                    calendarDeleted,
+
+                alreadyMissing:
+                    calendarAlreadyMissing,
+
+                cleanupPending:
+                    calendarCleanupPending,
             },
         });
-
 
     } catch (error) {
 

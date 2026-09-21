@@ -220,6 +220,8 @@ export default function VIPLook() {
                     (max-width: 1024px) 31vw,
                     22vw
                   "
+                                    quality={90}
+                                    loading="lazy"
                                     className="
                     object-cover
                     object-[center_38%]

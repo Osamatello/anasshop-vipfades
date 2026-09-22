@@ -25,7 +25,7 @@ export const businessStructuredData = {
       name: BUSINESS.name,
       description: BUSINESS.description,
       url: SITE_URL,
-      image: `${SITE_URL}/images/og-image.png`,
+      image: `${SITE_URL}/images/og-image.jpg`,
       logo: `${SITE_URL}/images/vip-favicon.png`,
       telephone: BUSINESS.phoneFormatted,
       address: {
@@ -150,7 +150,7 @@ export function buildArticleStructuredData({
     publisher: {
       '@id': BUSINESS_ID,
     },
-    image: `${SITE_URL}/images/og-image.png`,
+    image: `${SITE_URL}/images/og-image.jpg`,
   };
 }
 

@@ -76,14 +76,14 @@ export const metadata: Metadata = {
     type: 'article',
     publishedTime: PUBLISHED_AT,
     modifiedTime: UPDATED_AT,
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Skin Fade vs. Taper Fade | VIP FADES',
     description:
       'Übergang, Wirkung, Pflege und Unterschiede einfach erklärt.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

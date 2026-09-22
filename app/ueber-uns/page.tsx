@@ -28,14 +28,14 @@ export const metadata: Metadata = {
       'Unser Team, unsere Geschichte und unser Anspruch an präzise Fades, moderne Herrenhaarschnitte und Barber-Service in Koblenz.',
     url: '/ueber-uns',
     type: 'website',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Über VIP FADES | Barbershop in Koblenz',
     description:
       'Lerne VIP FADES BY ANAS, unser Team und unseren Anspruch an präzise Fades und modernen Barber-Service in Koblenz kennen.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

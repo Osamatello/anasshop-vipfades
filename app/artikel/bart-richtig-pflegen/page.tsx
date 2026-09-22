@@ -76,14 +76,14 @@ export const metadata: Metadata = {
     type: 'article',
     publishedTime: PUBLISHED_AT,
     modifiedTime: UPDATED_AT,
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Bart richtig pflegen | VIP FADES',
     description:
       'Praktische Tipps für Bartform, Konturen, Waschen und Trimmen.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

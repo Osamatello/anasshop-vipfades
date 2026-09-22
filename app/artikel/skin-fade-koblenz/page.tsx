@@ -79,14 +79,14 @@ export const metadata: Metadata = {
     type: 'article',
     publishedTime: PUBLISHED_AT,
     modifiedTime: UPDATED_AT,
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Skin Fade in Koblenz | VIP FADES BY ANAS',
     description:
       'Definition, Unterschiede, Pflege und Tipps rund um den Skin Fade.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

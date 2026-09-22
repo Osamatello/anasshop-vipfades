@@ -21,14 +21,14 @@ export const metadata: Metadata = {
             'Buche deinen Barber-Termin bei VIP FADES BY ANAS in Koblenz online.',
         url: '/booking',
         type: 'website',
-        images: ['/images/og-image.png'],
+        images: ['/images/og-image.jpg'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Termin buchen | VIP FADES BY ANAS',
         description:
             'Buche deinen Barber-Termin bei VIP FADES BY ANAS in Koblenz online.',
-        images: ['/images/og-image.png'],
+        images: ['/images/og-image.jpg'],
     },
 };
 

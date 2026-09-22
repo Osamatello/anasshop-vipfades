@@ -19,14 +19,14 @@ export const metadata: Metadata = {
       'Praktisches Barber-Wissen zu Fades, Herrenhaarschnitten, Bartpflege und Styling von VIP FADES BY ANAS in Koblenz.',
     url: '/artikel',
     type: 'website',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Artikel & Barber-Ratgeber | VIP FADES Koblenz',
     description:
       'Barber-Wissen zu Fades, Herrenhaarschnitten, Bartpflege und Styling von VIP FADES BY ANAS.',
-    images: ['/images/og-image.png'],
+    images: ['/images/og-image.jpg'],
   },
 };
 

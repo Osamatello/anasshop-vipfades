@@ -41,7 +41,7 @@ export function GET() {
     '',
     '## Öffnungszeiten',
     `- ${BUSINESS.hours.open}`,
-    `- Online-Termine: ${BUSINESS.hours.onlineDays}, ${BUSINESS.hours.onlineTime}`,
+    `- Online-Termine nur ${BUSINESS.hours.onlineDays}, ${BUSINESS.hours.onlineTime}`,
     `- ${BUSINESS.hours.walkins}`,
     '',
     '## VIP-Pakete',

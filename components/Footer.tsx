@@ -92,7 +92,7 @@ export default function Footer() {
             <p className="mt-1.5 text-[12px] font-light leading-5 text-brand-textPrimary/80 sm:text-[13px]">
               {BUSINESS.hours.open}
               <br />
-              Online-Termine: {BUSINESS.hours.onlineDays}, {BUSINESS.hours.onlineTime}
+              Online-Termine nur {BUSINESS.hours.onlineDays}, {BUSINESS.hours.onlineTime}
             </p>
 
             <p className="mt-1.5 text-[12px] font-medium text-brand-cream sm:text-[13px]">

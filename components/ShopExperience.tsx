@@ -55,7 +55,7 @@ export default function ShopExperience() {
 
               <div className="flex flex-wrap gap-3">
                 <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
-                  Montag bis Donnerstag
+                  Nur Montag bis Donnerstag
                 </span>
 
                 <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">

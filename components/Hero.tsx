@@ -139,7 +139,7 @@ export default function Hero() {
 
               <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
                 <Clock className="h-4 w-4 text-brand-textPrimary" />
-                Online-Termine Mo–Do, {BUSINESS.hours.onlineTime}
+                Online-Termine nur Mo–Do, {BUSINESS.hours.onlineTime}
               </span>
             </div>
 

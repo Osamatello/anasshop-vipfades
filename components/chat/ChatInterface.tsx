@@ -970,7 +970,7 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Online-Termine sind ${BUSINESS.hours.onlineDays} von ${BUSINESS.hours.onlineTime} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
+      `Online-Termine sind nur ${BUSINESS.hours.onlineDays} von ${BUSINESS.hours.onlineTime} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
       {
         chips: ['Zurück'],
       },

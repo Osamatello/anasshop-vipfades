@@ -572,7 +572,7 @@ export default async function DashboardPage() {
                                         icon={
                                             Clock3
                                         }
-                                        label="Öffnungszeiten"
+                                        label="Online-Termine"
                                         value={
                                             WORKING_HOURS
                                         }

@@ -1,6 +1,6 @@
 export const BUSINESS = {
   name: "VIP FADES BY ANAS",
-  tagline: "Premium Cuts. Saubere Fades in Koblenz.",
+  tagline: "VIP FADES BY ANAS – Barbershop in Koblenz",
   description:
     "Barbershop in Koblenz für präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling.",
   address: "An der Moselbrücke 9, 56068 Koblenz",
@@ -9,9 +9,11 @@ export const BUSINESS = {
   instagram: "@vipfades.kob",
   instagramUrl: "https://instagram.com/vipfades.kob",
   hours: {
-    days: "Montag bis Donnerstag",
-    time: "10:00 bis 19:00",
-    walkins: "Walk-ins willkommen",
+    open: "Täglich geöffnet, 10:00 bis 19:00",
+    walkins: "Walk-ins täglich willkommen",
+    // Online booking only. The shop itself is open daily.
+    onlineDays: "Montag bis Donnerstag",
+    onlineTime: "10:00 bis 19:00",
   },
 };
 

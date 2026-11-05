@@ -7,7 +7,7 @@ import {
 
 import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
-import ChatInterface from '@/components/chat/ChatInterface';
+import BookingWizard from '@/components/booking/BookingWizard';
 import { BUSINESS } from '@/lib/data';
 
 export const metadata: Metadata = {
@@ -101,8 +101,8 @@ export default async function BookingPage({
                                 <div className="booking-accent mt-7 h-px w-14 bg-brand-cream" />
 
                                 <p className="mt-7 max-w-md text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-                                    Buche deinen nächsten Termin bei VIP FADES mit deinem
-                                    persönlichen Buchungsassistenten.
+                                    Buche deinen nächsten Termin bei VIP FADES in 3 kurzen
+                                    Schritten: Service, Barber und Uhrzeit.
                                 </p>
                             </div>
 
@@ -120,7 +120,7 @@ export default async function BookingPage({
                                     label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Montag bis Donnerstag
+                                        Nur Montag bis Donnerstag
                                     </p>
 
                                     <p className="mt-1">
@@ -128,7 +128,7 @@ export default async function BookingPage({
                                     </p>
 
                                     <p className="mt-2 text-brand-cream/75">
-                                        Walk-ins täglich willkommen
+                                        Täglich geöffnet, 10:00 – 19:00 · Walk-ins willkommen
                                     </p>
                                 </InfoRow>
 
@@ -159,8 +159,8 @@ export default async function BookingPage({
                         </div>
                     </aside>
 
-                    {/* Right concierge */}
-                    <div className="relative z-10 flex min-h-[700px] flex-col bg-[#090909]/70 lg:min-h-0">
+                    {/* Booking steps come first on phones */}
+                    <div className="relative z-10 order-first flex flex-col bg-[#090909]/70 lg:order-none lg:min-h-0">
                         {/* Right moving atmosphere */}
                         <div className="booking-right-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
                             <div className="right-glow absolute right-[-300px] top-[50px] h-[700px] w-[700px] rounded-full bg-brand-cream/[0.025] blur-[180px]" />
@@ -168,40 +168,26 @@ export default async function BookingPage({
                             <div className="right-glow-two absolute bottom-[-300px] left-[20%] h-[650px] w-[650px] rounded-full bg-brand-cream/[0.02] blur-[190px]" />
                         </div>
 
-                        {/* Concierge header */}
-                        <div className="relative z-10 flex items-center justify-between border-b border-brand-border/60 px-6 py-5 sm:px-8 lg:px-10">
-                            <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-                                    Persönlicher Buchungsassistent
-                                </p>
+                        {/* Booking header */}
+                        <div className="relative z-10 border-b border-brand-border/60 px-5 py-5 sm:px-8">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
+                                Online-Termin buchen
+                            </p>
 
-                                <p className="mt-2 text-sm font-light text-brand-textSecondary">
-                                    Sag uns, was du brauchst. Wir führen dich durch den Rest.
-                                </p>
-                            </div>
-
-                            <div className="hidden items-center gap-2.5 text-[10px] font-medium uppercase tracking-[0.18em] text-brand-textSecondary sm:flex">
-                                <span className="relative flex h-2.5 w-2.5">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-
-                                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,0.9)]" />
-                                </span>
-
-                                Online
-                            </div>
+                            <p className="mt-2 text-sm font-light text-brand-textSecondary">
+                                In 3 Schritten zu deinem Termin.
+                            </p>
                         </div>
 
-                        {/* Chat */}
-                        <div className="relative z-10 flex-1 overflow-hidden">
+                        {/* Booking steps */}
+                        <div className="relative z-10 flex-1">
                             <div className="chat-top-light pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-brand-cream/70 to-transparent" />
 
-                            <div className="h-full min-h-[620px]">
-                                <ChatInterface
-                                    key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}`}
-                                    initialBarber={initialBarber}
-                                    initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
-                                />
-                            </div>
+                            <BookingWizard
+                                key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}`}
+                                initialBarber={initialBarber}
+                                initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
+                            />
                         </div>
 
                         {/* Bottom reassurance */}

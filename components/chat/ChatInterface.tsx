@@ -830,8 +830,8 @@ export default function ChatInterface({
 
         pushBot(
           preference.relativeDate === 'today'
-            ? 'Heute sind keine Online-Termine verfügbar. Hier sind die nächsten verfügbaren Buchungstage:'
-            : 'Morgen sind keine Online-Termine verfügbar. Hier sind die nächsten verfügbaren Buchungstage:',
+            ? 'Heute sind keine Online-Termine verfügbar, aber wir sind täglich von 10:00 bis 19:00 geöffnet. Hier sind die nächsten verfügbaren Buchungstage:'
+            : 'Morgen sind keine Online-Termine verfügbar, aber wir sind täglich von 10:00 bis 19:00 geöffnet. Hier sind die nächsten verfügbaren Buchungstage:',
           {
             options: dateOptions(barber),
             chips: ['Zurück'],
@@ -850,7 +850,7 @@ export default function ChatInterface({
         setStep('pickDate');
 
         pushBot(
-          `${WEEKDAY_LABELS[preference.weekday]} ist aktuell kein verfügbarer Online-Buchungstag. Hier sind die nächsten Optionen:`,
+          `${WEEKDAY_LABELS[preference.weekday]} ist aktuell kein verfügbarer Online-Buchungstag, aber wir sind täglich von 10:00 bis 19:00 geöffnet. Hier sind die nächsten Optionen:`,
           {
             options: dateOptions(barber),
             chips: ['Zurück'],
@@ -970,7 +970,7 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Online-Termine sind ${BUSINESS.hours.days} von ${BUSINESS.hours.time} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
+      `${BUSINESS.hours.open}. Online-Termine sind nur ${BUSINESS.hours.onlineDays} von ${BUSINESS.hours.onlineTime} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
       {
         chips: ['Zurück'],
       },

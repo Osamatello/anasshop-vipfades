@@ -18,9 +18,9 @@ export default function Statistics() {
       label: 'Online-Termine',
     },
     {
-      eyebrow: 'FLEXIBILITÄT',
-      value: 'Walk-ins',
-      label: 'Täglich willkommen',
+      eyebrow: 'GEÖFFNET',
+      value: 'Täglich',
+      label: '10:00 – 19:00',
     },
   ];
 

@@ -23,7 +23,7 @@ const FAQS = [
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer: (
       <>
-        Nein. Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern
+        Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern
         möchtest, kannst du deinen Termin direkt über unsere{' '}
         <Link
           href="/booking"
@@ -79,13 +79,18 @@ const FAQS = [
     answer: 'Du findest VIP FADES BY ANAS in ' + BUSINESS.address + '.',
   },
   {
+    question: 'Wo kann ich bei VIP FADES parken?',
+    answer:
+      'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
+  },
+  {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
-      'Aktuell sind wir ' +
-      BUSINESS.hours.days +
+      'Wir sind täglich von 10:00 bis 19:00 für dich da. Online-Termine kannst du nur ' +
+      BUSINESS.hours.onlineDays +
       ' von ' +
-      BUSINESS.hours.time +
-      ' für dich da. ' +
+      BUSINESS.hours.onlineTime +
+      ' buchen. ' +
       BUSINESS.hours.walkins +
       '.',
   },
@@ -133,7 +138,7 @@ const faqStructuredData = buildFaqPageStructuredData([
   {
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer:
-      'Nein. Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
+      'Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
   },
   {
     question: 'Wie kann ich einen Termin bei VIP FADES buchen?',
@@ -163,13 +168,18 @@ const faqStructuredData = buildFaqPageStructuredData([
     answer: 'Du findest VIP FADES BY ANAS in ' + BUSINESS.address + '.',
   },
   {
+    question: 'Wo kann ich bei VIP FADES parken?',
+    answer:
+      'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
+  },
+  {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
-      'Aktuell sind wir ' +
-      BUSINESS.hours.days +
+      'Wir sind täglich von 10:00 bis 19:00 für dich da. Online-Termine kannst du nur ' +
+      BUSINESS.hours.onlineDays +
       ' von ' +
-      BUSINESS.hours.time +
-      ' für dich da. ' +
+      BUSINESS.hours.onlineTime +
+      ' buchen. ' +
       BUSINESS.hours.walkins +
       '.',
   },

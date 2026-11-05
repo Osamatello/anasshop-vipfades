@@ -9,7 +9,6 @@ import GoogleRating from '@/components/reviews/GoogleRating';
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -88,53 +87,33 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
-          {/* Location label */}
-          <div className="mb-6 flex items-center gap-3 px-4 py-2">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
-
-            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary sm:text-[11px]">
-              Koblenz · {BUSINESS.hours.days}
-            </span>
-          </div>
-
           {/* Main heading */}
-          <h1 className="font-serif text-4xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
-            {firstTagline}.
+          <h1 className="font-serif text-[2.25rem] font-medium leading-[1.2] text-brand-textPrimary sm:text-6xl sm:leading-[1.2] lg:text-7xl lg:leading-[1.2] xl:text-[5.5rem]">
+            VIP FADES BY ANAS
             <br />
-            <span className="text-brand-cream">{secondTagline}.</span>
+            Barbershop{' '}
+            <em className="font-medium text-brand-cream">in Koblenz</em>
           </h1>
 
-          {/* Description */}
-          <p className="mt-7 max-w-xl text-base font-light leading-relaxed text-brand-textPrimary sm:text-xl">
-            {BUSINESS.description}
+          {/* Details */}
+          <p className="mt-7 max-w-xl sm:mt-9 text-base font-light leading-relaxed text-brand-textPrimary sm:text-lg">
+            <strong className="font-semibold">Dein Barbershop &amp; Herrenfriseur in Koblenz.</strong>{' '}
+            Präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling.
           </p>
 
-          {/* Primary CTA */}
-          <div className="mt-10 flex flex-col items-center">
-            <Link
-              href="/booking"
-              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none] sm:text-sm"
-            >
-              <Scissors className="h-4 w-4" />
-              Termin buchen
-            </Link>
-
-            <div className="mt-8 text-center">
-              <p className="font-serif text-xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
-                DEINE ZEIT. DEIN STUHL.
-              </p>
-              <p className="mx-auto mt-2 max-w-md text-[13px] font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
-                Von der ersten Beratung bis zum letzten Blick in den Spiegel.
-              </p>
-            </div>
-          </div>
-
           {/* Business information */}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
-            <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
-              <Clock className="h-4 w-4 text-brand-textPrimary" />
-              {BUSINESS.hours.time}
-            </span>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary sm:mt-10">
+            <div className="flex flex-col items-center gap-1.5 sm:items-start">
+              <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
+                <Clock className="h-4 w-4 text-brand-textPrimary" />
+                {BUSINESS.hours.open}
+              </span>
+
+              <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
+                <Clock className="h-4 w-4 text-brand-textPrimary" />
+                Online-Termine nur Mo–Do, {BUSINESS.hours.onlineTime}
+              </span>
+            </div>
 
             <span className="hidden h-4 w-px bg-brand-border sm:block" />
 
@@ -146,13 +125,26 @@ export default function Hero() {
               {BUSINESS.phoneFormatted}
             </a>
           </div>
+
+          {/* Primary CTA */}
+          <div className="mt-8 flex flex-col items-center sm:mt-10">
+            <Link
+              href="/booking"
+              className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none] sm:text-sm"
+            >
+              <Scissors className="h-4 w-4" />
+              Termin buchen
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-5 z-10 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] sm:left-8">
+      {/* Google rating */}
+      <div className="absolute bottom-24 left-5 z-10 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] sm:left-8 lg:bottom-6">
         <GoogleRating compact />
       </div>
+
+      {/* Scroll indicator */}
       <button
         type="button"
         onClick={() => scrollToSection('#services')}

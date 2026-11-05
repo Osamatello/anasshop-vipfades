@@ -44,7 +44,7 @@ const BARBER_PHOTOS: Record<string, string> = {
   abd: '/images/abd-barber.jpeg',
 };
 
-const NUMBER_OF_DATES = 12;
+const MONTHS_BOOKABLE_AHEAD = 2;
 const CREAMY_GOLD_SELECTED =
   'border-transparent bg-gradient-to-br from-[#f5e9cb] to-[#c9ad78] font-semibold text-[#1f1b14]';
 const UNSELECTED =
@@ -65,13 +65,14 @@ function formatDateParts(date: string) {
   };
 }
 
-/** The next online-bookable days: Monday to Thursday, without the barber's day off. */
+/** Online-bookable days for the next two months: Monday to Thursday, without the barber's day off. */
 function getBookableDates(barber: BarberChoice | null): string[] {
   const [year, month, day] = getKoblenzDate().split('-').map(Number);
   const cursor = new Date(Date.UTC(year, month - 1, day));
+  const lastDay = new Date(Date.UTC(year, month - 1 + MONTHS_BOOKABLE_AHEAD, day));
   const dates: string[] = [];
 
-  while (dates.length < NUMBER_OF_DATES) {
+  while (cursor <= lastDay) {
     const weekday = cursor.getUTCDay();
     const date = cursor.toISOString().slice(0, 10);
     const barberIsOff =

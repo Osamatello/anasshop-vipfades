@@ -24,7 +24,10 @@ import {
   validatePhoneNumber,
 } from '@/lib/validation/booking';
 
-import BookingServices, { CREAMY_GOLD_FRAME } from './BookingServices';
+import BookingServices, {
+  CREAMY_GOLD_FRAME,
+  CREAMY_GOLD_FRAME_SELECTED,
+} from './BookingServices';
 import VipTicket, { type TicketDetails } from './VipTicket';
 
 type BarberChoice = Barber | 'any';
@@ -468,10 +471,10 @@ export default function BookingWizard({
               type="button"
               aria-pressed={barberChoice === 'any'}
               onClick={() => handleBarberSelect('any')}
-              className={`mt-2.5 flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 py-2 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)] sm:mt-4 ${CREAMY_GOLD_FRAME} ${
+              className={`mt-2.5 flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 py-2 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)] sm:mt-4 ${
                 barberChoice === 'any'
-                  ? 'shadow-[0_0_30px_rgba(229,208,160,0.25)]'
-                  : ''
+                  ? CREAMY_GOLD_FRAME_SELECTED
+                  : CREAMY_GOLD_FRAME
               }`}
             >
               <Users className="h-5 w-5 flex-shrink-0 text-[#e5d0a0]" />
@@ -643,8 +646,8 @@ function BarberCard({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`group relative h-48 overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(229,208,160,0.2)] lg:h-[23rem] ${CREAMY_GOLD_FRAME} ${
-        selected ? 'shadow-[0_0_34px_rgba(229,208,160,0.3)]' : ''
+      className={`group relative h-48 overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(229,208,160,0.2)] lg:h-[23rem] ${
+        selected ? CREAMY_GOLD_FRAME_SELECTED : CREAMY_GOLD_FRAME
       }`}
     >
       {photo && (

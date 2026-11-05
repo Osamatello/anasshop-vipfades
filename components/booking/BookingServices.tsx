@@ -27,10 +27,10 @@ const SERVICE_ORDER = [
 
 const VIP_ORDER = ['vip-koenigsklasse', 'vip-exklusiv'];
 
-/** Dark card with a creamy gold edge, shared by the booking cards. */
+/** Black card, shared by the booking cards. Its creamy gold edge only shows on touch or hover. */
 export const CREAMY_GOLD_FRAME =
-  'border border-transparent [background:linear-gradient(160deg,#16130c,#090806)_padding-box,linear-gradient(145deg,#f5e9cb,#6f5c35_45%,#e5d0a0)_border-box]';
-const CREAMY_GOLD_FRAME_SELECTED =
+  'border border-transparent bg-[#0c0c0c] [@media(hover:hover)]:hover:[background:linear-gradient(160deg,#16130c,#090806)_padding-box,linear-gradient(145deg,#f5e9cb,#6f5c35_45%,#e5d0a0)_border-box] active:[background:linear-gradient(160deg,#16130c,#090806)_padding-box,linear-gradient(145deg,#f5e9cb,#6f5c35_45%,#e5d0a0)_border-box]';
+export const CREAMY_GOLD_FRAME_SELECTED =
   'border border-transparent shadow-[0_14px_40px_rgba(229,208,160,0.22)] [background:linear-gradient(160deg,#2a2415,#100e08)_padding-box,linear-gradient(145deg,#fff4d6,#e5d0a0_50%,#fff4d6)_border-box]';
 const CREAMY_GOLD_TEXT =
   'bg-gradient-to-br from-[#fff8e6] to-[#f0dfb8] bg-clip-text text-transparent';

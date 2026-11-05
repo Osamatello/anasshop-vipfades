@@ -138,7 +138,7 @@ export default function CancelBooking({ onBook }: { onBook: () => void }) {
   if (cancelled) {
     return (
       <div className="flex min-h-[380px] flex-col items-center justify-center px-6 py-12 text-center sm:px-8">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream text-brand-bg">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e5d0a0] text-brand-bg">
           <Check className="h-7 w-7" strokeWidth={3} />
         </span>
 
@@ -154,7 +154,7 @@ export default function CancelBooking({ onBook }: { onBook: () => void }) {
         <button
           type="button"
           onClick={onBook}
-          className="mt-7 rounded-full bg-brand-cream px-6 py-3 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary"
+          className="mt-7 rounded-full bg-[#e5d0a0] px-6 py-3 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary"
         >
           Neuen Termin buchen
         </button>
@@ -196,7 +196,7 @@ export default function CancelBooking({ onBook }: { onBook: () => void }) {
           type="button"
           onClick={confirmCancellation}
           disabled={loading}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-brand-cream px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#e5d0a0] px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {loading ? 'Wird storniert …' : 'Ja, Termin stornieren'}
@@ -290,7 +290,7 @@ export default function CancelBooking({ onBook }: { onBook: () => void }) {
       <button
         type="submit"
         disabled={loading}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-brand-cream px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#e5d0a0] px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         {loading ? 'Wird gesucht …' : 'Meine Termine anzeigen'}

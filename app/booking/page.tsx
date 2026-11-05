@@ -48,67 +48,26 @@ export default async function BookingPage({
         typeof params?.barber === 'string'
             ? params.barber.trim().toLowerCase()
             : undefined;
+
     return (
-        <main className="relative min-h-screen overflow-hidden bg-[#070707] text-brand-textPrimary">
+        <main className="relative min-h-screen overflow-clip bg-[#070707] text-brand-textPrimary">
             <Header />
 
             <PageAtmosphere />
 
-            <div className="relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 pb-5 pt-28 sm:px-6 sm:pb-6 sm:pt-32 lg:px-8 lg:pb-8 lg:pt-32">
-                {/* Split booking experience */}
-                <section className="booking-shell relative grid min-h-[calc(100vh-150px)] overflow-hidden rounded-[28px] border border-brand-border/70 bg-[#090909]/95 lg:grid-cols-[38%_62%] lg:backdrop-blur-sm">
-                    {/* Large moving gold atmosphere across page */}
-                    <div className="booking-gold-atmosphere pointer-events-none absolute inset-0 z-0 overflow-hidden">
-                        <div className="gold-wave gold-wave-one absolute left-[-22%] top-[-10%] h-[900px] w-[900px] rounded-[50%] border border-brand-cream/[0.10]" />
+            <div className="booking-font relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-4 pb-5 pt-28 sm:px-6 sm:pb-6 sm:pt-32 lg:px-8 lg:pb-8">
+                <h1 className="sr-only">
+                    Termin buchen bei VIP FADES BY ANAS in Koblenz
+                </h1>
 
-                        <div className="gold-wave gold-wave-two absolute left-[5%] top-[5%] h-[760px] w-[760px] rounded-[50%] border border-brand-cream/[0.06]" />
-
-                        <div className="moving-gold-glow absolute left-[-18%] top-[10%] h-[700px] w-[700px] rounded-full bg-brand-cream/[0.08] blur-[175px]" />
-
-                        <div className="moving-gold-glow-secondary absolute right-[-20%] top-[15%] h-[700px] w-[700px] rounded-full bg-brand-cream/[0.035] blur-[190px]" />
-                    </div>
-
-                    {/* Left editorial panel */}
-                    <aside className="relative z-10 flex flex-col justify-between overflow-hidden border-b border-brand-border/70 bg-[#0a0a0a]/55 p-7 sm:p-9 lg:border-b-0 lg:border-r lg:p-12 xl:p-14">
-                        {/* Local gold ribbon */}
-                        <div className="booking-local-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
-                            <div className="ribbon-glow absolute -right-[320px] top-[40px] h-[720px] w-[720px] rounded-[48%] border-[2px] border-brand-cream/[0.08]" />
-
-                            <div className="ribbon-glow-two absolute -right-[260px] top-[100px] h-[620px] w-[620px] rounded-[48%] border border-brand-cream/[0.08]" />
-
-                            <div className="booking-static-glow absolute right-[-200px] top-[140px] h-[500px] w-[500px] rounded-full bg-brand-cream/[0.055] blur-[130px]" />
-                        </div>
-
-                        {/* Vertical glowing divider */}
-                        <div className="divider-glow pointer-events-none absolute bottom-0 right-0 top-0 hidden w-px bg-gradient-to-b from-transparent via-brand-cream/80 to-transparent lg:block" />
-
-                        <div className="relative z-10">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-brand-cream">
-                                VIP FADES BY ANAS
-                            </p>
-
-                            <div className="mt-10">
-                                <h1 className="max-w-md font-serif text-4xl font-light leading-[1.02] tracking-tight text-brand-textPrimary sm:text-5xl xl:text-6xl">
-                                    Dein Stuhl.
-                                    <br />
-                                    Dein Barber.
-                                    <br />
-
-                                    <span className="text-brand-cream">
-                                        Deine Zeit.
-                                    </span>
-                                </h1>
-
-                                <div className="booking-accent mt-7 h-px w-14 bg-brand-cream" />
-
-                                <p className="mt-7 max-w-md text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-                                    Buche deinen nächsten Termin bei VIP FADES in 3 kurzen
-                                    Schritten: Service, Barber und Uhrzeit.
-                                </p>
-                            </div>
-
-                            {/* Visit details */}
-                            <div className="mt-12 space-y-4">
+                <section className="overflow-clip rounded-[28px] border border-brand-border/70 bg-[#090909]/95">
+                    <BookingPanel
+                        key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}:${params?.stornieren ?? ""}`}
+                        initialView={params?.stornieren ? "cancel" : "book"}
+                        initialBarber={initialBarber}
+                        initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
+                        info={
+                            <div className="space-y-2">
                                 <InfoRow
                                     icon={<MapPin className="h-4 w-4" />}
                                     label="Standort"
@@ -121,14 +80,10 @@ export default async function BookingPage({
                                     label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Nur Montag bis Donnerstag
+                                        Nur Montag bis Donnerstag, 10:00 – 19:00
                                     </p>
 
-                                    <p className="mt-1">
-                                        10:00 – 19:00
-                                    </p>
-
-                                    <p className="mt-2 text-brand-cream/75">
+                                    <p className="mt-1 text-brand-cream/75">
                                         Täglich geöffnet, 10:00 – 19:00 · Walk-ins willkommen
                                     </p>
                                 </InfoRow>
@@ -144,44 +99,14 @@ export default async function BookingPage({
                                         {BUSINESS.phoneFormatted}
                                     </a>
                                 </InfoRow>
+
+                                <p className="pt-3 text-xs font-light leading-6 text-brand-textSecondary">
+                                    Bitte storniere oder verschiebe deinen Termin mindestens
+                                    2 Stunden vorher.
+                                </p>
                             </div>
-                        </div>
-
-                        {/* Cancellation */}
-                        <div className="booking-cancellation relative z-10 mt-10 rounded-2xl border border-brand-cream/15 bg-black/20 px-5 py-5 lg:backdrop-blur-sm">
-                            <p className="text-[9px] font-semibold uppercase tracking-[0.25em] text-brand-cream">
-                                Stornierungsbedingungen
-                            </p>
-
-                            <p className="mt-3 max-w-sm text-xs font-light leading-6 text-brand-textSecondary">
-                                Bitte storniere oder verschiebe deinen Termin mindestens 2 Stunden
-                                vorher.
-                            </p>
-                        </div>
-                    </aside>
-
-                    {/* Booking steps come first on phones */}
-                    <div className="relative z-10 order-first flex flex-col bg-[#090909]/70 lg:order-none lg:min-h-0">
-                        {/* Right moving atmosphere */}
-                        <div className="booking-right-atmosphere pointer-events-none absolute inset-0 overflow-hidden">
-                            <div className="right-glow absolute right-[-300px] top-[50px] h-[700px] w-[700px] rounded-full bg-brand-cream/[0.025] blur-[180px]" />
-
-                            <div className="right-glow-two absolute bottom-[-300px] left-[20%] h-[650px] w-[650px] rounded-full bg-brand-cream/[0.02] blur-[190px]" />
-                        </div>
-
-                        {/* Booking and cancellation */}
-                        <BookingPanel
-                            key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}:${params?.stornieren ?? ""}`}
-                            initialView={params?.stornieren ? "cancel" : "book"}
-                            initialBarber={initialBarber}
-                            initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
-                        />
-
-                        {/* Bottom reassurance */}
-                        <div className="relative z-10 border-t border-brand-border/50 px-6 py-4 text-center text-[9px] font-light uppercase tracking-[0.24em] text-brand-cream/45 sm:px-8">
-                            Sichere Buchung · Sofortige Bestätigung · Wähle deinen Barber
-                        </div>
-                    </div>
+                        }
+                    />
                 </section>
 
                 {/* Legal */}
@@ -190,264 +115,6 @@ export default async function BookingPage({
                     den Stornierungsbedingungen zustimmst.
                 </div>
             </div>
-
-            <style>{`
-                @keyframes goldWaveOne {
-                    0%,
-                    100% {
-                        transform: translate3d(-120px, -40px, 0)
-                            rotate(-18deg)
-                            scale(1);
-                        opacity: 0.25;
-                    }
-
-                    50% {
-                        transform: translate3d(650px, 100px, 0)
-                            rotate(20deg)
-                            scale(1.18);
-                        opacity: 0.55;
-                    }
-                }
-
-                @keyframes goldWaveTwo {
-                    0%,
-                    100% {
-                        transform: translate3d(0, 0, 0)
-                            rotate(15deg);
-                        opacity: 0.15;
-                    }
-
-                    50% {
-                        transform: translate3d(550px, 120px, 0)
-                            rotate(-18deg);
-                        opacity: 0.35;
-                    }
-                }
-
-                @keyframes movingGoldGlow {
-                    0%,
-                    100% {
-                        transform: translate3d(-100px, 0, 0) scale(1);
-                    }
-
-                    50% {
-                        transform: translate3d(850px, 120px, 0) scale(1.25);
-                    }
-                }
-
-                @keyframes movingGoldGlowSecondary {
-                    0%,
-                    100% {
-                        transform: translate3d(100px, 0, 0);
-                    }
-
-                    50% {
-                        transform: translate3d(-700px, 160px, 0);
-                    }
-                }
-
-                @keyframes ribbonMove {
-                    0%,
-                    100% {
-                        transform: translate3d(0, -60px, 0)
-                            rotate(-10deg)
-                            scale(1);
-                    }
-
-                    50% {
-                        transform: translate3d(-100px, 80px, 0)
-                            rotate(12deg)
-                            scale(1.08);
-                    }
-                }
-
-                @keyframes ribbonMoveTwo {
-                    0%,
-                    100% {
-                        transform: translate3d(20px, 40px, 0)
-                            rotate(8deg);
-                    }
-
-                    50% {
-                        transform: translate3d(-80px, -60px, 0)
-                            rotate(-12deg);
-                    }
-                }
-
-                @keyframes dividerGlow {
-                    0% {
-                        transform: translateY(-70%);
-                        opacity: 0;
-                    }
-
-                    20% {
-                        opacity: 1;
-                    }
-
-                    80% {
-                        opacity: 1;
-                    }
-
-                    100% {
-                        transform: translateY(70%);
-                        opacity: 0;
-                    }
-                }
-
-                @keyframes bookingAccentPulse {
-                    0%,
-                    100% {
-                        width: 3.5rem;
-                        opacity: 0.55;
-                    }
-
-                    50% {
-                        width: 6rem;
-                        opacity: 1;
-                        box-shadow: 0 0 20px rgba(232, 220, 200, 0.35);
-                    }
-                }
-
-                @keyframes rightGlow {
-                    0%,
-                    100% {
-                        transform: translate3d(0, 0, 0);
-                    }
-
-                    50% {
-                        transform: translate3d(-300px, 160px, 0);
-                    }
-                }
-
-                @keyframes rightGlowTwo {
-                    0%,
-                    100% {
-                        transform: translate3d(0, 0, 0);
-                    }
-
-                    50% {
-                        transform: translate3d(180px, -180px, 0);
-                    }
-                }
-
-                @keyframes chatTopLight {
-                    0%,
-                    100% {
-                        opacity: 0.25;
-                    }
-
-                    50% {
-                        opacity: 0.85;
-                    }
-                }
-
-                .gold-wave-one {
-                    animation: goldWaveOne 24s ease-in-out infinite;
-                }
-
-                .gold-wave-two {
-                    animation: goldWaveTwo 28s ease-in-out infinite;
-                }
-
-                .moving-gold-glow {
-                    animation: movingGoldGlow 20s ease-in-out infinite;
-                }
-
-                .moving-gold-glow-secondary {
-                    animation: movingGoldGlowSecondary 24s ease-in-out infinite;
-                }
-
-                .ribbon-glow {
-                    animation: ribbonMove 16s ease-in-out infinite;
-                }
-
-                .ribbon-glow-two {
-                    animation: ribbonMoveTwo 19s ease-in-out infinite;
-                }
-
-                .divider-glow {
-                    animation: dividerGlow 7s ease-in-out infinite;
-                }
-
-                .booking-accent {
-                    animation: bookingAccentPulse 4s ease-in-out infinite;
-                }
-
-                .right-glow {
-                    animation: rightGlow 18s ease-in-out infinite;
-                }
-
-                .right-glow-two {
-                    animation: rightGlowTwo 22s ease-in-out infinite;
-                }
-
-                .chat-top-light {
-                    animation: chatTopLight 4s ease-in-out infinite;
-                }
-
-                /* Mobile performance mode */
-                @media (max-width: 768px) {
-                    .booking-gold-atmosphere,
-                    .booking-local-atmosphere,
-                    .booking-right-atmosphere,
-                    .gold-wave-one,
-                    .gold-wave-two,
-                    .moving-gold-glow,
-                    .moving-gold-glow-secondary,
-                    .ribbon-glow,
-                    .ribbon-glow-two,
-                    .booking-static-glow,
-                    .divider-glow,
-                    .right-glow,
-                    .right-glow-two,
-                    .chat-top-light {
-                        display: none !important;
-                        animation: none !important;
-                        filter: none !important;
-                    }
-
-                    .booking-shell,
-                    .booking-cancellation {
-                        -webkit-backdrop-filter: none !important;
-                        backdrop-filter: none !important;
-                    }
-
-                    .booking-shell {
-                        background: #090909;
-                    }
-
-                    .booking-cancellation {
-                        background: rgba(0, 0, 0, 0.28);
-                    }
-
-                    .booking-accent {
-                        animation: none !important;
-                        width: 3.5rem;
-                        opacity: 0.75;
-                        box-shadow: none;
-                    }
-                }
-
-                @media (prefers-reduced-motion: reduce) {
-                    .gold-wave-one,
-                    .gold-wave-two,
-                    .moving-gold-glow,
-                    .moving-gold-glow-secondary,
-                    .ribbon-glow,
-                    .ribbon-glow-two,
-                    .divider-glow,
-                    .booking-accent,
-                    .right-glow,
-                    .right-glow-two,
-                    .chat-top-light {
-                        animation: none;
-                    }
-
-                    .booking-accent {
-                        width: 3.5rem;
-                    }
-                }
-            `}</style>
         </main>
     );
 }
@@ -462,17 +129,17 @@ function InfoRow({
     children: React.ReactNode;
 }) {
     return (
-        <div className="group -mx-3 flex gap-4 rounded-2xl px-3 py-3 transition-all duration-300 hover:bg-brand-cream/[0.035]">
-            <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.04] text-brand-cream transition-all duration-300 group-hover:scale-105 group-hover:border-brand-cream/50 group-hover:bg-brand-cream/[0.10] group-hover:shadow-[0_0_20px_rgba(232,220,200,0.10)]">
+        <div className="flex gap-4 py-2">
+            <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/20 bg-brand-cream/[0.04] text-brand-cream">
                 {icon}
             </div>
 
             <div>
-                <p className="text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-cream/70 transition-colors duration-300 group-hover:text-brand-cream">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-cream/70">
                     {label}
                 </p>
 
-                <div className="mt-2 text-sm font-light leading-6 text-brand-textSecondary">
+                <div className="mt-1 text-sm font-light leading-6 text-brand-textSecondary">
                     {children}
                 </div>
             </div>

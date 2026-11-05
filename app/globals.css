@@ -62,6 +62,12 @@
 }
 
 @layer utilities {
+  /* Aptos where the device has it, on the booking page only. */
+  .booking-font,
+  .booking-font * {
+    font-family: Aptos, 'Aptos Display', var(--font-inter), system-ui, sans-serif !important;
+  }
+
   .font-serif {
     font-family: var(--font-cormorant), Georgia, serif;
   }

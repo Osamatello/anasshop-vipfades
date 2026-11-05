@@ -1,11 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Check, Loader2, UserRound, Users } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft, Loader2, Users } from 'lucide-react';
 
-import ServicesPicker, {
-  type ServicesSelection,
-} from '@/components/chat/ServicesPicker';
 import { getAvailability } from '@/components/chat/booking-api';
 import {
   selectionLabel,
@@ -26,33 +24,42 @@ import {
   validatePhoneNumber,
 } from '@/lib/validation/booking';
 
+import BookingServices, { CREAMY_GOLD_FRAME } from './BookingServices';
+import VipTicket, { type TicketDetails } from './VipTicket';
+
 type BarberChoice = Barber | 'any';
 type WizardStep = 1 | 2 | 3;
 
-type ConfirmedBooking = {
-  label: string;
-  barberName: string;
-  dateLabel: string;
-  time: string;
-  price: number;
-  duration: number;
+const STEP_TITLES: Record<WizardStep, string> = {
+  1: 'Was darf es heute sein?',
+  2: 'Wer schneidet dich heute?',
+  3: 'Wann kommst du auf den Stuhl?',
 };
 
-const STEP_LABELS: Record<WizardStep, string> = {
-  1: 'Service',
-  2: 'Barber',
-  3: 'Termin',
+const BARBER_PHOTOS: Record<string, string> = {
+  anas: '/images/anas-barber.jpeg',
+  abd: '/images/abd-barber.jpeg',
 };
 
 const NUMBER_OF_DATES = 12;
+const CREAMY_GOLD_SELECTED =
+  'border-transparent bg-gradient-to-br from-[#f5e9cb] to-[#c9ad78] font-semibold text-[#1f1b14]';
+const UNSELECTED =
+  'border-brand-border text-brand-textPrimary hover:border-[#e5d0a0]/60';
 
-function formatDateLabel(date: string): string {
-  return new Intl.DateTimeFormat('de-DE', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(`${date}T00:00:00Z`));
+function formatDateParts(date: string) {
+  const value = new Date(`${date}T00:00:00Z`);
+  const format = (options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat('de-DE', { ...options, timeZone: 'UTC' }).format(
+      value,
+    );
+
+  return {
+    weekday: format({ weekday: 'short' }).replace('.', ''),
+    day: format({ day: 'numeric' }).replace('.', ''),
+    month: format({ month: 'short' }).replace('.', ''),
+    label: format({ weekday: 'short', day: 'numeric', month: 'numeric' }),
+  };
 }
 
 /** The next online-bookable days: Monday to Thursday, without the barber's day off. */
@@ -80,10 +87,13 @@ function getBookableDates(barber: BarberChoice | null): string[] {
 export default function BookingWizard({
   initialBarber,
   initialServiceSlug,
+  onTicketChange,
   onCancelBooking,
 }: {
   initialBarber?: string;
   initialServiceSlug?: string;
+  /** Live pass details, or null once the confirmed pass replaces it. */
+  onTicketChange: (details: TicketDetails | null) => void;
   onCancelBooking: () => void;
 }) {
   const { barbers, services, vipPackages, loading, error } = useCatalog();
@@ -100,12 +110,36 @@ export default function BookingWizard({
   const [phone, setPhone] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [confirmed, setConfirmed] = useState<ConfirmedBooking | null>(null);
+  const [confirmed, setConfirmed] = useState<TicketDetails | null>(null);
   const [slotsVersion, setSlotsVersion] = useState(0);
 
   const topRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
   const initialBarberApplied = useRef(false);
+  const initialServiceApplied = useRef(false);
+
+  useEffect(() => {
+    if (
+      initialServiceApplied.current ||
+      !initialServiceSlug ||
+      (services.length === 0 && vipPackages.length === 0)
+    ) {
+      return;
+    }
+
+    initialServiceApplied.current = true;
+
+    const vipPackage = vipPackages.find(
+      (item) => item.slug === initialServiceSlug,
+    );
+    const service = services.find((item) => item.slug === initialServiceSlug);
+
+    if (vipPackage) {
+      setSelection(vipSelection(vipPackage));
+    } else if (service) {
+      setSelection(servicesSelection([service]));
+    }
+  }, [initialServiceSlug, services, vipPackages]);
 
   // The slot list can be long on phones, so bring the name and phone fields into view.
   useEffect(() => {
@@ -131,6 +165,30 @@ export default function BookingWizard({
   }, [barbers, initialBarber]);
 
   const dates = useMemo(() => getBookableDates(barberChoice), [barberChoice]);
+
+  const assignedBarber = time ? slotBarbers.get(time) : undefined;
+
+  const barberLabel =
+    assignedBarber?.name ??
+    (barberChoice === 'any' ? 'Nächster freier Stuhl' : barberChoice?.name);
+
+  const ticket = useMemo<TicketDetails>(
+    () => ({
+      service: selection ? selectionLabel(selection) : undefined,
+      duration: selection ? selectionTotalDuration(selection) : undefined,
+      price: selection ? selectionTotalPrice(selection) : undefined,
+      barber: barberLabel,
+      date: date ? formatDateParts(date).label : undefined,
+      time: time ?? undefined,
+      customerName: name || undefined,
+      customerPhone: phone || undefined,
+    }),
+    [selection, barberLabel, date, time, name, phone],
+  );
+
+  useEffect(() => {
+    onTicketChange(confirmed ? null : ticket);
+  }, [confirmed, ticket, onTicketChange]);
 
   useEffect(() => {
     if (step !== 3 || !selection || !barberChoice || !date) {
@@ -189,21 +247,10 @@ export default function BookingWizard({
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
-  const handleServicesContinue = (picked: ServicesSelection) => {
-    const vipPackage = vipPackages.find(
-      (item) => item.id === picked.vipPackageId,
-    );
-    const pickedServices = picked.serviceIds.flatMap((id) => {
-      const service = services.find((item) => item.id === id);
-      return service ? [service] : [];
-    });
-
-    setSelection(
-      vipPackage ? vipSelection(vipPackage) : servicesSelection(pickedServices),
-    );
+  const handleSelectionChange = (next: BookingSelection | null) => {
+    setSelection(next);
     setDate(null);
     setTime(null);
-    goToStep(2);
   };
 
   const handleBarberSelect = (choice: BarberChoice) => {
@@ -234,16 +281,12 @@ export default function BookingWizard({
       return;
     }
 
-    const nameResult = validateCustomerName(name);
-
-    if (!nameResult.valid) {
+    if (!validateCustomerName(name).valid) {
       setFormError('Bitte gib deinen Namen ein.');
       return;
     }
 
-    const phoneResult = validatePhoneNumber(phone);
-
-    if (!phoneResult.valid) {
+    if (!validatePhoneNumber(phone).valid) {
       setFormError('Bitte gib eine gültige Handynummer ein.');
       return;
     }
@@ -282,14 +325,7 @@ export default function BookingWizard({
         return;
       }
 
-      setConfirmed({
-        label: selectionLabel(selection),
-        barberName: barber.name,
-        dateLabel: formatDateLabel(date),
-        time,
-        price: selectionTotalPrice(selection),
-        duration: selectionTotalDuration(selection),
-      });
+      setConfirmed({ ...ticket, barber: barber.name });
     } catch {
       setFormError(
         'Die Buchung konnte gerade nicht abgeschlossen werden. Bitte versuche es erneut.',
@@ -336,33 +372,22 @@ export default function BookingWizard({
 
   if (confirmed) {
     return (
-      <div className="flex min-h-[420px] flex-col items-center justify-center px-6 py-12 text-center sm:px-8">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-cream text-brand-bg">
-          <Check className="h-7 w-7" strokeWidth={3} />
-        </span>
-
-        <h2 className="mt-6 font-serif text-3xl text-brand-textPrimary">
-          Dein Termin ist bestätigt
+      <div className="flex min-h-[520px] flex-col items-center justify-center px-5 py-12 text-center sm:px-8">
+        <h2 className="font-serif text-4xl text-brand-textPrimary">
+          Dein VIP Pass ist bereit
         </h2>
+        <p className="mt-2 text-sm font-light text-brand-textSecondary">
+          Dein Termin ist bestätigt. Wir freuen uns auf dich.
+        </p>
 
-        <dl className="mt-6 w-full max-w-sm space-y-2 rounded-2xl border border-brand-border p-5 text-left text-sm">
-          <SummaryRow label="Leistung" value={confirmed.label} />
-          <SummaryRow label="Barber" value={confirmed.barberName} />
-          <SummaryRow
-            label="Termin"
-            value={`${confirmed.dateLabel} um ${confirmed.time}`}
-          />
-          <SummaryRow
-            label="Gesamt"
-            value={`€${confirmed.price} · ${confirmed.duration} Min.`}
-          />
-          <SummaryRow label="Adresse" value={BUSINESS.address} />
-        </dl>
+        <div className="mt-8 w-full max-w-[380px] text-left">
+          <VipTicket details={confirmed} confirmed />
+        </div>
 
         <button
           type="button"
           onClick={restart}
-          className="mt-6 text-sm text-brand-cream underline underline-offset-4"
+          className="mt-8 text-sm text-brand-cream underline underline-offset-4"
         >
           Weiteren Termin buchen
         </button>
@@ -383,128 +408,120 @@ export default function BookingWizard({
 
   return (
     <div ref={topRef} className="scroll-mt-28">
-      {/* Progress */}
-      <ol className="flex items-center gap-2 border-b border-brand-border/50 px-5 py-4 sm:px-8">
-        {([1, 2, 3] as WizardStep[]).map((number) => {
-          const reached = step >= number;
-
-          return (
-            <li
-              key={number}
-              aria-current={step === number ? 'step' : undefined}
-              className="flex flex-1 items-center gap-2"
-            >
-              <span
-                className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${
-                  reached
-                    ? 'border-brand-cream bg-brand-cream text-brand-bg'
-                    : 'border-brand-border text-brand-textSecondary'
-                }`}
-              >
-                {step > number ? (
-                  <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                ) : (
-                  number
-                )}
-              </span>
-              <span
-                className={`text-xs font-medium ${
-                  reached ? 'text-brand-textPrimary' : 'text-brand-textSecondary'
-                }`}
-              >
-                {STEP_LABELS[number]}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-
-      {/* Selection summary */}
-      {step > 1 && selection && (
-        <div className="flex items-center justify-between gap-3 border-b border-brand-border/50 px-5 py-3 text-xs sm:px-8">
-          <span className="min-w-0 truncate text-brand-textPrimary">
-            {selectionLabel(selection)}
-          </span>
-          <span className="flex-shrink-0 text-brand-textSecondary">
-            {selectionTotalDuration(selection)} Min. ·{' '}
-            <span className="text-brand-cream">
-              €{selectionTotalPrice(selection)}
-            </span>
-          </span>
+      {/* On phones the pass joins the page after the services are chosen. */}
+      {step > 1 && (
+        <div className="px-4 pt-4 lg:hidden">
+          <VipTicket details={ticket} compact />
         </div>
       )}
 
-      {/* Step 1 stays mounted so going back keeps the customer's selection. */}
-      <div className={step === 1 ? '' : 'hidden'}>
-        <ServicesPicker
-          services={services}
-          vipPackages={vipPackages}
-          onContinue={handleServicesContinue}
-          initialServiceSlug={initialServiceSlug}
-          listClassName="max-h-[min(58dvh,560px)]"
-        />
+      {/* Step heading and progress */}
+      <div className="px-5 pt-6 sm:px-8 sm:pt-8">
+        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#e5d0a0]">
+          Schritt {step} von 3
+        </p>
+        <h2 className="mt-2 font-serif text-4xl font-medium leading-[1.08] text-brand-textPrimary sm:text-5xl">
+          {STEP_TITLES[step]}
+        </h2>
+
+        <div className="mt-5 flex gap-2" aria-hidden="true">
+          {([1, 2, 3] as WizardStep[]).map((number) => (
+            <span
+              key={number}
+              className={`h-[3px] flex-1 rounded-full ${
+                step >= number
+                  ? 'bg-gradient-to-r from-[#e5d0a0] to-[#f5e9cb]'
+                  : 'bg-brand-border'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      {step === 2 && (
-        <div className="px-5 py-5 sm:px-8">
-          <h2 className="text-sm font-medium text-brand-textPrimary">
-            Wähle deinen Barber
-          </h2>
+      {step === 1 && (
+        <BookingServices
+          services={services}
+          vipPackages={vipPackages}
+          selection={selection}
+          onChange={handleSelectionChange}
+          onContinue={() => goToStep(2)}
+        />
+      )}
 
-          <div className="mt-4 space-y-2">
+      {step === 2 && (
+        <div className="px-5 py-6 sm:px-8">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {barbers.map((barber) => (
-              <ChoiceButton
+              <BarberCard
                 key={barber.id}
-                icon={<UserRound className="h-5 w-5" />}
-                title={barber.name}
-                subtitle={barber.title}
+                barber={barber}
                 selected={
                   barberChoice !== 'any' && barberChoice?.id === barber.id
                 }
                 onClick={() => handleBarberSelect(barber)}
               />
             ))}
-
-            {barbers.length > 1 && (
-              <ChoiceButton
-                icon={<Users className="h-5 w-5" />}
-                title="Egal / Nächster freier Stuhl"
-                subtitle="Wir wählen den Barber, der zu deiner Zeit frei ist."
-                selected={barberChoice === 'any'}
-                onClick={() => handleBarberSelect('any')}
-              />
-            )}
           </div>
+
+          {barbers.length > 1 && (
+            <button
+              type="button"
+              aria-pressed={barberChoice === 'any'}
+              onClick={() => handleBarberSelect('any')}
+              className={`mt-3 flex min-h-16 w-full items-center gap-4 rounded-2xl px-4 py-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)] sm:mt-4 ${CREAMY_GOLD_FRAME} ${
+                barberChoice === 'any'
+                  ? 'shadow-[0_0_30px_rgba(229,208,160,0.25)]'
+                  : ''
+              }`}
+            >
+              <Users className="h-5 w-5 flex-shrink-0 text-[#e5d0a0]" />
+              <span>
+                <span className="block font-serif text-xl text-brand-textPrimary">
+                  Egal, nächster freier Stuhl
+                </span>
+                <span className="mt-0.5 block text-xs font-light text-brand-textSecondary">
+                  Wir wählen den Barber, der zu deiner Zeit frei ist.
+                </span>
+              </span>
+            </button>
+          )}
 
           <BackButton onClick={() => goToStep(1)} />
         </div>
       )}
 
       {step === 3 && (
-        <form onSubmit={handleSubmit} noValidate className="px-5 py-5 sm:px-8">
-          <h2 className="text-sm font-medium text-brand-textPrimary">
-            Wähle Tag und Uhrzeit
-          </h2>
+        <form onSubmit={handleSubmit} noValidate className="px-5 py-6 sm:px-8">
+          <p className="text-xs text-brand-textSecondary">Wähle deinen Tag</p>
 
-          <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4 xl:grid-cols-6">
-            {dates.map((item) => (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={date === item}
-                onClick={() => handleDateSelect(item)}
-                className={`min-h-11 rounded-xl border px-2 py-2 text-xs font-medium transition-colors ${
-                  date === item
-                    ? 'border-brand-cream bg-brand-cream text-brand-bg'
-                    : 'border-brand-border text-brand-textPrimary hover:border-brand-cream/50'
-                }`}
-              >
-                {formatDateLabel(item)}
-              </button>
-            ))}
+          <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6">
+            {dates.map((item) => {
+              const parts = formatDateParts(item);
+
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={date === item}
+                  aria-label={parts.label}
+                  onClick={() => handleDateSelect(item)}
+                  className={`rounded-2xl border py-2.5 text-center text-[11px] transition-colors ${
+                    date === item ? CREAMY_GOLD_SELECTED : UNSELECTED
+                  }`}
+                >
+                  {parts.weekday}
+                  <span className="block font-serif text-2xl font-medium leading-tight">
+                    {parts.day}
+                  </span>
+                  {parts.month}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="mt-5 min-h-24">
+          <p className="mt-6 text-xs text-brand-textSecondary">Freie Zeiten</p>
+
+          <div className="mt-3 min-h-24">
             {slotsLoading ? (
               <p className="flex items-center text-sm text-brand-textSecondary">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -522,24 +539,24 @@ export default function BookingWizard({
               </p>
             ) : (
               <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                {Array.from(slotBarbers.keys()).sort().map((slot) => (
-                  <button
-                    key={slot}
-                    type="button"
-                    aria-pressed={time === slot}
-                    onClick={() => {
-                      setTime(slot);
-                      setFormError(null);
-                    }}
-                    className={`min-h-11 rounded-xl border text-sm tabular-nums transition-colors ${
-                      time === slot
-                        ? 'border-brand-cream bg-brand-cream text-brand-bg'
-                        : 'border-brand-border text-brand-textPrimary hover:border-brand-cream/50'
-                    }`}
-                  >
-                    {slot}
-                  </button>
-                ))}
+                {Array.from(slotBarbers.keys())
+                  .sort()
+                  .map((slot) => (
+                    <button
+                      key={slot}
+                      type="button"
+                      aria-pressed={time === slot}
+                      onClick={() => {
+                        setTime(slot);
+                        setFormError(null);
+                      }}
+                      className={`min-h-11 rounded-xl border text-sm tabular-nums transition-colors ${
+                        time === slot ? CREAMY_GOLD_SELECTED : UNSELECTED
+                      }`}
+                    >
+                      {slot}
+                    </button>
+                  ))}
               </div>
             )}
           </div>
@@ -547,59 +564,52 @@ export default function BookingWizard({
           {time && (
             <div
               ref={detailsRef}
-              className="mt-6 space-y-3 border-t border-brand-border/50 pt-5"
+              className="mt-6 border-t border-brand-border/50 pt-5"
             >
-              {barberChoice === 'any' && (
-                <p className="text-xs text-brand-textSecondary">
-                  Dein Barber um {time}:{' '}
-                  <span className="text-brand-cream">
-                    {slotBarbers.get(time)?.name}
-                  </span>
-                </p>
-              )}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="booking-name"
+                    className="text-xs text-brand-textSecondary"
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="booking-name"
+                    type="text"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    className="mt-1 w-full rounded-xl border border-brand-border bg-[#111214] px-4 py-3 text-base text-brand-textPrimary outline-none focus:border-[#e5d0a0]"
+                  />
+                </div>
 
-              <div>
-                <label
-                  htmlFor="booking-name"
-                  className="text-xs text-brand-textSecondary"
-                >
-                  Name
-                </label>
-                <input
-                  id="booking-name"
-                  type="text"
-                  autoComplete="name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  className="mt-1 w-full rounded-xl border border-brand-border bg-[#111214] px-4 py-3 text-base text-brand-textPrimary outline-none focus:border-brand-cream"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="booking-phone"
-                  className="text-xs text-brand-textSecondary"
-                >
-                  Handynummer
-                </label>
-                <input
-                  id="booking-phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                  className="mt-1 w-full rounded-xl border border-brand-border bg-[#111214] px-4 py-3 text-base text-brand-textPrimary outline-none focus:border-brand-cream"
-                />
+                <div>
+                  <label
+                    htmlFor="booking-phone"
+                    className="text-xs text-brand-textSecondary"
+                  >
+                    Handynummer
+                  </label>
+                  <input
+                    id="booking-phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    className="mt-1 w-full rounded-xl border border-brand-border bg-[#111214] px-4 py-3 text-base text-brand-textPrimary outline-none focus:border-[#e5d0a0]"
+                  />
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-cream px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-brand-textPrimary px-4 py-3.5 text-sm font-semibold text-brand-bg transition-colors hover:bg-[#f5e9cb] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                {submitting ? 'Wird gebucht …' : 'Termin buchen'}
+                {submitting ? 'Wird gebucht …' : 'Pass sichern · Termin buchen'}
               </button>
             </div>
           )}
@@ -617,38 +627,46 @@ export default function BookingWizard({
   );
 }
 
-function ChoiceButton({
-  icon,
-  title,
-  subtitle,
+function BarberCard({
+  barber,
   selected,
   onClick,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
+  barber: Barber;
   selected: boolean;
   onClick: () => void;
 }) {
+  const photo = BARBER_PHOTOS[barber.name.trim().toLowerCase()];
+
   return (
     <button
       type="button"
+      aria-pressed={selected}
       onClick={onClick}
-      className={`flex min-h-16 w-full items-center gap-4 rounded-xl border px-4 py-3 text-left transition-colors ${
-        selected
-          ? 'border-brand-cream bg-brand-cream/5'
-          : 'border-brand-border bg-[#1a1b1e] hover:border-brand-cream/40'
+      className={`group relative h-64 overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(229,208,160,0.2)] sm:h-[23rem] ${CREAMY_GOLD_FRAME} ${
+        selected ? 'shadow-[0_0_34px_rgba(229,208,160,0.3)]' : ''
       }`}
     >
-      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/30 text-brand-cream">
-        {icon}
-      </span>
-      <span>
-        <span className="block text-sm font-medium text-brand-textPrimary">
-          {title}
+      {photo && (
+        <Image
+          src={photo}
+          alt=""
+          fill
+          sizes="(max-width: 1024px) 50vw, 30vw"
+          className={`object-cover object-top transition-[filter] duration-300 ${
+            selected ? '' : 'grayscale group-hover:grayscale-0'
+          }`}
+        />
+      )}
+
+      <span className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90" />
+
+      <span className="absolute inset-x-4 bottom-4">
+        <span className="block font-serif text-3xl leading-none text-white sm:text-4xl">
+          {barber.name}
         </span>
-        <span className="mt-0.5 block text-xs font-light text-brand-textSecondary">
-          {subtitle}
+        <span className="mt-1.5 block text-[11px] font-light leading-4 text-white/80 sm:text-xs">
+          {barber.title}
         </span>
       </span>
     </button>
@@ -665,14 +683,5 @@ function BackButton({ onClick }: { onClick: () => void }) {
       <ArrowLeft className="h-3.5 w-3.5" />
       Zurück
     </button>
-  );
-}
-
-function SummaryRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-4">
-      <dt className="flex-shrink-0 text-brand-textSecondary">{label}</dt>
-      <dd className="text-right text-brand-textPrimary">{value}</dd>
-    </div>
   );
 }

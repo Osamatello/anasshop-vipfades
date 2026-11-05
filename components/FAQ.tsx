@@ -81,11 +81,11 @@ const FAQS = [
   {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
-      'Aktuell sind wir ' +
-      BUSINESS.hours.days +
+      'Wir sind täglich für dich da. Online-Termine kannst du ' +
+      BUSINESS.hours.onlineDays +
       ' von ' +
-      BUSINESS.hours.time +
-      ' für dich da. ' +
+      BUSINESS.hours.onlineTime +
+      ' buchen. ' +
       BUSINESS.hours.walkins +
       '.',
   },
@@ -165,11 +165,11 @@ const faqStructuredData = buildFaqPageStructuredData([
   {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
-      'Aktuell sind wir ' +
-      BUSINESS.hours.days +
+      'Wir sind täglich für dich da. Online-Termine kannst du ' +
+      BUSINESS.hours.onlineDays +
       ' von ' +
-      BUSINESS.hours.time +
-      ' für dich da. ' +
+      BUSINESS.hours.onlineTime +
+      ' buchen. ' +
       BUSINESS.hours.walkins +
       '.',
   },

@@ -120,7 +120,7 @@ export default async function BookingPage({
                                     label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Montag bis Donnerstag
+                                        Montag bis Freitag
                                     </p>
 
                                     <p className="mt-1">
@@ -128,7 +128,7 @@ export default async function BookingPage({
                                     </p>
 
                                     <p className="mt-2 text-brand-cream/75">
-                                        Walk-ins täglich willkommen
+                                        Täglich geöffnet · Walk-ins willkommen
                                     </p>
                                 </InfoRow>
 

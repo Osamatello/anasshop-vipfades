@@ -47,6 +47,18 @@ export const businessStructuredData = {
           opens: '10:00',
           closes: '19:00',
         },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['https://schema.org/Friday'],
+          opens: '10:00',
+          closes: '20:00',
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['https://schema.org/Saturday'],
+          opens: '10:00',
+          closes: '18:00',
+        },
       ],
       sameAs: [BUSINESS.instagramUrl],
     },

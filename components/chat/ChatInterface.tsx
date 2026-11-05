@@ -332,8 +332,8 @@ export default function ChatInterface({
     while (options.length < 4) {
       const weekday = cursor.getUTCDay();
 
-      // Online booking is available Monday - Thursday only.
-      if (weekday >= 1 && weekday <= 4) {
+      // Online booking is available Monday - Friday only.
+      if (weekday >= 1 && weekday <= 5) {
         const value = formatUtcDate(cursor);
 
         const baseLabel = new Intl.DateTimeFormat('de-DE', {
@@ -497,8 +497,8 @@ export default function ChatInterface({
 
     const weekday = candidate.getUTCDay();
 
-    // Online booking is available Monday - Thursday only.
-    if (weekday < 1 || weekday > 4) {
+    // Online booking is available Monday - Friday only.
+    if (weekday < 1 || weekday > 5) {
       return undefined;
     }
 
@@ -970,7 +970,7 @@ export default function ChatInterface({
     setStep('pickService');
 
     pushBot(
-      `Online-Termine sind ${BUSINESS.hours.days} von ${BUSINESS.hours.time} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
+      `Online-Termine sind ${BUSINESS.hours.onlineDays} von ${BUSINESS.hours.onlineTime} verfügbar. Wähle zuerst deine Leistung und ich zeige dir die freien Zeiten.`,
       {
         chips: ['Zurück'],
       },

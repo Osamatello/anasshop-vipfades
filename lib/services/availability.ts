@@ -76,7 +76,7 @@ export function generateTimeSlots(
  * appointment fits.
  *
  * All existing scheduling protections are applied unchanged:
- *   - online booking Monday–Thursday only
+ *   - online booking Monday–Friday only
  *   - business hours + is_open
  *   - past dates rejected; same-day only future start times
  *   - no overlap with existing bookings for that barber/date
@@ -116,8 +116,8 @@ export async function getAvailableSlotsForDuration(
     const dayOfWeek =
         javascriptDay === 0 ? 7 : javascriptDay;
 
-    // Online booking is available Monday - Thursday.
-    if (dayOfWeek < 1 || dayOfWeek > 4) {
+    // Online booking is available Monday - Friday.
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
         return [];
     }
 

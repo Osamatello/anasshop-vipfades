@@ -33,8 +33,8 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mt-8 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Besuch uns im Herzen von Koblenz. Komm jederzeit spontan vorbei oder buche
-            deinen Termin online von Montag bis Donnerstag.
+            Besuch uns im Herzen von Koblenz. Wir haben täglich geöffnet: Komm spontan
+            vorbei oder buche deinen Termin online von Montag bis Freitag.
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function Contact() {
             icon={Clock}
             label="Online-Termine"
             lines={[
-              'Montag bis Donnerstag',
+              'Montag bis Freitag',
               '10:00 – 19:00',
               'Walk-ins täglich willkommen',
             ]}

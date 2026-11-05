@@ -93,7 +93,7 @@ export default function Hero() {
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
 
             <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary sm:text-[11px]">
-              Koblenz · {BUSINESS.hours.days}
+              Koblenz · {BUSINESS.hours.open}
             </span>
           </div>
 
@@ -133,7 +133,7 @@ export default function Hero() {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
             <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
               <Clock className="h-4 w-4 text-brand-textPrimary" />
-              {BUSINESS.hours.time}
+              Online-Termine Mo–Fr, {BUSINESS.hours.onlineTime}
             </span>
 
             <span className="hidden h-4 w-px bg-brand-border sm:block" />

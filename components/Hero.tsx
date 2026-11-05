@@ -89,11 +89,14 @@ export default function Hero() {
       <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
           {/* Main heading */}
-          <h1 className="font-serif text-4xl font-medium leading-[1.05] text-brand-textPrimary sm:text-6xl lg:text-7xl">
-            {firstTagline}
+          <h1 className="font-serif font-medium text-brand-textPrimary">
+            <span className="block text-xl leading-snug sm:text-3xl lg:text-4xl">
+              {secondTagline}
+            </span>
             <span className="sr-only"> – </span>
-            <br />
-            <span className="text-brand-cream">{secondTagline}</span>
+            <span className="mt-2 block text-4xl leading-[1.02] text-brand-cream sm:mt-3 sm:text-7xl lg:text-[5.5rem]">
+              {firstTagline}
+            </span>
           </h1>
 
           {/* Description */}

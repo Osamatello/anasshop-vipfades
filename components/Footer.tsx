@@ -89,14 +89,10 @@ export default function Footer() {
               {BUSINESS.address}
             </p>
 
-            <p className="mt-1.5 text-[12px] font-light leading-5 text-brand-textPrimary/80 sm:text-[13px]">
+            <p className="mt-1.5 text-[12px] font-medium leading-5 text-brand-cream sm:text-[13px]">
               {BUSINESS.hours.open}
               <br />
               Online-Termine nur {BUSINESS.hours.onlineDays}, {BUSINESS.hours.onlineTime}
-            </p>
-
-            <p className="mt-1.5 text-[12px] font-medium text-brand-cream sm:text-[13px]">
-              {BUSINESS.hours.walkins}
             </p>
 
             <div className="mt-2 flex flex-col items-start gap-1 text-[12px] font-light leading-5 text-brand-textPrimary/75 sm:text-[13px]">

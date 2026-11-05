@@ -63,6 +63,7 @@ export default function Contact() {
               'Online-Termine nur Mo–Do, 10:00 – 19:00',
               'Walk-ins täglich willkommen',
             ]}
+            highlightedLines={2}
           />
 
           <ContactCard
@@ -112,12 +113,14 @@ function ContactCard({
   lines,
   href,
   external = false,
+  highlightedLines = 1,
 }: {
   icon: React.ElementType;
   label: string;
   lines: string[];
   href?: string;
   external?: boolean;
+  highlightedLines?: number;
 }) {
   const cardContent = (
     <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/55 hover:shadow-[0_14px_40px_rgba(232,220,200,0.07)]">
@@ -134,7 +137,7 @@ function ContactCard({
           <p
             key={`${label}-${index}`}
             className={
-              index === 0
+              index < highlightedLines
                 ? 'text-sm font-medium leading-relaxed text-brand-textPrimary'
                 : 'text-sm font-light leading-relaxed text-brand-textPrimary/80'
             }

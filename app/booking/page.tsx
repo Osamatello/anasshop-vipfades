@@ -7,7 +7,7 @@ import {
 
 import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
-import BookingWizard from '@/components/booking/BookingWizard';
+import BookingPanel from '@/components/booking/BookingPanel';
 import { BUSINESS } from '@/lib/data';
 
 export const metadata: Metadata = {
@@ -38,6 +38,7 @@ export default async function BookingPage({
     searchParams?: Promise<{
         barber?: string;
         service?: string;
+        stornieren?: string;
     }>;
 }) {
     const params =
@@ -168,27 +169,13 @@ export default async function BookingPage({
                             <div className="right-glow-two absolute bottom-[-300px] left-[20%] h-[650px] w-[650px] rounded-full bg-brand-cream/[0.02] blur-[190px]" />
                         </div>
 
-                        {/* Booking header */}
-                        <div className="relative z-10 border-b border-brand-border/60 px-5 py-5 sm:px-8">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-                                Online-Termin buchen
-                            </p>
-
-                            <p className="mt-2 text-sm font-light text-brand-textSecondary">
-                                In 3 Schritten zu deinem Termin.
-                            </p>
-                        </div>
-
-                        {/* Booking steps */}
-                        <div className="relative z-10 flex-1">
-                            <div className="chat-top-light pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-brand-cream/70 to-transparent" />
-
-                            <BookingWizard
-                                key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}`}
-                                initialBarber={initialBarber}
-                                initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
-                            />
-                        </div>
+                        {/* Booking and cancellation */}
+                        <BookingPanel
+                            key={`${initialBarber ?? ""}:${typeof params?.service === "string" ? params.service : ""}:${params?.stornieren ?? ""}`}
+                            initialView={params?.stornieren ? "cancel" : "book"}
+                            initialBarber={initialBarber}
+                            initialServiceSlug={typeof params?.service === "string" ? params.service : undefined}
+                        />
 
                         {/* Bottom reassurance */}
                         <div className="relative z-10 border-t border-brand-border/50 px-6 py-4 text-center text-[9px] font-light uppercase tracking-[0.24em] text-brand-cream/45 sm:px-8">

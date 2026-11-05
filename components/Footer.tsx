@@ -11,6 +11,7 @@ const NAV = [
   { label: 'Unsere Barber', href: '/#barbers' },
   { label: 'Artikel', href: '/artikel' },
   { label: 'Termin buchen', href: '/booking' },
+  { label: 'Termin stornieren', href: '/booking?stornieren=1' },
   { label: 'Besuch uns', href: '/#contact' },
 ];
 

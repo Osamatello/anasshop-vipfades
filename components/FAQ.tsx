@@ -119,14 +119,14 @@ const FAQS = [
     question: 'Wie kann ich meinen Termin stornieren?',
     answer: (
       <>
-        Öffne unsere{' '}
+        Öffne unsere Online-Buchung und wähle{' '}
         <Link
-          href="/booking"
+          href="/booking?stornieren=1"
           className="text-brand-cream underline-offset-4 transition-colors hover:text-brand-textPrimary hover:underline"
         >
-          Online-Buchung
-        </Link>{' '}
-        und wähle „Termin stornieren“. Gib deine Telefonnummer ein und wähle den Termin aus,
+          „Termin stornieren“
+        </Link>
+        . Gib deine Telefonnummer ein und wähle den Termin aus,
         den du absagen möchtest. Wenn du deinen Termin ändern möchtest, storniere den
         bestehenden Termin und buche anschließend einen neuen.
       </>

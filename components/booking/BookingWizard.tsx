@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Check, Loader2, UserRound, Users } from 'lucide-react';
 
-import ChatInterface from '@/components/chat/ChatInterface';
 import ServicesPicker, {
   type ServicesSelection,
 } from '@/components/chat/ServicesPicker';
@@ -81,13 +80,14 @@ function getBookableDates(barber: BarberChoice | null): string[] {
 export default function BookingWizard({
   initialBarber,
   initialServiceSlug,
+  onCancelBooking,
 }: {
   initialBarber?: string;
   initialServiceSlug?: string;
+  onCancelBooking: () => void;
 }) {
   const { barbers, services, vipPackages, loading, error } = useCatalog();
 
-  const [view, setView] = useState<'book' | 'cancel'>('book');
   const [step, setStep] = useState<WizardStep>(1);
   const [selection, setSelection] = useState<BookingSelection | null>(null);
   const [barberChoice, setBarberChoice] = useState<BarberChoice | null>(null);
@@ -311,25 +311,6 @@ export default function BookingWizard({
     setFormError(null);
   };
 
-  if (view === 'cancel') {
-    return (
-      <div className="flex h-full min-h-[620px] flex-col">
-        <button
-          type="button"
-          onClick={() => setView('book')}
-          className="flex items-center gap-2 border-b border-brand-border/50 px-6 py-3 text-xs font-medium text-brand-textSecondary transition-colors hover:text-brand-cream sm:px-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Zurück zur Buchung
-        </button>
-
-        <div className="min-h-0 flex-1">
-          <ChatInterface />
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="flex min-h-[420px] items-center justify-center text-sm text-brand-textSecondary">
@@ -384,6 +365,17 @@ export default function BookingWizard({
           className="mt-6 text-sm text-brand-cream underline underline-offset-4"
         >
           Weiteren Termin buchen
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            restart();
+            onCancelBooking();
+          }}
+          className="mt-3 text-xs text-brand-textSecondary underline underline-offset-4 transition-colors hover:text-brand-cream"
+        >
+          Termin stornieren
         </button>
       </div>
     );
@@ -621,16 +613,6 @@ export default function BookingWizard({
           <BackButton onClick={() => goToStep(2)} />
         </form>
       )}
-
-      <div className="border-t border-brand-border/50 px-5 py-4 text-center sm:px-8">
-        <button
-          type="button"
-          onClick={() => setView('cancel')}
-          className="text-xs text-brand-textSecondary underline underline-offset-4 transition-colors hover:text-brand-cream"
-        >
-          Termin stornieren
-        </button>
-      </div>
     </div>
   );
 }

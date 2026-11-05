@@ -59,7 +59,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
+      className="relative flex min-h-[100svh] items-end justify-start overflow-hidden"
     >
       {/* Background */}
       <div
@@ -86,26 +86,26 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
-        <div className="reveal visible flex flex-col items-center">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-16 pt-24 text-left [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:px-8 sm:pb-20">
+        <div className="reveal visible flex flex-col items-start">
           {/* Main heading */}
           <h1 className="font-serif font-medium text-brand-textPrimary">
-            <span className="block text-xl leading-snug sm:text-3xl lg:text-4xl">
+            <span className="block text-lg leading-snug sm:text-2xl lg:text-3xl">
               {secondTagline}
             </span>
             <span className="sr-only"> – </span>
-            <span className="mt-2 block text-4xl leading-[1.02] text-brand-cream sm:mt-3 sm:text-7xl lg:text-[5.5rem]">
+            <span className="mt-2 block text-[2rem] leading-[1.05] text-brand-cream sm:text-6xl lg:text-7xl">
               {firstTagline}
             </span>
           </h1>
 
-          {/* Description */}
-          <p className="mt-7 max-w-xl text-base font-light leading-relaxed text-brand-textPrimary sm:text-xl">
-            {BUSINESS.description}
-          </p>
+          {/* Google rating */}
+          <div className="mt-3">
+            <GoogleRating />
+          </div>
 
           {/* Primary CTA */}
-          <div className="mt-10 flex flex-col items-center">
+          <div className="mt-6 flex flex-col items-start">
             <Link
               href="/booking"
               className="group flex items-center justify-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-[13px] font-semibold uppercase tracking-[0.16em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream [text-shadow:none] sm:text-sm"
@@ -113,20 +113,11 @@ export default function Hero() {
               <Scissors className="h-4 w-4" />
               Termin buchen
             </Link>
-
-            <div className="mt-8 text-center">
-              <p className="font-serif text-xl font-light tracking-[0.08em] text-brand-textPrimary sm:text-3xl">
-                DEINE ZEIT. DEIN STUHL.
-              </p>
-              <p className="mx-auto mt-2 max-w-md text-[13px] font-light leading-relaxed text-brand-textPrimary/90 sm:text-base">
-                Von der ersten Beratung bis zum letzten Blick in den Spiegel.
-              </p>
-            </div>
           </div>
 
           {/* Business information */}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
-            <div className="flex flex-col items-center gap-1.5 sm:items-start">
+          <div className="mt-7 flex flex-col items-start gap-x-8 gap-y-3 text-brand-textPrimary sm:flex-row sm:items-center">
+            <div className="flex flex-col items-start gap-1.5">
               <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
                 <Clock className="h-4 w-4 text-brand-textPrimary" />
                 {BUSINESS.hours.open}
@@ -152,9 +143,6 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-5 z-10 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)] sm:left-8">
-        <GoogleRating compact />
-      </div>
       <button
         type="button"
         onClick={() => scrollToSection('#services')}

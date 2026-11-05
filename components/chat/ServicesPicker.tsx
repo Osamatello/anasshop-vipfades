@@ -19,8 +19,11 @@ type ServicesPickerProps = {
   /** Bookable VIP packages, from the catalogue (empty => none offered). */
   vipPackages: VipPackage[];
   onContinue: (selection: ServicesSelection) => void;
-  onBack: () => void;
+  /** Omit to hide the back button (first step of the booking wizard). */
+  onBack?: () => void;
   initialServiceSlug?: string;
+  /** Height limit of the scrolling list. */
+  listClassName?: string;
 };
 
 // Presentation only: identifiers, pricing and booking selection stay unchanged.
@@ -44,6 +47,7 @@ export default function ServicesPicker({
   onContinue,
   onBack,
   initialServiceSlug,
+  listClassName = 'max-h-[min(42dvh,340px)]',
 }: ServicesPickerProps) {
   // null = no VIP package selected; otherwise the selected package id.
   const [selectedVipId, setSelectedVipId] = useState<string | null>(() =>
@@ -135,7 +139,7 @@ export default function ServicesPicker({
 
   return (
     <div className="border-t border-brand-border/40 bg-[#0e0f11] px-4 pb-3 pt-3">
-      <div className="max-h-[min(42dvh,340px)] space-y-1.5 overflow-y-auto pr-1">
+      <div className={`${listClassName} space-y-1.5 overflow-y-auto pr-1`}>
         {/* VIP packages — most premium first, mutually exclusive */}
         {orderedVipPackages.map((vipPackage) => (
           <VipPackageCard
@@ -238,13 +242,15 @@ export default function ServicesPicker({
 
       {/* Actions */}
       <div className="mt-3 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-full border border-brand-border px-4 py-2 text-xs font-medium text-brand-textSecondary transition-colors hover:border-brand-cream/40 hover:text-brand-cream"
-        >
-          Zurück
-        </button>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-full border border-brand-border px-4 py-2 text-xs font-medium text-brand-textSecondary transition-colors hover:border-brand-cream/40 hover:text-brand-cream"
+          >
+            Zurück
+          </button>
+        )}
 
         <button
           type="button"

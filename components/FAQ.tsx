@@ -79,6 +79,11 @@ const FAQS = [
     answer: 'Du findest VIP FADES BY ANAS in ' + BUSINESS.address + '.',
   },
   {
+    question: 'Wo kann ich bei VIP FADES parken?',
+    answer:
+      'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
+  },
+  {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
       'Wir sind täglich von 10:00 bis 19:00 für dich da. Online-Termine kannst du nur ' +
@@ -161,6 +166,11 @@ const faqStructuredData = buildFaqPageStructuredData([
   {
     question: 'Wo befindet sich VIP FADES in Koblenz?',
     answer: 'Du findest VIP FADES BY ANAS in ' + BUSINESS.address + '.',
+  },
+  {
+    question: 'Wo kann ich bei VIP FADES parken?',
+    answer:
+      'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
   },
   {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',

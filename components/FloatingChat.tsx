@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageCircle } from 'lucide-react';
+import Link from 'next/link';
+import { MessageCircle, Scissors } from 'lucide-react';
 import ChatInterface from './chat/ChatInterface';
 
 export default function FloatingChat() {
@@ -9,11 +10,25 @@ export default function FloatingChat() {
 
   return (
     <>
+      {/* Keeps the end of the page clear of the sticky booking bar */}
+      <div aria-hidden="true" className="h-20 lg:hidden" />
+
+      {/* Sticky booking bar on phones and tablets */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-brand-border bg-brand-bg/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur lg:hidden">
+        <Link
+          href="/booking"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-cream px-6 py-3.5 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cream"
+        >
+          <Scissors className="h-4 w-4" />
+          Jetzt Termin buchen
+        </Link>
+      </div>
+
       {/* Launcher — hidden while chat is open */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand-accent text-brand-textPrimary shadow-2xl shadow-brand-accent/20 transition-all hover:scale-105 hover:bg-brand-hover sm:h-16 sm:w-16"
+          className="fixed bottom-24 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand-accent text-brand-textPrimary shadow-2xl shadow-brand-accent/20 transition-all hover:scale-105 hover:bg-brand-hover sm:h-16 sm:w-16 lg:bottom-6"
           aria-label="Buchungsassistent öffnen"
         >
           <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7" />

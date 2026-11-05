@@ -133,7 +133,7 @@ export default function Hero() {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-brand-textPrimary">
             <span className="flex items-center gap-2 text-[13px] font-medium sm:text-sm">
               <Clock className="h-4 w-4 text-brand-textPrimary" />
-              Online-Termine Mo–Fr, {BUSINESS.hours.onlineTime}
+              Online-Termine Mo–Do, {BUSINESS.hours.onlineTime}
             </span>
 
             <span className="hidden h-4 w-px bg-brand-border sm:block" />

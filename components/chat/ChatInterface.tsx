@@ -332,8 +332,8 @@ export default function ChatInterface({
     while (options.length < 4) {
       const weekday = cursor.getUTCDay();
 
-      // Online booking is available Monday - Friday only.
-      if (weekday >= 1 && weekday <= 5) {
+      // Online booking is available Monday - Thursday only.
+      if (weekday >= 1 && weekday <= 4) {
         const value = formatUtcDate(cursor);
 
         const baseLabel = new Intl.DateTimeFormat('de-DE', {
@@ -497,8 +497,8 @@ export default function ChatInterface({
 
     const weekday = candidate.getUTCDay();
 
-    // Online booking is available Monday - Friday only.
-    if (weekday < 1 || weekday > 5) {
+    // Online booking is available Monday - Thursday only.
+    if (weekday < 1 || weekday > 4) {
       return undefined;
     }
 

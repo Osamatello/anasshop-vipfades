@@ -49,7 +49,7 @@ const ABD_BARBER_ID =
     'd115a860-db00-4904-a906-5c67478cf6d2';
 
 const WORKING_HOURS = '10:00 - 19:00';
-const WORKING_DAYS = 'Mo - Fr';
+const WORKING_DAYS = 'Mo - Do';
 
 const formatTime = (value: string) =>
     value.slice(0, 5);

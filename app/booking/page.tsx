@@ -120,7 +120,7 @@ export default async function BookingPage({
                                     label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Montag bis Freitag
+                                        Montag bis Donnerstag
                                     </p>
 
                                     <p className="mt-1">

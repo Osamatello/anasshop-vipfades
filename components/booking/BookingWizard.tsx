@@ -410,21 +410,21 @@ export default function BookingWizard({
     <div ref={topRef} className="scroll-mt-28">
       {/* On phones the pass joins the page after the services are chosen. */}
       {step > 1 && (
-        <div className="px-4 pt-4 lg:hidden">
-          <VipTicket details={ticket} compact />
+        <div className="sticky top-[5.5rem] z-20 px-3 pt-3 lg:hidden">
+          <VipTicket details={ticket} mini />
         </div>
       )}
 
       {/* Step heading and progress */}
-      <div className="px-5 pt-6 sm:px-8 sm:pt-8">
+      <div className="px-4 pt-4 sm:px-8 lg:pt-8">
         <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#e5d0a0]">
           Schritt {step} von 3
         </p>
-        <h2 className="mt-2 font-serif text-4xl font-medium leading-[1.08] text-brand-textPrimary sm:text-5xl">
+        <h2 className="mt-1 font-serif text-[1.65rem] font-medium leading-[1.12] text-brand-textPrimary lg:mt-2 lg:text-5xl">
           {STEP_TITLES[step]}
         </h2>
 
-        <div className="mt-5 flex gap-2" aria-hidden="true">
+        <div className="mt-3 flex gap-2 lg:mt-5" aria-hidden="true">
           {([1, 2, 3] as WizardStep[]).map((number) => (
             <span
               key={number}
@@ -449,7 +449,7 @@ export default function BookingWizard({
       )}
 
       {step === 2 && (
-        <div className="px-5 py-6 sm:px-8">
+        <div className="px-4 py-4 sm:px-8 lg:py-6">
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {barbers.map((barber) => (
               <BarberCard
@@ -468,7 +468,7 @@ export default function BookingWizard({
               type="button"
               aria-pressed={barberChoice === 'any'}
               onClick={() => handleBarberSelect('any')}
-              className={`mt-3 flex min-h-16 w-full items-center gap-4 rounded-2xl px-4 py-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)] sm:mt-4 ${CREAMY_GOLD_FRAME} ${
+              className={`mt-2.5 flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 py-2 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)] sm:mt-4 ${CREAMY_GOLD_FRAME} ${
                 barberChoice === 'any'
                   ? 'shadow-[0_0_30px_rgba(229,208,160,0.25)]'
                   : ''
@@ -476,7 +476,7 @@ export default function BookingWizard({
             >
               <Users className="h-5 w-5 flex-shrink-0 text-[#e5d0a0]" />
               <span>
-                <span className="block font-serif text-xl text-brand-textPrimary">
+                <span className="block font-serif text-base font-semibold text-brand-textPrimary lg:text-xl">
                   Egal, nächster freier Stuhl
                 </span>
                 <span className="mt-0.5 block text-xs font-light text-brand-textSecondary">
@@ -491,10 +491,10 @@ export default function BookingWizard({
       )}
 
       {step === 3 && (
-        <form onSubmit={handleSubmit} noValidate className="px-5 py-6 sm:px-8">
+        <form onSubmit={handleSubmit} noValidate className="px-4 py-4 sm:px-8 lg:py-6">
           <p className="text-xs text-brand-textSecondary">Wähle deinen Tag</p>
 
-          <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6">
+          <div className="-mx-4 mt-2 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-6 sm:px-0 lg:mt-3">
             {dates.map((item) => {
               const parts = formatDateParts(item);
 
@@ -505,12 +505,12 @@ export default function BookingWizard({
                   aria-pressed={date === item}
                   aria-label={parts.label}
                   onClick={() => handleDateSelect(item)}
-                  className={`rounded-2xl border py-2.5 text-center text-[11px] transition-colors ${
+                  className={`w-16 flex-shrink-0 rounded-2xl border py-1.5 text-center text-[11px] transition-colors sm:w-auto lg:py-2.5 ${
                     date === item ? CREAMY_GOLD_SELECTED : UNSELECTED
                   }`}
                 >
                   {parts.weekday}
-                  <span className="block font-serif text-2xl font-medium leading-tight">
+                  <span className="block font-serif text-xl font-medium leading-tight lg:text-2xl">
                     {parts.day}
                   </span>
                   {parts.month}
@@ -519,9 +519,9 @@ export default function BookingWizard({
             })}
           </div>
 
-          <p className="mt-6 text-xs text-brand-textSecondary">Freie Zeiten</p>
+          <p className="mt-4 text-xs text-brand-textSecondary lg:mt-6">Freie Zeiten</p>
 
-          <div className="mt-3 min-h-24">
+          <div className="mt-2 min-h-24 lg:mt-3">
             {slotsLoading ? (
               <p className="flex items-center text-sm text-brand-textSecondary">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -550,7 +550,7 @@ export default function BookingWizard({
                         setTime(slot);
                         setFormError(null);
                       }}
-                      className={`min-h-11 rounded-xl border text-sm tabular-nums transition-colors ${
+                      className={`min-h-10 rounded-xl border text-[13px] tabular-nums lg:min-h-11 lg:text-sm transition-colors ${
                         time === slot ? CREAMY_GOLD_SELECTED : UNSELECTED
                       }`}
                     >
@@ -643,7 +643,7 @@ function BarberCard({
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`group relative h-64 overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(229,208,160,0.2)] sm:h-[23rem] ${CREAMY_GOLD_FRAME} ${
+      className={`group relative h-48 overflow-hidden rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_44px_rgba(229,208,160,0.2)] lg:h-[23rem] ${CREAMY_GOLD_FRAME} ${
         selected ? 'shadow-[0_0_34px_rgba(229,208,160,0.3)]' : ''
       }`}
     >
@@ -662,7 +662,7 @@ function BarberCard({
       <span className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/90" />
 
       <span className="absolute inset-x-4 bottom-4">
-        <span className="block font-serif text-3xl leading-none text-white sm:text-4xl">
+        <span className="block font-serif text-2xl leading-none text-white lg:text-4xl">
           {barber.name}
         </span>
         <span className="mt-1.5 block text-[11px] font-light leading-4 text-white/80 sm:text-xs">

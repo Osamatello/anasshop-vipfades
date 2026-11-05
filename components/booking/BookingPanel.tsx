@@ -34,7 +34,7 @@ export default function BookingPanel({
     <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(400px,36%)]">
       {/* Steps */}
       <div className="min-w-0 lg:border-r lg:border-brand-border/60">
-        <div className="border-b border-brand-border/60 p-4 sm:px-8">
+        <div className="border-b border-brand-border/60 p-2.5 sm:px-8 lg:p-4">
           <div className="grid grid-cols-2 gap-1 rounded-full border border-brand-border bg-black/30 p-1">
             {TABS.map((tab) => (
               <button
@@ -42,7 +42,7 @@ export default function BookingPanel({
                 type="button"
                 aria-pressed={view === tab.view}
                 onClick={() => setView(tab.view)}
-                className={`min-h-11 rounded-full px-3 text-sm font-medium transition-colors ${
+                className={`min-h-9 rounded-full px-3 text-[13px] font-medium lg:min-h-11 lg:text-sm transition-colors ${
                   view === tab.view
                     ? 'bg-[#e5d0a0] text-brand-bg'
                     : 'text-brand-textSecondary hover:text-brand-cream'

@@ -80,10 +80,10 @@ export default function BookingServices({
   };
 
   return (
-    <div className="px-5 pt-6 sm:px-8">
+    <div className="px-4 pt-4 sm:px-8 lg:pt-6">
       <SectionLabel>VIP-Pakete</SectionLabel>
 
-      <div className="mt-3 grid gap-4 xl:grid-cols-2">
+      <div className="mt-2 grid gap-2.5 lg:mt-3 lg:gap-4 xl:grid-cols-2">
         {orderedPackages.map((vipPackage) => (
           <VipCard
             key={vipPackage.slug}
@@ -94,11 +94,11 @@ export default function BookingServices({
         ))}
       </div>
 
-      <div className="mt-7">
+      <div className="mt-5 lg:mt-7">
         <SectionLabel>Einzelleistungen</SectionLabel>
       </div>
 
-      <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+      <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:mt-3 lg:gap-2.5">
         {orderedServices.map((service) => {
           const selected = selectedServices.some(
             (item) => item.id === service.id,
@@ -110,7 +110,7 @@ export default function BookingServices({
               type="button"
               aria-pressed={selected}
               onClick={() => toggleService(service)}
-              className={`group relative flex min-h-[5.25rem] items-center justify-between gap-3 overflow-hidden rounded-2xl px-5 py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 ${
+              className={`group relative flex min-h-14 items-center justify-between gap-3 overflow-hidden rounded-xl px-4 py-2 lg:min-h-[5.25rem] lg:rounded-2xl lg:px-5 lg:py-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 ${
                 selected
                   ? CREAMY_GOLD_FRAME_SELECTED
                   : `${CREAMY_GOLD_FRAME} hover:shadow-[0_12px_34px_rgba(229,208,160,0.16)]`
@@ -119,11 +119,11 @@ export default function BookingServices({
               <Shine />
 
               <span className="relative min-w-0">
-                <span className="block font-serif text-[1.05rem] font-semibold leading-tight text-white">
+                <span className="block font-serif text-[15px] font-semibold leading-tight text-white lg:text-[1.05rem]">
                   {service.name}
                 </span>
                 {service.duration ? (
-                  <span className="mt-1 block text-[13px] font-medium text-[#d9d5cd]">
+                  <span className="mt-0.5 block text-xs font-medium text-[#d9d5cd] lg:mt-1 lg:text-[13px]">
                     {service.duration} Min.
                   </span>
                 ) : null}
@@ -131,7 +131,7 @@ export default function BookingServices({
 
               <span className="relative flex flex-shrink-0 items-center gap-2.5">
                 <span
-                  className={`pr-0.5 font-serif text-[1.4rem] font-bold leading-none ${CREAMY_GOLD_TEXT}`}
+                  className={`pr-0.5 font-serif text-lg font-bold leading-none lg:text-[1.4rem] ${CREAMY_GOLD_TEXT}`}
                 >
                   €{service.price}
                 </span>
@@ -143,7 +143,7 @@ export default function BookingServices({
       </div>
 
       {/* Stays in view while the customer scrolls through the services. */}
-      <div className="sticky bottom-0 z-10 -mx-5 mt-5 border-t border-brand-border/60 bg-[#090909]/95 px-5 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+      <div className="sticky bottom-0 z-10 -mx-4 mt-4 border-t border-brand-border/60 bg-[#090909]/95 px-4 py-3 backdrop-blur sm:-mx-8 sm:px-8 lg:mt-5 lg:py-4">
         <button
           type="button"
           onClick={onContinue}

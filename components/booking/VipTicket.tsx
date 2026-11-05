@@ -19,14 +19,43 @@ const PLACEHOLDER = '—';
 export default function VipTicket({
   details,
   confirmed = false,
+  mini = false,
   compact = false,
   tilted = false,
 }: {
   details: TicketDetails;
   confirmed?: boolean;
+  /** Slim summary for phones. */
+  mini?: boolean;
   compact?: boolean;
   tilted?: boolean;
 }) {
+  if (mini) {
+    const when = [details.barber, details.date, details.time ?? 'Uhrzeit wählen']
+      .filter(Boolean)
+      .join(' · ');
+    const customer = [details.customerName, details.customerPhone]
+      .filter(Boolean)
+      .join(' · ');
+
+    return (
+      <div className="rounded-2xl bg-gradient-to-br from-[#f5e9cb] via-[#e5d0a0] to-[#c2a56d] px-4 py-2.5 text-[#1f1b14] shadow-[0_10px_28px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="min-w-0 truncate text-[15px] font-bold">
+            {details.service ?? 'Dein Termin'}
+          </p>
+          <p className="flex-shrink-0 text-base font-bold">
+            {details.price === undefined ? PLACEHOLDER : '€' + details.price}
+          </p>
+        </div>
+        <p className="mt-0.5 truncate text-xs font-medium">{when}</p>
+        {customer && (
+          <p className="mt-0.5 truncate text-xs font-semibold">{customer}</p>
+        )}
+      </div>
+    );
+  }
+
   const padding = compact ? 'px-5' : 'px-7';
 
   return (

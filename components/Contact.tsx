@@ -57,10 +57,10 @@ export default function Contact() {
 
           <ContactCard
             icon={Clock}
-            label="Online-Termine"
+            label="Öffnungszeiten"
             lines={[
-              'Nur Montag bis Donnerstag',
-              '10:00 – 19:00',
+              'Täglich geöffnet, 10:00 – 19:00',
+              'Online-Termine nur Mo–Do, 10:00 – 19:00',
               'Walk-ins täglich willkommen',
             ]}
           />

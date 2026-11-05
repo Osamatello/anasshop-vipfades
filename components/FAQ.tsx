@@ -23,7 +23,7 @@ const FAQS = [
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer: (
       <>
-        Nein. Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern
+        Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern
         möchtest, kannst du deinen Termin direkt über unsere{' '}
         <Link
           href="/booking"
@@ -133,7 +133,7 @@ const faqStructuredData = buildFaqPageStructuredData([
   {
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer:
-      'Nein. Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
+      'Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
   },
   {
     question: 'Wie kann ich einen Termin bei VIP FADES buchen?',

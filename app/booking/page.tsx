@@ -128,7 +128,7 @@ export default async function BookingPage({
                                     </p>
 
                                     <p className="mt-2 text-brand-cream/75">
-                                        Täglich geöffnet · Walk-ins willkommen
+                                        Täglich geöffnet, 10:00 – 19:00 · Walk-ins willkommen
                                     </p>
                                 </InfoRow>
 

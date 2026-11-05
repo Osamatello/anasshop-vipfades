@@ -9,7 +9,7 @@ export const BUSINESS = {
   instagram: "@vipfades.kob",
   instagramUrl: "https://instagram.com/vipfades.kob",
   hours: {
-    open: "Täglich geöffnet",
+    open: "Täglich geöffnet, 10:00 bis 19:00",
     walkins: "Walk-ins täglich willkommen",
     // Online booking only. The shop itself is open daily.
     onlineDays: "Montag bis Donnerstag",

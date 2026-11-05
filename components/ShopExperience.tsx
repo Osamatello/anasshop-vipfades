@@ -65,7 +65,7 @@ export default function ShopExperience() {
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">
-                  Täglich geöffnet
+                  Täglich geöffnet, 10:00 – 19:00
                 </span>
 
                 <span className="rounded-full border border-brand-border bg-brand-bg/50 px-4 py-2 text-xs font-medium text-brand-textPrimary">

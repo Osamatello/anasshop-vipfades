@@ -33,7 +33,7 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mt-8 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
-            Besuch uns im Herzen von Koblenz. Wir haben täglich geöffnet: Komm spontan
+            Besuch uns im Herzen von Koblenz. Wir haben täglich von 10:00 bis 19:00 geöffnet: Komm spontan
             vorbei oder buche deinen Termin online von Montag bis Donnerstag.
           </p>
         </div>

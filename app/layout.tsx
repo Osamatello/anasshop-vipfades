@@ -22,7 +22,7 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
-  title: 'VIP FADES BY ANAS | Barbershop & Barber in Koblenz',
+  title: 'Barbershop Koblenz | VIP FADES BY ANAS – Herrenfriseur Altstadt',
 
   description:
     'VIP FADES BY ANAS ist dein Barbershop in Koblenz für präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling. Termin online buchen.',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     locale: 'de_DE',
     url: SITE_URL,
     siteName: 'VIP FADES BY ANAS',
-    title: 'VIP FADES BY ANAS | Barbershop & Barber in Koblenz',
+    title: 'Barbershop Koblenz | VIP FADES BY ANAS – Herrenfriseur Altstadt',
     description:
       'Barbershop in Koblenz für Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling. Buche deinen Termin online.',
     images: [
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'VIP FADES BY ANAS | Barbershop & Barber in Koblenz',
+    title: 'Barbershop Koblenz | VIP FADES BY ANAS – Herrenfriseur Altstadt',
     description:
       'Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling bei VIP FADES in Koblenz.',
     images: ['/images/og-image.jpg'],

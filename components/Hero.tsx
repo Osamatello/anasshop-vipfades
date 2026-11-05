@@ -9,7 +9,7 @@ import GoogleRating from '@/components/reviews/GoogleRating';
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [firstTagline, secondTagline] = BUSINESS.tagline.split('.');
+  const [firstTagline, secondTagline] = BUSINESS.tagline.split(' – ');
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -88,20 +88,12 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-5xl -translate-y-8 px-5 pt-24 text-center [text-shadow:0_2px_12px_rgba(0,0,0,0.7)] sm:translate-y-0 sm:px-8">
         <div className="reveal visible flex flex-col items-center">
-          {/* Location label */}
-          <div className="mb-6 flex items-center gap-3 px-4 py-2">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-textPrimary" />
-
-            <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-brand-textPrimary sm:text-[11px]">
-              Koblenz · {BUSINESS.hours.onlineDays}
-            </span>
-          </div>
-
           {/* Main heading */}
-          <h1 className="font-serif text-4xl font-medium leading-[1.02] text-brand-textPrimary sm:text-7xl lg:text-[5.5rem]">
-            {firstTagline}.
+          <h1 className="font-serif text-4xl font-medium leading-[1.05] text-brand-textPrimary sm:text-6xl lg:text-7xl">
+            {firstTagline}
+            <span className="sr-only"> – </span>
             <br />
-            <span className="text-brand-cream">{secondTagline}.</span>
+            <span className="text-brand-cream">{secondTagline}</span>
           </h1>
 
           {/* Description */}

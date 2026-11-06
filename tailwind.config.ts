@@ -155,18 +155,22 @@ const config: Config = {
         'accordion-down': {
           from: {
             height: '0',
+            opacity: '0',
           },
           to: {
             height: 'var(--radix-accordion-content-height)',
+            opacity: '1',
           },
         },
 
         'accordion-up': {
           from: {
             height: 'var(--radix-accordion-content-height)',
+            opacity: '1',
           },
           to: {
             height: '0',
+            opacity: '0',
           },
         },
 
@@ -201,8 +205,8 @@ const config: Config = {
       },
 
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        'accordion-down': 'accordion-down 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+        'accordion-up': 'accordion-up 0.32s cubic-bezier(0.4, 0, 0.2, 1)',
         'fade-up': 'fade-up 0.7s ease forwards',
         'fade-in': 'fade-in 0.6s ease forwards',
         'cinematic-zoom':

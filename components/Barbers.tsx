@@ -12,10 +12,7 @@ export default function Barbers() {
     >
       <div className="mx-auto max-w-6xl">
         {/* Section heading */}
-        <div className="mb-14 text-center">
-          <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            Unser Team
-          </span>
+        <div className="mb-10 text-center">
 
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Die Barber hinter jedem Cut
@@ -73,8 +70,10 @@ function BarberCard({
         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
           <img
             src={avatar}
-            alt={`${barber.name} barber portrait`}
-            className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0"
+            alt={`${barber.name} – Barber bei VIP FADES in Koblenz`}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         </div>
 

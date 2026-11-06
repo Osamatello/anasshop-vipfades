@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
-import { ArrowDown, Clock, Phone, Scissors } from 'lucide-react';
+import { Clock, Phone, Scissors } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 import GoogleRating from '@/components/reviews/GoogleRating';
 
@@ -48,12 +48,6 @@ export default function Hero() {
       preference.removeEventListener('change', syncPlayback);
     };
   }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    document
-      .querySelector(sectionId)
-      ?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <section
@@ -144,15 +138,6 @@ export default function Hero() {
         <GoogleRating compact />
       </div>
 
-      {/* Scroll indicator */}
-      <button
-        type="button"
-        onClick={() => scrollToSection('#services')}
-        className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 rounded text-brand-cream/70 transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream sm:block"
-        aria-label="Zu den Leistungen scrollen"
-      >
-        <ArrowDown className="h-5 w-5 animate-bounce motion-reduce:animate-none" />
-      </button>
     </section >
   );
 }

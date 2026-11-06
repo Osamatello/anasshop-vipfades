@@ -28,11 +28,27 @@ export const businessStructuredData = {
       image: `${SITE_URL}/images/og-image.jpg`,
       logo: `${SITE_URL}/images/vip-favicon.png`,
       telephone: BUSINESS.phoneFormatted,
+      email: 'vipfadeskoplenz@gmail.com',
+      priceRange: '€5–€65',
+      currenciesAccepted: 'EUR',
+      paymentAccepted: 'Cash',
+      areaServed: {
+        '@type': 'City',
+        name: 'Koblenz',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 50.3614065,
+        longitude: 7.5932881,
+      },
+      hasMap:
+        'https://www.google.com/maps/search/?api=1&query=VIP+Fades+Barbershop+Koblenz&query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'An der Moselbrücke 9',
         postalCode: '56068',
         addressLocality: 'Koblenz',
+        addressRegion: 'Rheinland-Pfalz',
         addressCountry: 'DE',
       },
       openingHoursSpecification: [

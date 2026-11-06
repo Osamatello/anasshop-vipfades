@@ -4,8 +4,16 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ARTICLES } from '@/lib/articles';
 import { scrollToElement, scrollToTop } from '@/lib/smooth-scroll';
 
 const NAV_LINKS = [
@@ -22,6 +30,7 @@ export default function Header() {
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [articlesOpen, setArticlesOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -101,13 +110,13 @@ export default function Header() {
         </button>
 
         {/* Desktop navigation */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 xl:gap-10 lg:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 whitespace-nowrap xl:gap-9 lg:flex">
           {NAV_LINKS.map((link) => (
             link.href.startsWith('/') ? (
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
+                className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.12em] xl:text-[15px] xl:tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream"
               >
                 {link.label}
               </Link>
@@ -116,12 +125,47 @@ export default function Header() {
                 type="button"
                 key={link.href}
                 onClick={() => handleNav(link.href)}
-                className="relative pb-1 text-[15px] font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
+                className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.12em] xl:text-[15px] xl:tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.label}
               </button>
             )
           ))}
+
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger className="group relative inline-flex items-center gap-1.5 pb-1 text-[13px] font-medium uppercase tracking-[0.12em] xl:text-[15px] xl:tracking-[0.16em] text-brand-textSecondary outline-none transition-colors hover:text-brand-cream focus-visible:text-brand-cream data-[state=open]:text-brand-cream">
+              Artikel
+              <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="center"
+              sideOffset={14}
+              className="max-h-[min(70vh,var(--radix-dropdown-menu-content-available-height))] w-[24rem] overflow-y-auto rounded-2xl border-brand-border/80 bg-brand-bg/95 p-2 text-brand-textPrimary shadow-[0_18px_55px_rgba(0,0,0,0.45)] backdrop-blur-md"
+            >
+              <DropdownMenuItem
+                asChild
+                className="cursor-pointer rounded-xl px-3 py-2.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-cream focus:bg-brand-cream/10 focus:text-brand-cream"
+              >
+                <Link href="/artikel">Alle Artikel ansehen</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-brand-border/70" />
+              {ARTICLES.map((article) => (
+                <DropdownMenuItem
+                  key={article.slug}
+                  asChild
+                  className="cursor-pointer rounded-xl px-3 py-2.5 focus:bg-brand-cream/10 focus:text-brand-textPrimary"
+                >
+                  <Link href={`/artikel/${article.slug}`} className="flex w-full flex-col items-start gap-1 text-left">
+                    <span className="text-sm font-light leading-snug">{article.title}</span>
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-brand-cream/75">
+                      {article.category}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -154,7 +198,7 @@ export default function Header() {
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${open
-          ? 'max-h-[28rem] border-b border-brand-border bg-brand-bg'
+          ? 'max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-brand-border bg-brand-bg'
           : 'max-h-0'
           }`}
       >
@@ -180,6 +224,40 @@ export default function Header() {
               </button>
             )
           ))}
+
+          <button
+            type="button"
+            onClick={() => setArticlesOpen((value) => !value)}
+            aria-expanded={articlesOpen}
+            className="flex items-center justify-between rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
+          >
+            Artikel
+            <ChevronDown
+              className={`h-4 w-4 transition-transform duration-200 ${articlesOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {articlesOpen && (
+            <div className="ml-4 flex flex-col gap-0.5 border-l border-brand-border/70 pl-3">
+              <Link
+                href="/artikel"
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-cream hover:bg-white/5"
+              >
+                Alle Artikel ansehen
+              </Link>
+              {ARTICLES.map((article) => (
+                <Link
+                  key={article.slug}
+                  href={`/artikel/${article.slug}`}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-2.5 text-sm font-light leading-snug text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
+                >
+                  {article.title}
+                </Link>
+              ))}
+            </div>
+          )}
 
           <button
             type="button"

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Clock3 } from 'lucide-react';
 
+import ArticlesDropdown from '@/components/ArticlesDropdown';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import Header from '@/components/Header';
@@ -62,6 +63,10 @@ export default function ArtikelPage() {
               Bartpflege und modernes Styling – direkt aus dem Barber-Alltag bei
               VIP FADES BY ANAS in Koblenz.
             </p>
+
+            <div className="mt-9">
+              <ArticlesDropdown articles={ARTICLES} />
+            </div>
           </div>
         </section>
 

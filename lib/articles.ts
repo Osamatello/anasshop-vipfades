@@ -10,6 +10,56 @@ export type ArticleSummary = {
 
 export const ARTICLES: ArticleSummary[] = [
   {
+    slug: 'barber-koblenz',
+    title: 'Barber in Koblenz: Woran erkennst du einen guten Barbershop?',
+    excerpt:
+      'Beratung, Fade-Technik, Hygiene, Bewertungen und Online-Buchung: Diese Checkliste hilft dir, in Koblenz den Barber zu finden, der zu dir passt.',
+    publishedAt: '2026-11-06',
+    updatedAt: '2026-11-06',
+    readingTime: '6 Min.',
+    category: 'Barber Koblenz',
+  },
+  {
+    slug: 'low-mid-high-fade',
+    title: 'Low, Mid oder High Fade: Welche Fade-Höhe passt zu dir?',
+    excerpt:
+      'Wo der Übergang beginnt, wie er wirkt und welche Fade-Höhe zu Kopfform, Alltag und Stil passt – verständlich erklärt vom Barber.',
+    publishedAt: '2026-11-06',
+    updatedAt: '2026-11-06',
+    readingTime: '6 Min.',
+    category: 'Haarschnitt & Fade',
+  },
+  {
+    slug: 'herrenhaarschnitt-preis-koblenz',
+    title: 'Herrenhaarschnitt in Koblenz: Was beeinflusst den Preis?',
+    excerpt:
+      'Fade, Bart, Styling oder Paket: Welche Faktoren den Preis beim Barber bestimmen und wo du die aktuellen Preise von VIP FADES findest.',
+    publishedAt: '2026-11-06',
+    updatedAt: '2026-11-06',
+    readingTime: '5 Min.',
+    category: 'Preise & Leistungen',
+  },
+  {
+    slug: 'fade-mit-locken',
+    title: 'Fade mit Locken: So wirkt der Curly Fade richtig',
+    excerpt:
+      'Welche Fade-Höhe zu lockigem Haar passt, wie viel Länge oben bleiben sollte und wie du deine Locken nach dem Schnitt richtig pflegst.',
+    publishedAt: '2026-11-06',
+    updatedAt: '2026-11-06',
+    readingTime: '6 Min.',
+    category: 'Haarschnitt & Fade',
+  },
+  {
+    slug: 'grooming-fuer-maenner',
+    title: 'Grooming für Männer: Augenbrauen, Gesichtsreinigung & Heißwachs',
+    excerpt:
+      'Mehr als nur ein Haarschnitt: Welche Grooming-Leistungen beim Barber sinnvoll sind und wie du sie mit Haarschnitt und Bart kombinierst.',
+    publishedAt: '2026-11-06',
+    updatedAt: '2026-11-06',
+    readingTime: '5 Min.',
+    category: 'Grooming',
+  },
+  {
     slug: 'skin-fade-koblenz',
     title: 'Skin Fade in Koblenz: Was ist das und für wen eignet er sich?',
     excerpt:

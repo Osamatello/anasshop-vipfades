@@ -6,7 +6,10 @@ import {
     resolveBookingSelection,
 } from "@/lib/supabase/bookings";
 import { getKoblenzDate } from "@/lib/timezone";
-import { validatePhoneNumber } from "@/lib/validation/booking";
+import {
+    phoneLookupVariants,
+    validatePhoneNumber,
+} from "@/lib/validation/booking";
 import { getServices } from "@/lib/supabase/services";
 import { getBarbers } from "@/lib/supabase/barbers";
 
@@ -73,7 +76,7 @@ export async function GET(
 
         const bookings =
             await getUpcomingBookingsByPhone(
-                phoneValidation.value,
+                phoneLookupVariants(phoneValidation.value),
                 getKoblenzDate()
             );
 

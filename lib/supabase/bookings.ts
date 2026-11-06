@@ -238,7 +238,7 @@ export async function getBookingById(
 }
 
 export async function getUpcomingBookingsByPhone(
-    customerPhone: string,
+    customerPhones: string[],
     fromDate: string
 ): Promise<BookingForCancellation[]> {
     const { data, error } = await supabaseServer
@@ -256,7 +256,7 @@ export async function getUpcomingBookingsByPhone(
             google_calendar_event_id
             `
         )
-        .eq("customer_phone", customerPhone)
+        .in("customer_phone", customerPhones)
         .eq("status", "booked")
         .gte("booking_date", fromDate)
         .order("booking_date", { ascending: true })

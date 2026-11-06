@@ -56,6 +56,31 @@ export function normalizePhoneNumber(phone: string): string {
     return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
 }
 
+/**
+ * The ways one German number can be written: 0176…, +49176… and 0049176….
+ * Bookings were saved as typed, so a lookup must match all of them.
+ */
+export function phoneLookupVariants(normalizedPhone: string): string[] {
+    const digits = normalizedPhone.replace(/\D/g, '');
+    let national: string | null = null;
+
+    if (normalizedPhone.startsWith('+49')) {
+        national = digits.slice(2);
+    } else if (digits.startsWith('0049')) {
+        national = digits.slice(4);
+    } else if (digits.startsWith('0') && !digits.startsWith('00')) {
+        national = digits.slice(1);
+    }
+
+    if (!national) {
+        return [normalizedPhone];
+    }
+
+    return Array.from(
+        new Set([normalizedPhone, `0${national}`, `+49${national}`, `0049${national}`]),
+    );
+}
+
 export function validatePhoneNumber(phone: unknown): ValidationResult {
     if (typeof phone !== 'string') {
         return {

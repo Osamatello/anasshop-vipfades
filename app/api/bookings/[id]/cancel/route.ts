@@ -14,6 +14,7 @@ import {
 } from "@/lib/google/calendar";
 
 import {
+    phoneLookupVariants,
     validatePhoneNumber,
 } from "@/lib/validation/booking";
 
@@ -138,8 +139,9 @@ export async function POST(
 
 
         if (
-            booking.customer_phone !==
-            phoneResult.value
+            !phoneLookupVariants(phoneResult.value).includes(
+                booking.customer_phone
+            )
         ) {
             return NextResponse.json(
                 {
@@ -189,8 +191,9 @@ export async function POST(
 
                 if (
                     !latestBooking ||
-                    latestBooking.customer_phone !==
-                        phoneResult.value ||
+                    !phoneLookupVariants(phoneResult.value).includes(
+                        latestBooking.customer_phone
+                    ) ||
                     latestBooking.status !==
                         "cancelled"
                 ) {

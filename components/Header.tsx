@@ -6,11 +6,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 
+import { scrollToElement, scrollToTop } from '@/lib/smooth-scroll';
+
 const NAV_LINKS = [
   { label: 'Leistungen', href: '/leistungen' },
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Erlebnis', href: '#experience' },
-  { label: 'VIP Look', href: '#vip-look' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Besuch', href: '#contact' },
 ];
@@ -40,9 +41,7 @@ export default function Header() {
     }
 
     if (pathname === '/') {
-      document
-        .querySelector(href)
-        ?.scrollIntoView({ behavior: 'smooth' });
+      scrollToElement(document.querySelector(href));
 
       return;
     }
@@ -54,10 +53,7 @@ export default function Header() {
     setOpen(false);
 
     if (pathname === '/') {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      scrollToTop();
 
       return;
     }

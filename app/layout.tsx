@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import { businessStructuredData, serializeJsonLd } from '@/lib/seo/structuredData';
 import CookieConsent from '@/components/CookieConsent';
+import SmoothScroll from '@/components/SmoothScroll';
 
 const SITE_URL = 'https://vip-fades.com';
 
@@ -103,6 +104,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(businessStructuredData) }}
         />
         {children}
+        <SmoothScroll />
         <CookieConsent />
         <SpeedInsights />
         <Analytics />

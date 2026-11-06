@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 import { openCookieSettings } from '@/lib/analytics';
+import { scrollToTop } from '@/lib/smooth-scroll';
 
 const NAV = [
   { label: 'Signature Cuts', href: '/#services' },
@@ -29,7 +30,7 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-1">
             <button
               type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={scrollToTop}
               className="flex items-center gap-2.5"
               aria-label="Nach oben"
             >
@@ -154,7 +155,7 @@ export default function Footer() {
 
           <button
             type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={scrollToTop}
             className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.15em] text-brand-cream transition-colors hover:text-brand-textPrimary sm:text-[11px]"
           >
             Nach oben

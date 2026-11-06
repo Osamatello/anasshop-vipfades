@@ -20,6 +20,7 @@ import { isBarberOff } from '@/lib/booking/barberSchedule';
 import { BUSINESS, type Barber } from '@/lib/data';
 import { getKoblenzDate } from '@/lib/timezone';
 import { trackEvent } from '@/lib/analytics';
+import { scrollElementIntoViewIfAbove, scrollElementToCenter } from '@/lib/smooth-scroll';
 import {
   validateCustomerName,
   validatePhoneNumber,
@@ -121,6 +122,8 @@ export default function BookingWizard({
   const topRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
   const initialBarberApplied = useRef(false);
+  // Set when the visitor came from "Termin bei Anas/Abd buchen": the barber step is skipped.
+  const [barberFromLink, setBarberFromLink] = useState(false);
   const initialServiceApplied = useRef(false);
 
   useEffect(() => {
@@ -149,7 +152,7 @@ export default function BookingWizard({
   // The slot list can be long on phones, so bring the name and phone fields into view.
   useEffect(() => {
     if (time) {
-      detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrollElementToCenter(detailsRef.current);
     }
   }, [time]);
 
@@ -166,6 +169,7 @@ export default function BookingWizard({
 
     if (match) {
       setBarberChoice(match);
+      setBarberFromLink(true);
     }
   }, [barbers, initialBarber]);
 
@@ -249,7 +253,7 @@ export default function BookingWizard({
   const goToStep = (nextStep: WizardStep) => {
     setStep(nextStep);
     setFormError(null);
-    topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    scrollElementIntoViewIfAbove(topRef.current);
   };
 
   const handleSelectionChange = (next: BookingSelection | null) => {
@@ -454,7 +458,7 @@ export default function BookingWizard({
           vipPackages={vipPackages}
           selection={selection}
           onChange={handleSelectionChange}
-          onContinue={() => goToStep(2)}
+          onContinue={() => goToStep(barberFromLink && barberChoice ? 3 : 2)}
         />
       )}
 

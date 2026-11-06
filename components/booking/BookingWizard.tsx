@@ -19,6 +19,7 @@ import { useCatalog } from '@/components/chat/useCatalog';
 import { isBarberOff } from '@/lib/booking/barberSchedule';
 import { BUSINESS, type Barber } from '@/lib/data';
 import { getKoblenzDate } from '@/lib/timezone';
+import { trackEvent } from '@/lib/analytics';
 import {
   validateCustomerName,
   validatePhoneNumber,
@@ -329,6 +330,11 @@ export default function BookingWizard({
         return;
       }
 
+      trackEvent('booking_completed', {
+        value: selectionTotalPrice(selection),
+        currency: 'EUR',
+        barber: barber.name,
+      });
       setConfirmed({ ...ticket, barber: barber.name });
     } catch {
       setFormError(

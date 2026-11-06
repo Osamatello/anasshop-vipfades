@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
+import { openCookieSettings } from '@/lib/analytics';
 
 const NAV = [
   { label: 'Signature Cuts', href: '/#services' },
@@ -142,6 +143,14 @@ export default function Footer() {
           <p className="text-[10px] font-light text-brand-textPrimary/60 sm:text-[11px]">
             © {new Date().getFullYear()} {BUSINESS.name}. Alle Rechte vorbehalten.
           </p>
+
+          <button
+            type="button"
+            onClick={openCookieSettings}
+            className="text-[10px] font-light text-brand-textPrimary/60 underline-offset-4 transition-colors hover:text-brand-cream hover:underline sm:text-[11px]"
+          >
+            Cookie-Einstellungen
+          </button>
 
           <button
             type="button"

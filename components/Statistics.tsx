@@ -25,7 +25,7 @@ export default function Statistics() {
   ];
 
   return (
-    <section className="border-b border-brand-border bg-brand-bg px-5 py-20 sm:px-8 lg:py-24">
+    <section className="border-b border-brand-border bg-brand-bg px-5 py-14 sm:px-8 lg:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-2 md:grid-cols-4">
           {stats.map((stat, index) => (

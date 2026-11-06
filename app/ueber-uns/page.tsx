@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
+import FAQ from '@/components/FAQ';
 import { BUSINESS_ID, SITE_URL, serializeJsonLd } from '@/lib/seo/structuredData';
 
 export const metadata: Metadata = {
@@ -277,6 +278,8 @@ export default function UeberUnsPage() {
             </Link>
           </div>
         </section>
+
+        <FAQ variant="about" />
 
         <Footer />
         <FloatingChat />

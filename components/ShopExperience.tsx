@@ -29,9 +29,6 @@ export default function ShopExperience() {
 
           {/* Content */}
           <div className="flex flex-col justify-center lg:col-span-5">
-            <span className="mb-4 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-              Das VIP Erlebnis
-            </span>
 
             <h2 className="mb-6 font-serif text-4xl font-light leading-[0.98] text-brand-textPrimary sm:text-5xl lg:text-6xl">
               Mehr als nur

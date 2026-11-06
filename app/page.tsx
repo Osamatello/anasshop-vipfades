@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
 import ShopExperience from '@/components/ShopExperience';
-import VIPLook from '@/components/VIPLook';
 import Statistics from '@/components/Statistics';
 import Barbers from '@/components/Barbers';
 import ClientExperiences from '@/components/ClientExperiences';
@@ -25,7 +24,6 @@ export default function Home() {
       <Hero />
       <Services />
       <ShopExperience />
-      <VIPLook />
       <Statistics />
       <Barbers />
       <ClientExperiences />

@@ -15,10 +15,7 @@ export default function Contact() {
     >
       <div className="mx-auto max-w-5xl">
         {/* Section heading */}
-        <div className="mb-14 text-center">
-          <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            Besuch uns
-          </span>
+        <div className="mb-10 text-center">
 
           <h2 className="font-serif font-light tracking-tight">
             <span className="block text-3xl text-brand-textPrimary sm:text-4xl lg:text-5xl">
@@ -39,7 +36,7 @@ export default function Contact() {
         </div>
 
         {/* Contact cards */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <ContactCard
             icon={MapPin}
             label="Adresse"

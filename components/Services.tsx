@@ -15,18 +15,21 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
     ...SERVICES.filter((service) => service.id === 'haircut-beard'),
     ...SERVICES.filter((service) => service.id !== 'haircut-beard'),
   ];
-  const visibleServices = fullCatalogue ? orderedServices : orderedServices.filter((service) => service.id === 'haircut-beard');
+  // Home page: the four most booked services next to the two VIP packages.
+  const HOME_SERVICE_IDS = ['haircut-beard', 'haircut', 'premium-haircut-styling', 'beard'];
+  const visibleServices = fullCatalogue
+    ? orderedServices
+    : HOME_SERVICE_IDS.map((id) => SERVICES.find((service) => service.id === id)).filter(
+        (service): service is (typeof SERVICES)[number] => Boolean(service),
+      );
 
   return (
     <section
       id="services"
-      className="pt-24 pb-24 sm:pt-28 sm:pb-28 lg:pt-32 lg:pb-36"
+      className="py-16 lg:py-20"
     >
       <div className="mx-auto max-w-7xl px-5">
         <div className="text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            VIP FADES
-          </p>
 
           <Heading className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Unsere Leistungen
@@ -39,7 +42,22 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+        {!fullCatalogue && (
+          <div className="mt-10 grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {VIP_PACKAGE_CARDS.map((vipPackage) => (
+              <Link key={vipPackage.id} href={`/leistungen#${vipPackage.slug}`} className={FOCUS} aria-label={`${vipPackage.name} – Leistungen ansehen`}>
+                <VipPackageCard vipPackage={vipPackage} size="large" />
+              </Link>
+            ))}
+            {visibleServices.map((service, index) => (
+              <Link key={service.id} href={`/leistungen#${serviceAnchor(service)}`} className={FOCUS} aria-label={`${service.name} – Leistungen ansehen`}>
+                <ServiceCard service={service} index={index + 2} />
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {fullCatalogue && <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {VIP_PACKAGE_CARDS.map((vipPackage) => (
             fullCatalogue ? <Link key={vipPackage.id} id={vipPackage.slug} href={`/booking?service=${encodeURIComponent(vipPackage.slug)}`} className={`${FOCUS} scroll-mt-28`} aria-label={`${vipPackage.name} – Termin buchen`}>
             <VipPackageCard
@@ -50,9 +68,9 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
               <VipPackageCard vipPackage={vipPackage} size="large" />
             </Link>
           ))}
-        </div>
+        </div>}
 
-        <div className="mt-8 grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {fullCatalogue && <div className="mt-8 grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {visibleServices.map((service, index) => (
             fullCatalogue ? <Link key={service.id} id={serviceAnchor(service)} href={`/booking?service=${encodeURIComponent(service.slug ?? service.id)}`} className={`${FOCUS} scroll-mt-28`} aria-label={`${service.name} – Termin buchen`}>
               <ServiceCard service={service} index={index} />
@@ -60,9 +78,9 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
               <ServiceCard service={service} index={index} />
             </Link>
           ))}
-        </div>
+        </div>}
         {!fullCatalogue && <div className="mt-10 flex flex-col items-center gap-4">
-          <p className="text-sm font-light tracking-wide text-brand-cream/80">+ {SERVICES.length - visibleServices.length} weitere Leistungen</p>
+          <p className="text-sm font-light tracking-wide text-brand-cream/80">Und {SERVICES.length - visibleServices.length} weitere Leistungen – von Augenbrauen bis Gesichtsreinigung</p>
           <Link href="/leistungen" className="inline-flex items-center justify-center rounded-full border border-brand-cream bg-brand-cream px-8 py-4 text-sm font-semibold text-brand-bg transition-colors hover:bg-brand-textPrimary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-cream">Alle Leistungen ansehen</Link>
         </div>}
       </div>

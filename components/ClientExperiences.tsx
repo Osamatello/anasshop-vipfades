@@ -77,10 +77,10 @@ const SECOND_ROW = [
 
 export default function ClientExperiences() {
   return (
-    <section className="border-t border-brand-border py-24 sm:py-28">
+    <section className="border-t border-brand-border py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-5">
         {/* Section heading */}
-        <div className="mb-14 text-center">
+        <div className="mb-8 text-center">
           <h2 className="font-serif text-4xl font-light tracking-tight text-brand-textPrimary sm:text-5xl lg:text-6xl">
             Das sagen unsere Kunden
           </h2>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 import { BARBERS, BUSINESS, SERVICES } from '@/lib/data';
-import { buildFaqPageStructuredData, serializeJsonLd } from '@/lib/seo/structuredData';
+import { buildFaqPageStructuredData, serializeJsonLd, SITE_URL } from '@/lib/seo/structuredData';
 import {
   Accordion,
   AccordionContent,
@@ -139,7 +139,7 @@ const FAQS = [
   },
 ];
 
-const faqStructuredData = buildFaqPageStructuredData([
+const FAQ_TEXT = [
   {
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer:
@@ -219,26 +219,40 @@ const faqStructuredData = buildFaqPageStructuredData([
     answer:
       'Öffne unsere Online-Buchung und wähle „Termin stornieren“. Gib deine Telefonnummer ein und wähle den Termin aus, den du absagen möchtest. Wenn du deinen Termin ändern möchtest, storniere den bestehenden Termin und buche anschließend einen neuen.',
   },
+];
+
+/** The five most asked questions stay on the home page; the rest live on Über uns. */
+const HOME_QUESTIONS = new Set([
+  'Brauche ich bei VIP FADES in Koblenz einen Termin?',
+  'Wie kann ich einen Termin bei VIP FADES buchen?',
+  'Was kostet ein Haarschnitt bei VIP FADES?',
+  'Wie sind die Öffnungszeiten von VIP FADES?',
+  'Wo kann ich bei VIP FADES parken?',
 ]);
 
-export default function FAQ() {
+export default function FAQ({ variant = 'home' }: { variant?: 'home' | 'about' }) {
+  const onHome = variant === 'home';
+  const belongsHere = (question: string) => HOME_QUESTIONS.has(question) === onHome;
+  const faqs = FAQS.filter((faq) => belongsHere(faq.question));
+  const faqStructuredData = buildFaqPageStructuredData(
+    FAQ_TEXT.filter((faq) => belongsHere(faq.question)),
+    onHome ? SITE_URL : `${SITE_URL}/ueber-uns`,
+  );
+
   return (
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="border-y border-brand-border/70 bg-black/20 py-20 sm:py-24 lg:py-28"
+      className="border-y border-brand-border/70 bg-black/20 py-16 lg:py-20"
     >
       <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-brand-cream">
-            FAQ
-          </p>
 
           <h2
             id="faq-heading"
             className="mt-3 max-w-xl font-serif text-4xl font-light leading-tight tracking-tight text-brand-textPrimary sm:text-5xl"
           >
-            Häufige Fragen zu VIP FADES in Koblenz
+            {onHome ? 'Häufige Fragen zu VIP FADES in Koblenz' : 'Weitere Fragen & Antworten'}
           </h2>
 
           <div className="mt-5 h-px w-12 bg-brand-cream" />
@@ -250,7 +264,7 @@ export default function FAQ() {
         </div>
 
         <Accordion type="single" collapsible className="w-full">
-          {FAQS.map((faq, index) => (
+          {faqs.map((faq, index) => (
             <AccordionItem
               key={faq.question}
               value={'faq-' + (index + 1)}

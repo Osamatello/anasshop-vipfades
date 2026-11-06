@@ -84,6 +84,11 @@ const FAQS = [
       'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
   },
   {
+    question: 'Kann ich bei VIP FADES mit Karte bezahlen?',
+    answer:
+      'Bei uns ist nur Barzahlung möglich. Bitte bring für deinen Besuch Bargeld mit.',
+  },
+  {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',
     answer:
       'Wir sind täglich von 10:00 bis 19:00 für dich da. Online-Termine kannst du nur ' +
@@ -171,6 +176,11 @@ const faqStructuredData = buildFaqPageStructuredData([
     question: 'Wo kann ich bei VIP FADES parken?',
     answer:
       'Günstige Parkmöglichkeiten gibt es direkt am Peter-Altmeier-Ufer sowie im 3 Gehminuten entfernten Parkhaus Görresplatz.',
+  },
+  {
+    question: 'Kann ich bei VIP FADES mit Karte bezahlen?',
+    answer:
+      'Bei uns ist nur Barzahlung möglich. Bitte bring für deinen Besuch Bargeld mit.',
   },
   {
     question: 'Wie sind die Öffnungszeiten von VIP FADES?',

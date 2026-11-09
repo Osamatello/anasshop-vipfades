@@ -10,6 +10,26 @@ export type ArticleSummary = {
 
 export const ARTICLES: ArticleSummary[] = [
   {
+    slug: 'barber-koblenz-ohne-termin',
+    title: 'Barber in Koblenz ohne Termin: So klappt dein Walk-in',
+    excerpt:
+      'Täglich von 10 bis 19 Uhr ohne Termin vorbeikommen: So läuft ein Walk-in bei VIP FADES ab – und wann sich ein Online-Termin lohnt.',
+    publishedAt: '2026-11-09',
+    updatedAt: '2026-11-09',
+    readingTime: '4 Min.',
+    category: 'Barber Koblenz',
+  },
+  {
+    slug: 'barbershop-koblenz-altstadt-anfahrt',
+    title: 'Barbershop in der Koblenzer Altstadt: Anfahrt, Parken & Ablauf',
+    excerpt:
+      'Adresse, Parkmöglichkeiten am Peter-Altmeier-Ufer und im Parkhaus Görresplatz und alles, was du vor deinem Besuch bei VIP FADES wissen solltest.',
+    publishedAt: '2026-11-09',
+    updatedAt: '2026-11-09',
+    readingTime: '3 Min.',
+    category: 'Barber Koblenz',
+  },
+  {
     slug: 'barber-koblenz',
     title: 'Barber in Koblenz: Woran erkennst du einen guten Barbershop?',
     excerpt:

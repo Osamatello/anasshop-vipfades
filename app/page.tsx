@@ -23,9 +23,9 @@ export default function Home() {
     <main className="min-h-screen bg-brand-bg">
       <Header />
       <Hero />
+      <InstagramReels />
       <Services />
       <ShopExperience />
-      <InstagramReels />
       <Statistics />
       <Barbers />
       <ClientExperiences />

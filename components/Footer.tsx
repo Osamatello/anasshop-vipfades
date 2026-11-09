@@ -145,6 +145,19 @@ export default function Footer() {
             © {new Date().getFullYear()} {BUSINESS.name}. Alle Rechte vorbehalten.
           </p>
 
+          <div className="flex items-center gap-4">
+          <Link
+            href="/impressum"
+            className="text-[10px] font-light text-brand-textPrimary/60 underline-offset-4 transition-colors hover:text-brand-cream hover:underline sm:text-[11px]"
+          >
+            Impressum
+          </Link>
+          <Link
+            href="/datenschutz"
+            className="text-[10px] font-light text-brand-textPrimary/60 underline-offset-4 transition-colors hover:text-brand-cream hover:underline sm:text-[11px]"
+          >
+            Datenschutz
+          </Link>
           <button
             type="button"
             onClick={openCookieSettings}
@@ -152,6 +165,7 @@ export default function Footer() {
           >
             Cookie-Einstellungen
           </button>
+          </div>
 
           <button
             type="button"

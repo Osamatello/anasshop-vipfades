@@ -54,7 +54,11 @@ export default function CookieConsent() {
       <p className="mt-1.5 text-xs leading-5 text-brand-textSecondary">
         Mit deiner Zustimmung nutzen wir Google Analytics, um zu verstehen, wie unsere Website
         genutzt wird, und sie zu verbessern. Du kannst deine Wahl jederzeit über
-        „Cookie-Einstellungen“ unten auf der Seite ändern.
+        „Cookie-Einstellungen“ unten auf der Seite ändern. Mehr dazu in der{' '}
+        <a href="/datenschutz" className="text-brand-cream underline underline-offset-4">
+          Datenschutzerklärung
+        </a>
+        .
       </p>
 
       <div className="mt-4 grid grid-cols-2 gap-2">

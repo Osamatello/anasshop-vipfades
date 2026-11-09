@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { Clock, Instagram, MapPin, Phone } from 'lucide-react';
 import { BUSINESS } from '@/lib/data';
 
 export default function Contact() {
+  // Google Maps only loads after a click, so no visitor data goes to Google without consent.
+  const [mapLoaded, setMapLoaded] = useState(false);
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     BUSINESS.address,
   )}`;
@@ -78,15 +81,37 @@ export default function Contact() {
         {/* Map */}
         <div className="reveal reveal-delay-4 mt-12 flex flex-col items-center">
           <div className="group w-full overflow-hidden rounded-2xl border border-brand-border shadow-lg transition-all duration-300 hover:border-brand-cream/45 hover:shadow-[0_18px_50px_rgba(232,220,200,0.08)]">
-            <iframe
-              title="Standort von VIP FADES"
-              src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                BUSINESS.address,
-              )}&output=embed`}
-              className="h-[300px] w-full grayscale contrast-110 opacity-90 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100 sm:h-[380px]"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            {mapLoaded ? (
+              <iframe
+                title="Standort von VIP FADES"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  BUSINESS.address,
+                )}&output=embed`}
+                className="h-[300px] w-full grayscale contrast-110 opacity-90 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100 sm:h-[380px]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : (
+              <div className="flex h-[300px] w-full flex-col items-center justify-center gap-4 bg-brand-bg px-6 text-center sm:h-[380px]">
+                <MapPin className="h-8 w-8 text-brand-cream" />
+                <p className="text-sm font-medium text-brand-textPrimary">{BUSINESS.address}</p>
+                <button
+                  type="button"
+                  onClick={() => setMapLoaded(true)}
+                  className="rounded-full border border-brand-cream/60 px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-cream transition-colors hover:bg-brand-cream hover:text-brand-bg"
+                >
+                  Karte laden
+                </button>
+                <p className="max-w-sm text-xs font-light leading-5 text-brand-textSecondary">
+                  Beim Laden der Karte werden Daten (u. a. deine IP-Adresse) an Google übermittelt. Mehr
+                  in der{' '}
+                  <a href="/datenschutz" className="text-brand-cream underline underline-offset-4">
+                    Datenschutzerklärung
+                  </a>
+                  .
+                </p>
+              </div>
+            )}
           </div>
 
           <a

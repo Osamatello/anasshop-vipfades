@@ -20,6 +20,7 @@ const NAV_LINKS = [
   { label: 'Leistungen', href: '/leistungen' },
   { label: 'Über uns', href: '/ueber-uns' },
   { label: 'Erlebnis', href: '#experience' },
+  { label: 'Reels', href: '#reels' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Besuch', href: '#contact' },
 ];

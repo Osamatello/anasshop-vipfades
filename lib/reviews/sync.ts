@@ -72,8 +72,12 @@ export async function syncGoogleReviews() {
     try {
       const response = await oauth.request<ApiReviewsPage>({ url: url.toString(), method: 'GET', timeout: Math.min(15_000, deadline - Date.now()), retry: false });
       data = response.data;
-    } catch {
-      // No upstream body, token, credentials or request headers leak into logs/responses.
+    } catch (error) {
+      // Only the HTTP status and Google's short reason code are logged; no body, token, credentials or headers.
+      const response = (error as { response?: { status?: number; data?: { error?: unknown; error_description?: unknown } } }).response;
+      const googleError = response?.data?.error;
+      const reason = typeof googleError === 'string' ? googleError : typeof googleError === 'object' && googleError ? String((googleError as { status?: unknown }).status ?? '') : '';
+      console.error('[google-reviews] api access failed', { status: response?.status ?? null, reason: reason.slice(0, 60) || null });
       throw new ReviewsSyncError('google_api_access_failed');
     }
     if (page === 0) {

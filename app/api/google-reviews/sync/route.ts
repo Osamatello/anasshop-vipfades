@@ -13,6 +13,7 @@ async function run(request: Request, secret: string | undefined) {
     return Response.json(result, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     const known = error instanceof ReviewsSyncError;
+    console.error('[google-reviews] sync failed', { code: known ? error.code : 'sync_failed', missing: known ? error.missing : [] });
     return Response.json({ error: known ? error.code : 'sync_failed', ...(known && error.missing.length ? { requiredEnvironmentVariables: error.missing } : {}) }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
   }
 }

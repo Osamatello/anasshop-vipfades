@@ -10,6 +10,14 @@ import {
 
 const DEFAULT_SLOT_INTERVAL_MINUTES = 10;
 
+/**
+ * Online bookings must be made at least this long before the appointment
+ * starts. Walk-ins already waiting in the shop are served first otherwise.
+ * When fewer than 4 hours remain before closing, today has no online slots and
+ * the customer books the next bookable day.
+ */
+export const MIN_BOOKING_NOTICE_MINUTES = 4 * 60;
+
 function timeToMinutes(time: string): number {
     const [hours, minutes] = time.slice(0, 5).split(":").map(Number);
 
@@ -78,7 +86,7 @@ export function generateTimeSlots(
  * All existing scheduling protections are applied unchanged:
  *   - online booking Monday–Thursday only
  *   - business hours + is_open
- *   - past dates rejected; same-day only future start times
+ *   - past dates rejected; same-day start times need 4 hours' notice
  *   - no overlap with existing bookings for that barber/date
  *   - no overlap with blocked periods for that barber/date
  *   - Koblenz timezone handling
@@ -163,11 +171,12 @@ export async function getAvailableSlotsForDuration(
         const slotEnd =
             slotStart + requiredDurationMinutes;
 
-        // For same-day bookings, only future appointment
-        // start times are available.
+        // Same-day bookings need at least 4 hours' notice.
+        // (The shop opens at 10:00, so next-day slots always
+        // have more than 4 hours' notice.)
         if (
             isSameDay &&
-            slotStart <= currentMinutes
+            slotStart < currentMinutes + MIN_BOOKING_NOTICE_MINUTES
         ) {
             return false;
         }

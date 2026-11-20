@@ -196,6 +196,21 @@ export default function Header() {
         </div>
       </div>
 
+      {/* Booking page: the shop is open every day, online slots are Mon–Thu only. */}
+      {pathname === '/booking' && (
+        <div
+          role="note"
+          className={`mt-3 flex h-[3.25rem] flex-col items-center justify-center border-y border-red-400/60 bg-red-700 px-3 text-center shadow-[0_6px_20px_rgba(185,28,28,0.35)] ${open ? '-mb-5' : scrolled ? '-mb-3' : '-mb-5'}`}
+        >
+          <p className="text-[12.5px] font-bold leading-5 text-white sm:text-sm">
+            <span className="hidden sm:inline">Hinweis: </span>Täglich geöffnet – komm auch ohne Termin vorbei!
+          </p>
+          <p className="text-[11px] font-medium leading-4 text-red-100">
+            Online-Termine nur Montag bis Donnerstag
+          </p>
+        </div>
+      )}
+
       {/* Mobile drawer */}
       <div
         className={`overflow-hidden transition-all duration-500 lg:hidden ${open

@@ -424,7 +424,7 @@ export default function BookingWizard({
     <div ref={topRef} className="scroll-mt-28">
       {/* On phones the pass joins the page after the services are chosen. */}
       {step > 1 && (
-        <div className="sticky top-[5.5rem] z-20 px-3 pt-3 lg:hidden">
+        <div className="sticky top-[8.25rem] z-20 px-3 pt-3 lg:hidden">
           <VipTicket details={ticket} mini />
         </div>
       )}

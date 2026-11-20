@@ -200,17 +200,33 @@ export default function Header() {
       {pathname === '/booking' && (
         <div
           role="note"
-          className={`mt-3 flex h-[4.25rem] flex-col items-center justify-center border-y border-red-500/50 bg-[#0b0b0b] px-3 text-center ${open ? '-mb-5' : scrolled ? '-mb-3' : '-mb-5'}`}
+          className={`relative mt-3 flex h-[4.25rem] flex-col items-center justify-center gap-1 border-y border-red-500/25 bg-[#0a0808]/95 px-3 text-center backdrop-blur-xl ${open ? '-mb-5' : scrolled ? '-mb-3' : '-mb-5'}`}
         >
-          <p className="text-[12.5px] font-bold leading-5 text-red-500 sm:text-sm">
+          {/* Soft red glow behind the text */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.16),transparent_65%)]"
+          />
+
+          <p className="relative flex items-center gap-2 text-[13px] font-semibold leading-5 tracking-[0.01em] text-red-500 sm:text-[15px]">
+            <span aria-hidden className="relative flex h-2 w-2 flex-shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500/70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+            </span>
             Wir sind täglich für euch da – mit &amp; ohne Termin!
           </p>
-          <p className="text-[11px] font-semibold leading-4 text-red-400">
-            Online-Termine: Mo–Do (empfohlen)
-          </p>
-          <p className="text-[11px] font-semibold leading-4 text-red-400">
-            Fr &amp; Sa: Einfach vorbeikommen!
-          </p>
+
+          <div className="relative flex flex-col items-center text-[11px] leading-4 sm:flex-row sm:gap-3 sm:text-xs">
+            <p>
+              <span className="font-semibold text-red-400">Online-Termine:</span>{' '}
+              <span className="text-red-200/85">Mo–Do (empfohlen)</span>
+            </p>
+            <span aria-hidden className="hidden h-3 w-px bg-red-500/40 sm:block" />
+            <p>
+              <span className="font-semibold text-red-400">Fr &amp; Sa:</span>{' '}
+              <span className="text-red-200/85">Einfach vorbeikommen!</span>
+            </p>
+          </div>
         </div>
       )}
 

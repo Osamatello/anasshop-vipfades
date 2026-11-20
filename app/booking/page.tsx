@@ -55,7 +55,7 @@ export default async function BookingPage({
 
             <PageAtmosphere />
 
-            <div className="booking-font relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-2 pb-5 pt-[8.75rem] sm:px-6 sm:pb-6 sm:pt-[11rem] lg:px-8 lg:pb-8">
+            <div className="booking-font relative z-10 mx-auto min-h-screen w-full max-w-[1600px] px-2 pb-5 pt-[9.75rem] sm:px-6 sm:pb-6 sm:pt-[12rem] lg:px-8 lg:pb-8">
                 <h1 className="sr-only">
                     Termin buchen bei VIP FADES BY ANAS in Koblenz
                 </h1>

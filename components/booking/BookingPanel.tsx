@@ -69,7 +69,7 @@ export default function BookingPanel({
 
       {/* Pass and shop details */}
       <aside className="border-t border-brand-border/60 bg-[radial-gradient(circle_at_50%_24%,rgba(229,208,160,0.2),transparent_55%)] p-6 sm:p-8 lg:border-t-0 lg:p-10">
-        <div className="lg:sticky lg:top-[11rem]">
+        <div className="lg:sticky lg:top-[12rem]">
           {showTicket && ticket && (
             <div className="mx-auto mb-10 mt-2 hidden max-w-[380px] lg:block">
               <VipTicket details={ticket} tilted />

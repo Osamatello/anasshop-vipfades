@@ -200,13 +200,16 @@ export default function Header() {
       {pathname === '/booking' && (
         <div
           role="note"
-          className={`mt-3 flex h-[3.25rem] flex-col items-center justify-center border-y border-red-400/60 bg-red-700 px-3 text-center shadow-[0_6px_20px_rgba(185,28,28,0.35)] ${open ? '-mb-5' : scrolled ? '-mb-3' : '-mb-5'}`}
+          className={`mt-3 flex h-[4.25rem] flex-col items-center justify-center border-y border-red-500/50 bg-[#0b0b0b] px-3 text-center ${open ? '-mb-5' : scrolled ? '-mb-3' : '-mb-5'}`}
         >
-          <p className="text-[12.5px] font-bold leading-5 text-white sm:text-sm">
-            <span className="hidden sm:inline">Hinweis: </span>Täglich geöffnet – komm auch ohne Termin vorbei!
+          <p className="text-[12.5px] font-bold leading-5 text-red-500 sm:text-sm">
+            Wir sind täglich für euch da – mit &amp; ohne Termin!
           </p>
-          <p className="text-[11px] font-medium leading-4 text-red-100">
-            Online-Termine nur Montag bis Donnerstag
+          <p className="text-[11px] font-semibold leading-4 text-red-400">
+            Online-Termine: Mo–Do (empfohlen)
+          </p>
+          <p className="text-[11px] font-semibold leading-4 text-red-400">
+            Fr &amp; Sa: Einfach vorbeikommen!
           </p>
         </div>
       )}

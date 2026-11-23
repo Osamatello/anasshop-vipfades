@@ -18,8 +18,7 @@ These match the website and its structured data (`lib/data.ts`). Use them charac
 | TikTok | https://www.tiktok.com/@vipfades.kob |
 | WhatsApp | https://wa.me/4917663782674 |
 | Booking link | https://vip-fades.com/booking |
-
-Check before you copy: the email on the site is `vipfadeskoplenz@gmail.com` ("kop**l**enz"). If that is not the real inbox, tell me and I'll fix it on the site first.
+| Email | vipfadeskoplenz@gmail.com (spelled "kop-l-enz", confirmed by the owner) |
 
 Rules for every listing:
 - Write the street as **An der Moselbrücke 9** (not "An d. Moselbrücke").

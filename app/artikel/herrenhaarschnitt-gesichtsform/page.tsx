@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
+import RelatedServices from '@/components/RelatedServices';
+import { AutoLinked } from '@/lib/seo/serviceLinks';
 import {
   SITE_URL,
   buildArticleStructuredData,
@@ -132,6 +134,7 @@ export default function HerrenhaarschnittGesichtsformArticlePage() {
             </div>
           </header>
 
+          <AutoLinked>
           <div className="mt-10 space-y-12 text-[15px] font-light leading-8 text-brand-textSecondary sm:text-base">
             <section>
               <h2 className="font-serif text-3xl font-light text-brand-textPrimary sm:text-4xl">
@@ -316,6 +319,8 @@ export default function HerrenhaarschnittGesichtsformArticlePage() {
               </div>
             </section>
 
+            <RelatedServices slug="herrenhaarschnitt-gesichtsform" />
+
             <section className="rounded-[28px] border border-brand-cream/25 bg-brand-cream/[0.045] p-7 sm:p-9">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-cream">
                 VIP FADES KOBLENZ
@@ -336,6 +341,7 @@ export default function HerrenhaarschnittGesichtsformArticlePage() {
               </Link>
             </section>
           </div>
+          </AutoLinked>
         </article>
 
         <Footer />

@@ -1,5 +1,6 @@
 import { VIP_PACKAGE_DEFINITIONS, VIP_PACKAGE_SLUGS } from '@/lib/booking/vipPackages';
 import { BUSINESS, SERVICES } from '@/lib/data';
+import { TEMPORARY_GOOGLE_RATING } from '@/lib/reviews/manual-rating';
 
 export const SITE_URL = 'https://vip-fades.com';
 
@@ -41,8 +42,7 @@ export const businessStructuredData = {
         latitude: 50.3614065,
         longitude: 7.5932881,
       },
-      hasMap:
-        'https://www.google.com/maps/search/?api=1&query=VIP+Fades+Barbershop+Koblenz&query_place_id=ChIJeT1y02d9vkcRFsgzNiDZ2uI',
+      hasMap: BUSINESS.googleMapsUrl,
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'An der Moselbrücke 9',
@@ -67,7 +67,15 @@ export const businessStructuredData = {
           closes: '19:00',
         },
       ],
-      sameAs: [BUSINESS.instagramUrl],
+      // The rating shown on the site (GoogleRating); keep both in step.
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: TEMPORARY_GOOGLE_RATING.rating.toFixed(1),
+        reviewCount: TEMPORARY_GOOGLE_RATING.totalReviewCount,
+        bestRating: '5',
+        worstRating: '1',
+      },
+      sameAs: [BUSINESS.instagramUrl, BUSINESS.tiktokUrl, BUSINESS.googleMapsUrl],
     },
   ],
 };

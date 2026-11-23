@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, Menu, X } from 'lucide-react';
@@ -26,7 +26,6 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
-  const router = useRouter();
   const pathname = usePathname();
 
   const [scrolled, setScrolled] = useState(false);
@@ -42,33 +41,20 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleNav = (href: string) => {
+  // Section links are real links ("/#faq"), so crawlers can follow them.
+  // On the home page they still scroll smoothly instead of jumping.
+  const handleSectionClick = (event: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
     setOpen(false);
-
-    if (href.startsWith('/')) {
-      router.push(href);
-      return;
-    }
-
-    if (pathname === '/') {
-      scrollToElement(document.querySelector(href));
-
-      return;
-    }
-
-    router.push(`/${href}`);
+    if (pathname !== '/') return;
+    event.preventDefault();
+    scrollToElement(document.querySelector(hash));
   };
 
-  const handleBrandClick = () => {
+  const handleBrandClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     setOpen(false);
-
-    if (pathname === '/') {
-      scrollToTop();
-
-      return;
-    }
-
-    router.push('/');
+    if (pathname !== '/') return;
+    event.preventDefault();
+    scrollToTop();
   };
 
   return (
@@ -82,8 +68,8 @@ export default function Header() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5">
         {/* Brand */}
-        <button
-          type="button"
+        <Link
+          href="/"
           onClick={handleBrandClick}
           className="flex items-center gap-3"
           aria-label="VIP FADES BY ANAS Startseite"
@@ -108,7 +94,7 @@ export default function Header() {
               BY ANAS
             </span>
           </div>
-        </button>
+        </Link>
 
         {/* Desktop navigation */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 whitespace-nowrap xl:gap-9 lg:flex">
@@ -122,14 +108,14 @@ export default function Header() {
                 {link.label}
               </Link>
             ) : (
-              <button
-                type="button"
+              <Link
                 key={link.href}
-                onClick={() => handleNav(link.href)}
+                href={`/${link.href}`}
+                onClick={(event) => handleSectionClick(event, link.href)}
                 className="relative pb-1 text-[13px] font-medium uppercase tracking-[0.12em] xl:text-[15px] xl:tracking-[0.16em] text-brand-textSecondary transition-colors hover:text-brand-cream after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 after:bg-brand-cream after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.label}
-              </button>
+              </Link>
             )
           ))}
 
@@ -171,13 +157,12 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           {/* Desktop booking CTA */}
-          <button
-            type="button"
-            onClick={() => handleNav('/booking')}
+          <Link
+            href="/booking"
             className="hidden rounded-full border border-brand-cream bg-brand-cream px-7 py-3 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary lg:inline-flex"
           >
             Termin buchen
-          </button>
+          </Link>
 
           {/* Mobile menu button */}
           <button
@@ -249,14 +234,14 @@ export default function Header() {
                 {link.label}
               </Link>
             ) : (
-              <button
-                type="button"
+              <Link
                 key={link.href}
-                onClick={() => handleNav(link.href)}
+                href={`/${link.href}`}
+                onClick={(event) => handleSectionClick(event, link.href)}
                 className="rounded-lg px-4 py-3 text-left text-sm font-medium uppercase tracking-[0.16em] text-brand-textSecondary transition-colors hover:bg-white/5 hover:text-brand-cream"
               >
                 {link.label}
-              </button>
+              </Link>
             )
           ))}
 
@@ -294,13 +279,13 @@ export default function Header() {
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={() => handleNav('/booking')}
-            className="mt-3 rounded-full border border-brand-cream bg-brand-cream px-6 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
+          <Link
+            href="/booking"
+            onClick={() => setOpen(false)}
+            className="mt-3 rounded-full text-center border border-brand-cream bg-brand-cream px-6 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
           >
             Termin buchen
-          </button>
+          </Link>
         </nav>
       </div>
     </header>

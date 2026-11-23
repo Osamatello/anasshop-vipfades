@@ -3,7 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUp, Instagram, MapPin, Phone } from 'lucide-react';
-import { BUSINESS } from '@/lib/data';
+import { usePathname } from 'next/navigation';
+import TikTokIcon from '@/components/TikTokIcon';
+import WhatsAppIcon from '@/components/WhatsAppIcon';
+import { BUSINESS, SERVICES } from '@/lib/data';
+import { serviceHref } from '@/lib/seo/serviceLinks';
 import { openCookieSettings } from '@/lib/analytics';
 import { scrollToTop } from '@/lib/smooth-scroll';
 
@@ -18,9 +22,10 @@ const NAV = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     BUSINESS.address,
-  )}`;
+  )}&destination_place_id=${BUSINESS.googlePlaceId}`;
 
   return (
     <footer className="relative overflow-hidden border-t border-brand-border bg-brand-bg px-5 pb-4 pt-7 sm:px-8 sm:pb-5 sm:pt-9">
@@ -28,11 +33,15 @@ export default function Footer() {
         <div className="grid grid-cols-[0.85fr_1.15fr] gap-x-5 gap-y-5 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-x-10 lg:gap-y-0">
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="flex items-center gap-2.5"
-              aria-label="Nach oben"
+            <Link
+              href="/"
+              onClick={(event) => {
+                if (pathname !== '/') return;
+                event.preventDefault();
+                scrollToTop();
+              }}
+              className="flex w-fit items-center gap-2.5"
+              aria-label="VIP FADES BY ANAS Startseite"
             >
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-brand-cream/30 bg-white shadow-sm sm:h-11 sm:w-11">
                 <Image
@@ -55,7 +64,7 @@ export default function Footer() {
                   BY ANAS
                 </span>
               </div>
-            </button>
+            </Link>
 
             <p className="mt-4 hidden max-w-sm text-sm font-light leading-7 text-brand-textPrimary/70 lg:block">
               Premium Cuts. Saubere Fades. Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz.
@@ -127,11 +136,31 @@ export default function Footer() {
               </a>
 
               <a
-                href={directionsUrl}
+                href={BUSINESS.tiktokUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
-                aria-label="Route öffnen"
+                aria-label="TikTok öffnen"
+              >
+                <TikTokIcon className="h-3.5 w-3.5" />
+              </a>
+
+              <a
+                href={BUSINESS.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
+                aria-label="WhatsApp öffnen"
+              >
+                <WhatsAppIcon className="h-3.5 w-3.5" />
+              </a>
+
+              <a
+                href={BUSINESS.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-border text-brand-textPrimary/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-cream/60 hover:bg-brand-cream/5 hover:text-brand-cream"
+                aria-label="VIP FADES auf Google Maps öffnen"
               >
                 <MapPin className="h-3.5 w-3.5" />
               </a>
@@ -139,8 +168,29 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Every service, linked to its card on /leistungen */}
+        <nav aria-label="Leistungen" className="mt-6 border-t border-brand-border pt-3.5">
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 sm:justify-start">
+            <li>
+              <Link href="/leistungen" className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-cream transition-colors hover:text-brand-textPrimary">
+                Leistungen
+              </Link>
+            </li>
+            {SERVICES.map((service) => (
+              <li key={service.id}>
+                <Link
+                  href={serviceHref(service)}
+                  className="text-[11px] font-light text-brand-textPrimary/65 transition-colors hover:text-brand-cream sm:text-[12px]"
+                >
+                  {service.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         {/* Bottom bar */}
-        <div className="mt-6 flex flex-col items-center justify-between gap-2 border-t border-brand-border pt-3.5 sm:flex-row">
+        <div className="mt-3.5 flex flex-col items-center justify-between gap-2 border-t border-brand-border pt-3.5 sm:flex-row">
           <p className="text-[10px] font-light text-brand-textPrimary/60 sm:text-[11px]">
             © {new Date().getFullYear()} {BUSINESS.name}. Alle Rechte vorbehalten.
           </p>

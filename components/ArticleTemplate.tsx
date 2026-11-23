@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Clock3 } from 'lucide-react';
 
@@ -7,7 +7,9 @@ import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import Header from '@/components/Header';
 import PageAtmosphere from '@/components/PageAtmosphere';
+import RelatedServices from '@/components/RelatedServices';
 import { ARTICLES, getArticleBySlug } from '@/lib/articles';
+import { autoLink } from '@/lib/seo/serviceLinks';
 import {
   SITE_URL,
   buildArticleStructuredData,
@@ -237,11 +239,13 @@ export default function ArticleTemplate({ content }: { content: ArticleContent }
           </header>
 
           <div className="mt-10 space-y-12 text-[15px] font-light leading-8 text-brand-textSecondary sm:text-base sm:leading-8">
-            {content.sections.map((section) => (
-              <Section key={section.id} section={section} />
-            ))}
-
-            <section id="faq" aria-labelledby="faq-heading">
+            {/* Sections are expanded here (Section is a plain function) so the
+                service auto-linker sees their text, in reading order, with the FAQ. */}
+            {autoLink([
+              ...content.sections.map((section) => (
+                <Fragment key={section.id}>{Section({ section })}</Fragment>
+              )),
+            <section key="faq" id="faq" aria-labelledby="faq-heading">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-cream">FAQ</p>
               <h2 id="faq-heading" className={`mt-3 ${h2Class}`}>
                 {content.faqHeading}
@@ -254,7 +258,10 @@ export default function ArticleTemplate({ content }: { content: ArticleContent }
                   </div>
                 ))}
               </div>
-            </section>
+            </section>,
+            ])}
+
+            <RelatedServices slug={content.slug} />
 
             <section aria-labelledby="weiterlesen">
               <h2 id="weiterlesen" className={h2Class}>

@@ -8,6 +8,7 @@ import PageAtmosphere from '@/components/PageAtmosphere';
 import Footer from '@/components/Footer';
 import FloatingChat from '@/components/FloatingChat';
 import FAQ from '@/components/FAQ';
+import { AutoLinked } from '@/lib/seo/serviceLinks';
 import { BUSINESS_ID, SITE_URL, serializeJsonLd } from '@/lib/seo/structuredData';
 
 export const metadata: Metadata = {
@@ -110,6 +111,7 @@ export default function UeberUnsPage() {
       <div className="relative z-10">
         <Header />
 
+        <AutoLinked>
         <section className="mx-auto max-w-7xl px-5 pb-16 pt-36 sm:px-8 sm:pb-20 sm:pt-40 lg:pb-24">
           <div className="max-w-4xl">
             <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-brand-cream sm:text-xs">
@@ -278,6 +280,7 @@ export default function UeberUnsPage() {
             </Link>
           </div>
         </section>
+        </AutoLinked>
 
         <FAQ variant="about" />
 

@@ -7,7 +7,12 @@ export const BUSINESS = {
   phone: "017663782674",
   phoneFormatted: "+49 176 63782674",
   instagram: "@vipfades.kob",
-  instagramUrl: "https://instagram.com/vipfades.kob",
+  instagramUrl: "https://www.instagram.com/vipfades.kob/",
+  tiktok: "@vipfades.kob",
+  tiktokUrl: "https://www.tiktok.com/@vipfades.kob",
+  whatsappUrl: "https://wa.me/4917663782674",
+  googlePlaceId: "ChIJeT1y02d9vkcRFsgzNiDZ2uI",
+  googleMapsUrl: "https://www.google.com/maps/place/?q=place_id:ChIJeT1y02d9vkcRFsgzNiDZ2uI",
   hours: {
     open: "Täglich geöffnet, 10:00 bis 19:00",
     walkins: "Walk-ins täglich willkommen",

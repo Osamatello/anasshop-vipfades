@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Clock, Instagram, MapPin, Phone } from 'lucide-react';
+import TikTokIcon from '@/components/TikTokIcon';
+import WhatsAppIcon from '@/components/WhatsAppIcon';
 import { BUSINESS } from '@/lib/data';
 
 export default function Contact() {
@@ -9,7 +12,7 @@ export default function Contact() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     BUSINESS.address,
-  )}`;
+  )}&destination_place_id=${BUSINESS.googlePlaceId}`;
 
   return (
     <section
@@ -105,24 +108,44 @@ export default function Contact() {
                 <p className="max-w-sm text-xs font-light leading-5 text-brand-textSecondary">
                   Beim Laden der Karte werden Daten (u. a. deine IP-Adresse) an Google übermittelt. Mehr
                   in der{' '}
-                  <a href="/datenschutz" className="text-brand-cream underline underline-offset-4">
+                  <Link href="/datenschutz" className="text-brand-cream underline underline-offset-4">
                     Datenschutzerklärung
-                  </a>
+                  </Link>
                   .
                 </p>
               </div>
             )}
           </div>
 
-          <a
-            href={directionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
-          >
-            <MapPin className="h-4 w-4" />
-            Route anzeigen
-          </a>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-cream bg-brand-cream px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary"
+            >
+              <MapPin className="h-4 w-4" />
+              Route anzeigen
+            </a>
+            <a
+              href={BUSINESS.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-cream/60 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-cream transition-colors hover:bg-brand-cream hover:text-brand-bg"
+            >
+              <WhatsAppIcon className="h-4 w-4" />
+              WhatsApp
+            </a>
+            <a
+              href={BUSINESS.tiktokUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-cream/60 px-6 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-cream transition-colors hover:bg-brand-cream hover:text-brand-bg"
+            >
+              <TikTokIcon className="h-4 w-4" />
+              TikTok
+            </a>
+          </div>
         </div>
       </div>
     </section>

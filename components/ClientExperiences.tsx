@@ -2,6 +2,7 @@
 
 import { Quote, Star } from 'lucide-react';
 import GoogleRating from '@/components/reviews/GoogleRating';
+import { REVIEW_TERMS, autoLink } from '@/lib/seo/serviceLinks';
 
 const REVIEWS = [
   {
@@ -231,7 +232,7 @@ function ReviewItem({
 
         {/* Review text */}
         <p className="text-[11px] font-light leading-[1.15rem] text-brand-textPrimary/75 sm:text-[13px] sm:leading-6">
-          “{review.text}”
+          “{autoLink(review.text, { table: REVIEW_TERMS, max: 2 })}”
         </p>
       </div>
 

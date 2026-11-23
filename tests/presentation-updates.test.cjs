@@ -51,10 +51,10 @@ test('original seven testimonials remain static and unchanged', () => {
 });
 test('Hero uses right-hand rating, five fractional stars and Google review count', () => {
   const html = rating(ready, { compact: true });
-  assert.match(html, /order-last text-\[42px\]/);
+  assert.match(html, /order-last text-\[26px\] sm:text-5xl/);
   assert.match(html, />4\.6<\/span>/);
   assert.match(html, />211 Google-Bewertungen<\/span>/);
-  assert.equal((html.match(/relative block h-5/g) || []).length, 5);
+  assert.equal((html.match(/relative block h-3 w-3 sm:h-5/g) || []).length, 5);
   assert.match(html, /width:59\.999999999999964%/);
   const visible = html.replace(/<[^>]*>/g, '');
   assert.equal(visible, '4.6211 Google-Bewertungen');
@@ -80,7 +80,7 @@ test('all three summaries use shared owner-verified fallback without loading tex
     for (const props of [{ compact: true }, {}, { reviewBlock: true }]) {
       const html = rating({ stats: null, status }, props);
       assert.match(html, />5\.0<\/span>/);
-      assert.match(html, />169 Google-Bewertungen<\/span>/);
+      assert.match(html, />182 Google-Bewertungen<\/span>/);
       assert.equal((html.match(/width:100%/g) || []).length, 5);
       assert.doesNotMatch(html, /role="status"|werden geladen|pending|nicht verfügbar/i);
     }
@@ -95,7 +95,7 @@ test('Hero has no native or custom playback controls and keeps video behavior', 
   for (const attribute of ['autoPlay', 'muted', 'loop', 'playsInline']) assert.match(hero, new RegExp(`\\b${attribute}\\b`));
   assert.doesNotMatch(hero, /togglePlayback|Hintergrundvideo abspielen|Hintergrundvideo pausieren|\bcontrols\b|\bPlay\b|\bPause\b/);
   assert.match(hero, /prefers-reduced-motion/);
-  assert.match(hero, /videoRef\.current\?\.pause\(\)/);
+  assert.match(hero, /video\.pause\(\)/);
 });
 
 test('homepage keeps three cards, advertises six more, and links to catalogue', () => {
@@ -111,7 +111,7 @@ test('homepage keeps three cards, advertises six more, and links to catalogue', 
   });
   const home = renderToStaticMarkup(React.createElement(Component));
   assert.equal((home.match(/<article>/g) || []).length, 3);
-  assert.match(home, /\+ 6 weitere Leistungen/);
+  assert.match(home, /Und 6 weitere Leistungen/);
   assert.match(home, /href="\/leistungen"[^>]*>Alle Leistungen ansehen/);
   for (const anchor of ['vip-koenigsklasse', 'vip-exklusiv', 'haarschnitt-bart']) assert.ok(home.includes(`href="/leistungen#${anchor}"`));
   const full = renderToStaticMarkup(React.createElement(Component, { fullCatalogue: true }));
@@ -150,7 +150,8 @@ test('all ten catalogue links preselect only their stable service slug', () => {
     '@/components/ServiceCard': { default: () => null, __esModule: true },
     '@/lib/services/presentation': { serviceAnchor: (item) => item.id },
   });
-  assert.doesNotMatch(renderToStaticMarkup(React.createElement(Home)), /booking\?service=premium-haircut-styling|Premium Haarschnitt/);
+  // Home cards open the catalogue, never booking directly.
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(Home)), /booking\?service=/);
   const ordered = renderToStaticMarkup(React.createElement(Picker, { services: [...services].reverse(), vipPackages: [...vipPackages].reverse() }));
   const names = [...ordered.matchAll(/role="checkbox"[\s\S]*?<\/button>/g)].map((item) => [...services, ...vipPackages].find((service) => item[0].includes(service.name.replace(/&/g, '&amp;')))?.slug);
   assert.deepEqual(names, ['vip-koenigsklasse', 'vip-exklusiv', 'haircut-beard', 'mens-haircut', 'premium-haircut-styling', 'facial-cleansing', 'hot-wax', 'ears-nose', 'beard-trim', 'eyebrows']);

@@ -32,9 +32,12 @@ Rules for every listing:
 
 ### Most important
 
-- [ ] **Google Business Profile**: https://business.google.com
-  - Status: **exists** (place ID `ChIJeT1y02d9vkcRFsgzNiDZ2uI`, 5.0 ★ / 182 reviews as shown on the site). Open on Maps: https://www.google.com/maps/place/?q=place_id:ChIJeT1y02d9vkcRFsgzNiDZ2uI
-  - To check: name exactly "VIP FADES BY ANAS"; website field = `https://vip-fades.com`; booking ("Appointment") link = `https://vip-fades.com/booking`; hours Mon–Sun 10–19; phone `+49 176 63782674`; Instagram and TikTok under "Social profiles"; services list matches /leistungen prices.
+- [x] **Google Business Profile**: https://business.google.com (account tieoanas, verified)
+  - Status: **exists**, listed as "VIP Fades Barbershop", An d. Moselbrücke 9, 5.0 ★ / 184 reviews. Open on Maps: https://www.google.com/maps/place/?q=place_id:ChIJeT1y02d9vkcRFsgzNiDZ2uI
+  - Done 23 Nov 2026: TikTok changed from @andres.barbershopkoblenz to @vipfades.kob (approved); added the 5 missing services with site prices and descriptions (Premium Haarschnitt & Styling 28 €, Augenbrauen 7 €, Gesichtsreinigung 20 €, Heißwachs 10 €, Ohren & Nase 5 €); set "appointment required: no" and "walk-ins: yes".
+  - Already correct: website (with tracking tags), booking link to `/booking`, phone, Instagram, the other 5 services and prices.
+  - Left as is on purpose: name, address spelling ("An d."), opening hours, payment methods.
+  - Not the same as the site yet: Google lists cards / Amex / Visa / NFC as payment, the site's schema says cash only. Google's name is "VIP Fades Barbershop", the site's is "VIP FADES BY ANAS".
 - [ ] **Apple Business Connect** (Apple Maps / Siri): https://businessconnect.apple.com
   - Status: not checked (Apple Maps has no public search I can use). Open Apple Maps on an iPhone, search "VIP FADES Koblenz". Claim it if it's there; create it if not.
 - [ ] **Bing Places**: https://www.bingplaces.com

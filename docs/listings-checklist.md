@@ -36,8 +36,10 @@ Rules for every listing:
   - Status: **exists**, listed as "VIP Fades Barbershop", An d. Moselbrücke 9, 5.0 ★ / 184 reviews. Open on Maps: https://www.google.com/maps/place/?q=place_id:ChIJeT1y02d9vkcRFsgzNiDZ2uI
   - Done 23 Nov 2026: TikTok changed from @andres.barbershopkoblenz to @vipfades.kob (approved); added the 5 missing services with site prices and descriptions (Premium Haarschnitt & Styling 28 €, Augenbrauen 7 €, Gesichtsreinigung 20 €, Heißwachs 10 €, Ohren & Nase 5 €); set "appointment required: no" and "walk-ins: yes".
   - Already correct: website (with tracking tags), booking link to `/booking`, phone, Instagram, the other 5 services and prices.
-  - Left as is on purpose: name, address spelling ("An d."), opening hours, payment methods.
-  - Not the same as the site yet: Google lists cards / Amex / Visa / NFC as payment, the site's schema says cash only. Google's name is "VIP Fades Barbershop", the site's is "VIP FADES BY ANAS".
+  - Payments set back to **cash only** (Google had switched it to cards / Amex / Visa by itself); all card options set to No. Pending Google review.
+  - Left as is on purpose: name, address spelling ("An d."), opening hours.
+  - Not the same as the site: Google's name is "VIP Fades Barbershop", the site's is "VIP FADES BY ANAS".
+  - Watch: Google sometimes changes attributes on its own ("updated by Google"). Check payments and planning again in a few weeks.
 - [ ] **Apple Business Connect** (Apple Maps / Siri): https://businessconnect.apple.com
   - Status: not checked (Apple Maps has no public search I can use). Open Apple Maps on an iPhone, search "VIP FADES Koblenz". Claim it if it's there; create it if not.
 - [ ] **Bing Places**: https://www.bingplaces.com
@@ -96,7 +98,7 @@ All text below is taken word for word from the website, so every listing says th
 
 **Opening hours:** Monday–Sunday 10:00–19:00 (online booking Mon–Thu; walk-ins every day)
 
-**Payment:** Cash
+**Payment:** Cash only (no cards)
 
 **Services and prices** (Google "Services" / "Products", Apple, booking apps):
 
@@ -113,7 +115,7 @@ All text below is taken word for word from the website, so every listing says th
 | Heißwachs – Glattes Finish mit warmer Wachsbehandlung. | 10 € | 10 Min. |
 | Ohren & Nase – Schnelle und saubere Detailpflege. | 5 € | – |
 
-**Google Business Profile attributes to switch on:** "Online appointments" (link `https://vip-fades.com/booking`), "Walk-ins welcome", "Cash".
+**Attributes for every listing:** online appointments (link `https://vip-fades.com/booking`), walk-ins welcome, appointment not required, cash only.
 
 **Photos:** use the same shop and team photos as the website, so the listings look like the site.
 

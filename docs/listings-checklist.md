@@ -79,6 +79,41 @@ The site has its own booking, so these are optional. Each one is a listing with 
 
 - [ ] **Koblenz city / Altstadt business pages**: e.g. Koblenz-Touristik, local "Einkaufen in der Altstadt" lists. Ask whether shops in the Altstadt can be listed.
 
+## Copy-paste pack
+
+All text below is taken word for word from the website, so every listing says the same thing.
+
+**Short description** (Instagram/TikTok bio, short fields):
+
+> VIP FADES BY ANAS – Barbershop in Koblenz
+
+**Long description** (Google, Apple, Bing, directories; under 750 characters):
+
+> Barbershop in Koblenz für präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling. Premium Cuts. Saubere Fades. Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz. Täglich geöffnet, 10:00 bis 19:00. Walk-ins täglich willkommen.
+
+**Opening hours:** Monday–Sunday 10:00–19:00 (online booking Mon–Thu; walk-ins every day)
+
+**Payment:** Cash
+
+**Services and prices** (Google "Services" / "Products", Apple, booking apps):
+
+| Service | Price | Duration |
+|---|---|---|
+| VIP KÖNIGSKLASSE – Das komplette VIP FADES Erlebnis mit allen Leistungen inklusive Gesichtsreinigung. | 65 € | 60 Min. |
+| VIP EXKLUSIV – Alle VIP-Leistungen ohne Gesichtsreinigung. | 45 € | 40 Min. |
+| Herrenhaarschnitt – Präziser Haarschnitt, abgestimmt auf deinen Style. | 20 € | 30 Min. |
+| Bart trimmen – Formen, Konturen und ein sauberes Bart-Finish. | 15 € | 20 Min. |
+| Premium Haarschnitt & Styling – Persönliche Beratung, Haarwäsche, präziser Haarschnitt und professionelles Styling für ein komplettes Finish. | 28 € | 40 Min. |
+| Haarschnitt + Bart – Das komplette Grooming-Erlebnis. | 35 € | 40 Min. |
+| Augenbrauen – Saubere Form und präzise Konturen. | 7 € | 10 Min. |
+| Gesichtsreinigung – Tiefenreinigung für ein frisches Hautgefühl. | 20 € | – |
+| Heißwachs – Glattes Finish mit warmer Wachsbehandlung. | 10 € | 10 Min. |
+| Ohren & Nase – Schnelle und saubere Detailpflege. | 5 € | – |
+
+**Google Business Profile attributes to switch on:** "Online appointments" (link `https://vip-fades.com/booking`), "Walk-ins welcome", "Cash".
+
+**Photos:** use the same shop and team photos as the website, so the listings look like the site.
+
 ## When something changes
 
 If the phone, hours or address ever change, update in this order: `lib/data.ts` on the site → Google Business Profile → Apple → Bing → Instagram/TikTok/WhatsApp → everything else on this list.

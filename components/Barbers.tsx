@@ -67,7 +67,7 @@ function BarberCard({
     >
       {/* Barber identity */}
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:gap-6 sm:text-left">
-        <div className="relative h-16 w-16 flex-shrink-0 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
+        <div className="relative h-24 w-24 flex-shrink-0 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
           <img
             src={avatar}
             alt={`${barber.name} – Barber bei VIP FADES in Koblenz`}

@@ -42,7 +42,7 @@ export default function Contact() {
         </div>
 
         {/* Contact cards */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           <ContactCard
             icon={MapPin}
             label="Adresse"
@@ -168,12 +168,12 @@ function ContactCard({
   highlightedLines?: number;
 }) {
   const cardContent = (
-    <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/55 hover:shadow-[0_14px_40px_rgba(232,220,200,0.07)]">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-brand-cream/30 bg-brand-cream/5 transition-all duration-300 group-hover:border-brand-cream/55 group-hover:bg-brand-cream/10">
-        <Icon className="h-5 w-5 text-brand-cream" />
+    <div className="reveal reveal-delay-2 group flex h-full flex-col items-start rounded-2xl border border-brand-border bg-brand-bg p-4 transition-all sm:p-6 duration-300 hover:-translate-y-1 hover:border-brand-cream/55 hover:shadow-[0_14px_40px_rgba(232,220,200,0.07)]">
+      <div className="flex h-9 w-9 items-center justify-center rounded-full border sm:h-12 sm:w-12 border-brand-cream/30 bg-brand-cream/5 transition-all duration-300 group-hover:border-brand-cream/55 group-hover:bg-brand-cream/10">
+        <Icon className="h-4 w-4 text-brand-cream sm:h-5 sm:w-5" />
       </div>
 
-      <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-cream">
+      <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-cream sm:mt-5 sm:text-[11px] sm:tracking-[0.22em]">
         {label}
       </p>
 
@@ -183,8 +183,8 @@ function ContactCard({
             key={`${label}-${index}`}
             className={
               index < highlightedLines
-                ? 'text-sm font-medium leading-relaxed text-brand-textPrimary'
-                : 'text-sm font-light leading-relaxed text-brand-textPrimary/80'
+                ? 'text-xs font-medium leading-relaxed text-brand-textPrimary [overflow-wrap:anywhere] sm:text-sm'
+                : 'text-xs font-light leading-relaxed text-brand-textPrimary/80 sm:text-sm'
             }
           >
             {line}

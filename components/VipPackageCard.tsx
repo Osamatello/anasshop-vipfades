@@ -21,7 +21,7 @@ type VipPackageCardProps = {
 };
 
 export const LARGE_CARD_LAYOUT =
-  'h-full min-h-[220px] justify-between rounded-xl border p-7';
+  'h-full gap-2 justify-between rounded-xl border p-3.5 sm:min-h-[220px] sm:gap-0 sm:p-7';
 export const COMPACT_CARD_LAYOUT = 'gap-2 rounded-2xl border p-3.5';
 
 /** Shared VIP package presentation used on the homepage and in booking. */
@@ -53,7 +53,7 @@ export default function VipPackageCard({
 
   const content = (
     <>
-      <div className="flex items-start justify-between gap-3">
+      <div className={`flex items-start justify-between gap-3 ${size === 'large' ? 'max-sm:flex-col max-sm:gap-1.5' : ''}`}>
         <div className="flex items-start gap-2.5">
           {onToggle ? (
             <span
@@ -95,7 +95,7 @@ export default function VipPackageCard({
           </span>
         </div>
 
-        <div className="flex flex-shrink-0 flex-col items-end">
+        <div className={`flex flex-shrink-0 flex-col items-end ${size === 'large' ? 'max-sm:items-start' : ''}`}>
           {vipPackage.originalPrice ? (
             <span className="text-[11px] font-light text-brand-textSecondary line-through">
               {vipPackage.originalPrice} €

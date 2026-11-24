@@ -10,9 +10,24 @@ export default function ShopExperience() {
       className="section-padding border-y border-brand-border bg-brand-bgSecondary px-5 sm:px-8"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        {/* Mobile: title, text, image, details. Desktop: image left, text right. */}
+        <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-x-16 lg:gap-y-0">
+          <div className="lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end">
+            <h2 className="mb-6 font-serif text-4xl font-light leading-[0.98] text-brand-textPrimary sm:text-5xl lg:text-6xl">
+              Mehr als nur
+              <br />
+              ein Haarschnitt
+            </h2>
+
+            <p className="max-w-xl text-base font-light leading-relaxed text-brand-textPrimary/85 sm:text-lg">
+              Präzises Grooming in entspannter Premium-Atmosphäre – abgestimmt
+              auf deinen Style und deine Zeit.
+            </p>
+
+          </div>
+
           {/* Image */}
-          <div className="reveal lg:col-span-7">
+          <div className="reveal lg:col-span-7 lg:col-start-1 lg:row-span-2 lg:row-start-1">
             <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-brand-border bg-brand-card sm:aspect-[16/10]">
               <Image
                 src="/images/vip-experience-shop.png"
@@ -27,22 +42,9 @@ export default function ShopExperience() {
             </div>
           </div>
 
-          {/* Content */}
-          <div className="flex flex-col justify-center lg:col-span-5">
-
-            <h2 className="mb-6 font-serif text-4xl font-light leading-[0.98] text-brand-textPrimary sm:text-5xl lg:text-6xl">
-              Mehr als nur
-              <br />
-              ein Haarschnitt
-            </h2>
-
-            <p className="max-w-xl text-base font-light leading-relaxed text-brand-textPrimary/85 sm:text-lg">
-              Präzises Grooming in entspannter Premium-Atmosphäre – abgestimmt
-              auf deinen Style und deine Zeit.
-            </p>
-
-            <div className="my-8 h-px w-20 bg-brand-cream/40" />
-
+          {/* Details */}
+          <div className="lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-start">
+            <div className="mb-8 hidden h-px w-20 bg-brand-cream/40 lg:mt-8 lg:block" />
             <div className="reveal reveal-delay-2">
               <div className="mb-3">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-cream">

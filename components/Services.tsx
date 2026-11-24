@@ -43,7 +43,7 @@ export default function Services({ fullCatalogue = false }: { fullCatalogue?: bo
         </div>
 
         {!fullCatalogue && (
-          <div className="mt-10 grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:auto-rows-fr sm:gap-6 lg:grid-cols-3 lg:gap-8">
             {VIP_PACKAGE_CARDS.map((vipPackage) => (
               <Link key={vipPackage.id} href={`/leistungen#${vipPackage.slug}`} className={FOCUS} aria-label={`${vipPackage.name} – Leistungen ansehen`}>
                 <VipPackageCard vipPackage={vipPackage} size="large" />

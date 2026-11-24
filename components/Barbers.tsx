@@ -27,7 +27,7 @@ export default function Barbers() {
         </div>
 
         {/* Barber cards */}
-        <div className="grid gap-8 sm:grid-cols-2 sm:gap-10">
+        <div className="grid grid-cols-2 gap-3 sm:gap-10">
           {BARBERS.map((barber: Barber, index: number) => (
             <BarberCard
               key={barber.id}
@@ -63,11 +63,11 @@ function BarberCard({
   return (
     <article
       className={`reveal ${index === 0 ? 'reveal-delay-2' : 'reveal-delay-3'
-        } group relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-card/45 p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/60 hover:shadow-[0_16px_45px_rgba(232,220,200,0.08)] sm:p-10`}
+        } group relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-card/45 p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-brand-cream/60 hover:shadow-[0_16px_45px_rgba(232,220,200,0.08)] max-sm:p-4 sm:p-10`}
     >
       {/* Barber identity */}
-      <div className="flex items-center gap-6">
-        <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
+      <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:gap-6 sm:text-left">
+        <div className="relative h-16 w-16 flex-shrink-0 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-brand-border bg-brand-bgSecondary ring-1 ring-brand-cream/20 transition-all duration-300 group-hover:border-brand-cream/40 group-hover:ring-brand-cream/30">
           <img
             src={avatar}
             alt={`${barber.name} – Barber bei VIP FADES in Koblenz`}
@@ -78,30 +78,30 @@ function BarberCard({
         </div>
 
         <div>
-          <h3 className="font-serif text-3xl font-light text-brand-textPrimary">
+          <h3 className="font-serif text-2xl font-light text-brand-textPrimary sm:text-3xl">
             {barber.name}
           </h3>
 
-          <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-brand-cream">
+          <p className="mt-1 flex min-h-[2.5rem] items-start justify-center text-[9px] font-medium uppercase leading-snug tracking-[0.14em] text-brand-cream sm:mt-2 sm:block sm:min-h-0 sm:text-xs sm:tracking-[0.2em]">
             {barber.title}
           </p>
         </div>
       </div>
 
       {/* Specialty */}
-      <p className="mt-7 text-base font-light leading-relaxed text-brand-textPrimary/85">
+      <p className="mt-3 min-h-[3.75rem] text-center text-xs font-light leading-relaxed text-brand-textPrimary/85 sm:mt-7 sm:min-h-0 sm:text-left sm:text-base">
         {barber.specialty}
       </p>
 
       {/* Features */}
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-3 space-y-2 sm:mt-6 sm:space-y-3">
         {features.map((feature) => (
           <li
             key={feature}
-            className="flex items-center gap-3 text-sm font-light text-brand-textPrimary/80"
+            className="flex items-center gap-2 text-[11px] font-light leading-snug text-brand-textPrimary/80 sm:gap-3 sm:text-sm"
           >
-            <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-cream/25 bg-brand-cream/5">
-              <Check className="h-3.5 w-3.5 text-brand-cream" />
+            <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full sm:h-6 sm:w-6 border border-brand-cream/25 bg-brand-cream/5">
+              <Check className="h-3 w-3 text-brand-cream sm:h-3.5 sm:w-3.5" />
             </span>
 
             {feature}
@@ -114,9 +114,9 @@ function BarberCard({
         href={`/booking?barber=${encodeURIComponent(
           barber.name.toLowerCase(),
         )}`}
-        className="mt-auto pt-8"
+        className="mt-auto pt-4 sm:pt-8"
       >
-        <span className="flex w-full items-center justify-center rounded-full border border-brand-cream bg-brand-cream px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary">
+        <span className="flex w-full items-center justify-center rounded-full border border-brand-cream bg-brand-cream px-2 py-2.5 text-center text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] sm:px-6 sm:py-3.5 sm:text-sm sm:tracking-[0.14em] text-brand-bg transition-all duration-300 hover:border-brand-textPrimary hover:bg-brand-textPrimary">
           Termin bei {barber.name} buchen
         </span>
       </Link>

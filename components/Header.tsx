@@ -198,13 +198,13 @@ export default function Header() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500/70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
             </span>
-            Wir sind täglich für euch da – mit &amp; ohne Termin!
+            Wir sind täglich für euch da!
           </p>
 
           <div className="relative flex flex-col items-center text-[11px] leading-4 sm:flex-row sm:gap-3 sm:text-xs">
             <p>
-              <span className="font-semibold text-red-400">Online-Termine:</span>{' '}
-              <span className="text-red-200/85">Di–So (empfohlen)</span>
+              <span className="font-semibold text-red-400">Di–Sa:</span>{' '}
+              <span className="text-red-200/85">Nur mit Termin.</span>
             </p>
             <span aria-hidden className="hidden h-3 w-px bg-red-500/40 sm:block" />
             <p>

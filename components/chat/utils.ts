@@ -26,8 +26,8 @@ export function nextDays(numberOfDays: number): AvailableDate[] {
 
         const dayOfWeek = date.getDay();
 
-        // Online booking every day except Monday
-        if (dayOfWeek !== 1) {
+        // Online booking: Tuesday to Saturday
+        if (dayOfWeek !== 0 && dayOfWeek !== 1) {
             const label = `${days[dayOfWeek]} ${date.getDate()}/${date.getMonth() + 1}`;
 
             const value = [

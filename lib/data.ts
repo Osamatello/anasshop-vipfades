@@ -17,7 +17,7 @@ export const BUSINESS = {
     open: "Täglich geöffnet, 10:00 bis 19:00",
     walkins: "Walk-ins täglich willkommen",
     // Online booking only. The shop itself is open daily.
-    onlineDays: "Dienstag bis Sonntag",
+    onlineDays: "Dienstag bis Samstag",
     onlineTime: "10:00 bis 19:00",
   },
 };

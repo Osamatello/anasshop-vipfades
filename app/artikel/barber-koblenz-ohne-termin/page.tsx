@@ -65,7 +65,7 @@ const content: ArticleContent = {
         },
         {
           title: 'Online-Termin',
-          text: 'Ideal, wenn du eine feste Uhrzeit sichern möchtest. Online-Termine gibt es Dienstag bis Sonntag von 10:00 bis 19:00 Uhr.',
+          text: 'Ideal, wenn du eine feste Uhrzeit sichern möchtest. Online-Termine gibt es Dienstag bis Samstag von 10:00 bis 19:00 Uhr.',
         },
         {
           title: 'Wunsch-Barber',
@@ -80,7 +80,7 @@ const content: ArticleContent = {
       points: [
         'Bargeld mitbringen – Kartenzahlung ist nicht möglich.',
         'Ein Foto deines Wunsch-Looks auf dem Handy hilft bei der Beratung.',
-        'Für einen festen Termin lieber online buchen (Di–So).',
+        'Für einen festen Termin lieber online buchen (Di–Sa).',
         'Parken kannst du am Peter-Altmeier-Ufer oder im Parkhaus Görresplatz, rund 3 Gehminuten entfernt.',
       ],
     },
@@ -110,7 +110,7 @@ const content: ArticleContent = {
     },
     {
       question: 'An welchen Tagen kann ich online einen Termin buchen?',
-      answer: 'Online-Termine gibt es von Dienstag bis Sonntag zwischen 10:00 und 19:00 Uhr. Montags kommst du einfach ohne Termin vorbei.',
+      answer: 'Online-Termine gibt es von Dienstag bis Samstag zwischen 10:00 und 19:00 Uhr. Montags kommst du einfach ohne Termin vorbei.',
     },
     {
       question: 'Kann ich bei VIP FADES mit Karte bezahlen?',
@@ -124,7 +124,7 @@ const content: ArticleContent = {
   ],
   ctaHeading: 'Spontan vorbeikommen oder Termin sichern',
   ctaText:
-    'Komm täglich von 10 bis 19 Uhr ohne Termin vorbei – oder sichere dir Dienstag bis Sonntag deinen Wunschtermin online.',
+    'Komm täglich von 10 bis 19 Uhr ohne Termin vorbei – oder sichere dir Dienstag bis Samstag deinen Wunschtermin online.',
 };
 
 export const metadata = buildArticleMetadata(content);

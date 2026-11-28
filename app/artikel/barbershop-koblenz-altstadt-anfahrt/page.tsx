@@ -46,7 +46,7 @@ const content: ArticleContent = {
       points: [
         'Geöffnet ist täglich von 10:00 bis 19:00 Uhr.',
         'Walk-ins sind jeden Tag willkommen – ein Termin ist nicht nötig.',
-        'Online-Termine gibt es Dienstag bis Sonntag von 10:00 bis 19:00 Uhr.',
+        'Online-Termine gibt es Dienstag bis Samstag von 10:00 bis 19:00 Uhr.',
         'Bezahlt wird nur bar – bitte Bargeld mitbringen.',
       ],
     },
@@ -80,7 +80,7 @@ const content: ArticleContent = {
     {
       question: 'Wann hat VIP FADES geöffnet?',
       answer:
-        'VIP FADES hat täglich von 10:00 bis 19:00 Uhr geöffnet. Online-Termine gibt es Dienstag bis Sonntag.',
+        'VIP FADES hat täglich von 10:00 bis 19:00 Uhr geöffnet. Online-Termine gibt es Dienstag bis Samstag.',
     },
     {
       question: 'Kann ich bei VIP FADES mit Karte zahlen?',

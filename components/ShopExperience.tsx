@@ -54,7 +54,7 @@ export default function ShopExperience() {
 
               <div className="flex flex-wrap gap-3">
                 <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
-                  Dienstag bis Sonntag
+                  Dienstag bis Samstag
                 </span>
 
                 <span className="rounded-full border border-brand-cream/40 bg-brand-cream/5 px-4 py-2 text-xs font-medium text-brand-cream">
@@ -73,7 +73,7 @@ export default function ShopExperience() {
               </div>
 
               <p className="mt-8 text-sm font-light leading-relaxed text-brand-textPrimary/70">
-                Online-Termine gibt es jeden Tag außer Montag. Montags einfach ohne Termin vorbeikommen.
+                Online-Termine gibt es von Dienstag bis Samstag. Montags einfach ohne Termin vorbeikommen.
               </p>
             </div>
           </div>

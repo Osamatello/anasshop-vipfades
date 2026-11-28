@@ -24,7 +24,7 @@ Rules for every listing:
 - Write the street as **An der Moselbrücke 9** (not "An d. Moselbrücke").
 - Use the same phone everywhere. Write it `+49 176 63782674` (the national form `0176 63782674` also counts as the same number).
 - The website is always `https://vip-fades.com`, never a Linktree or the Instagram page.
-- Opening hours: open every day 10–19. Online booking is every day except Monday (since 28 Nov 2026); listings still show the shop as open daily.
+- Opening hours: open every day 10–19. Online booking is Tuesday to Saturday (since 29 Nov 2026; no Sunday, no Monday); listings still show the shop as open daily.
 
 ## Checklist
 
@@ -98,7 +98,7 @@ All text below is taken word for word from the website, so every listing says th
 
 > Barbershop in Koblenz für präzise Herrenhaarschnitte, Skin Fades, Bartpflege und modernes Styling. Premium Cuts. Saubere Fades. Präzises Barbering, moderner Style und ein Premium-Erlebnis in Koblenz. Täglich geöffnet, 10:00 bis 19:00. Walk-ins täglich willkommen.
 
-**Opening hours:** Monday–Sunday 10:00–19:00 (online booking Tue–Sun, no online booking on Monday; walk-ins every day)
+**Opening hours:** Monday–Sunday 10:00–19:00 (online booking Tue–Sat, no online booking on Sunday or Monday; walk-ins every day)
 
 **Payment:** Cash only (no cards)
 

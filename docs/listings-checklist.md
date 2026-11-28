@@ -39,6 +39,8 @@ Rules for every listing:
   - Payments set back to **cash only** (Google had switched it to cards / Amex / Visa by itself); all card options set to No. Pending Google review.
   - Left as is on purpose: name, address spelling ("An d."), opening hours.
   - Not the same as the site: Google's name is "VIP Fades Barbershop", the site's is "VIP FADES BY ANAS".
+  - Done 28 Nov 2026 (Abd left, online booking now Tue–Sun): edited the two posts. "(Mo–Do)" became "(Di–So)", and "deinen Barber" was removed. Both pending Google review. Description, services, booking link and attributes had no mention of Abd or Mo–Do.
+  - Google's own hours on the profile differ from the site (Sun closed, Fri until 20:00, Sat until 18:00). Left alone on purpose: the owner manages the hours.
   - Watch: Google sometimes changes attributes on its own ("updated by Google"). Check payments and planning again in a few weeks.
 - [ ] **Apple Business Connect** (Apple Maps / Siri): https://businessconnect.apple.com
   - Status: not checked (Apple Maps has no public search I can use). Open Apple Maps on an iPhone, search "VIP FADES Koblenz". Claim it if it's there; create it if not.

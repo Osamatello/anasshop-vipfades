@@ -1,30 +1,13 @@
-const ANAS_BARBER_ID =
-    "9d36a15c-f26f-4e9f-926f-7c5763c1423b";
-
-const ABD_BARBER_ID =
-    "d115a860-db00-4904-a906-5c67478cf6d2";
-
 type BarberDayOff = {
     barberId: string;
-    barberName: "Anas" | "Abd";
+    barberName: string;
     weekday: number;
-    weekdayName: "Tuesday" | "Wednesday";
+    weekdayName: string;
 };
 
-const BARBER_DAYS_OFF: BarberDayOff[] = [
-    {
-        barberId: ABD_BARBER_ID,
-        barberName: "Abd",
-        weekday: 2,
-        weekdayName: "Tuesday",
-    },
-    {
-        barberId: ANAS_BARBER_ID,
-        barberName: "Anas",
-        weekday: 3,
-        weekdayName: "Wednesday",
-    },
-];
+// Weekly days off per barber (JavaScript weekday numbers, 0 = Sunday).
+// Empty: Anas takes online bookings every online day (see onlineDays.ts).
+const BARBER_DAYS_OFF: BarberDayOff[] = [];
 
 const getUtcWeekday = (
     bookingDate: string

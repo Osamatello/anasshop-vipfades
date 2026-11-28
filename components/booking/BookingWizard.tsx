@@ -17,6 +17,7 @@ import {
 } from '@/components/chat/selection';
 import { useCatalog } from '@/components/chat/useCatalog';
 import { isBarberOff } from '@/lib/booking/barberSchedule';
+import { isOnlineBookingDay } from '@/lib/booking/onlineDays';
 import { BUSINESS, type Barber } from '@/lib/data';
 import { getKoblenzDate } from '@/lib/timezone';
 import { trackEvent } from '@/lib/analytics';
@@ -43,7 +44,6 @@ const STEP_TITLES: Record<WizardStep, string> = {
 
 const BARBER_PHOTOS: Record<string, string> = {
   anas: '/images/anas-barber.jpeg',
-  abd: '/images/abd-barber.jpeg',
 };
 
 const MONTHS_BOOKABLE_AHEAD = 2;
@@ -67,7 +67,7 @@ function formatDateParts(date: string) {
   };
 }
 
-/** Online-bookable days for the next two months: Monday to Thursday, without the barber's day off. */
+/** Online-bookable days for the next two months: every day except Monday, without the barber's day off. */
 function getBookableDates(barber: BarberChoice | null): string[] {
   const [year, month, day] = getKoblenzDate().split('-').map(Number);
   const cursor = new Date(Date.UTC(year, month - 1, day));
@@ -75,12 +75,11 @@ function getBookableDates(barber: BarberChoice | null): string[] {
   const dates: string[] = [];
 
   while (cursor <= lastDay) {
-    const weekday = cursor.getUTCDay();
     const date = cursor.toISOString().slice(0, 10);
     const barberIsOff =
       barber && barber !== 'any' ? isBarberOff(barber.id, date) : false;
 
-    if (weekday >= 1 && weekday <= 4 && !barberIsOff) {
+    if (isOnlineBookingDay(date) && !barberIsOff) {
       dates.push(date);
     }
 
@@ -122,7 +121,7 @@ export default function BookingWizard({
   const topRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
   const initialBarberApplied = useRef(false);
-  // Set when the visitor came from "Termin bei Anas/Abd buchen": the barber step is skipped.
+  // Set when the visitor came from "Termin bei Anas buchen": the barber step is skipped.
   const [barberFromLink, setBarberFromLink] = useState(false);
   const initialServiceApplied = useRef(false);
 
@@ -174,6 +173,11 @@ export default function BookingWizard({
   }, [barbers, initialBarber]);
 
   const dates = useMemo(() => getBookableDates(barberChoice), [barberChoice]);
+
+  // With a single barber the barber step is skipped: services, then day and time.
+  const singleBarber = barbers.length === 1 ? barbers[0] : null;
+  const stepCount = singleBarber ? 2 : 3;
+  const visibleStep = singleBarber && step === 3 ? 2 : step;
 
   const assignedBarber = time ? slotBarbers.get(time) : undefined;
 
@@ -432,18 +436,18 @@ export default function BookingWizard({
       {/* Step heading and progress */}
       <div className="px-4 pt-4 sm:px-8 lg:pt-8">
         <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#e5d0a0]">
-          Schritt {step} von 3
+          Schritt {visibleStep} von {stepCount}
         </p>
         <h2 className="mt-1 font-serif text-[1.65rem] font-medium leading-[1.12] text-brand-textPrimary lg:mt-2 lg:text-5xl">
           {STEP_TITLES[step]}
         </h2>
 
         <div className="mt-3 flex gap-2 lg:mt-5" aria-hidden="true">
-          {([1, 2, 3] as WizardStep[]).map((number) => (
+          {Array.from({ length: stepCount }, (_, index) => index + 1).map((number) => (
             <span
               key={number}
               className={`h-[3px] flex-1 rounded-full ${
-                step >= number
+                visibleStep >= number
                   ? 'bg-gradient-to-r from-[#e5d0a0] to-[#f5e9cb]'
                   : 'bg-brand-border'
               }`}
@@ -458,7 +462,13 @@ export default function BookingWizard({
           vipPackages={vipPackages}
           selection={selection}
           onChange={handleSelectionChange}
-          onContinue={() => goToStep(barberFromLink && barberChoice ? 3 : 2)}
+          onContinue={() => {
+            if (singleBarber) {
+              handleBarberSelect(singleBarber);
+            } else {
+              goToStep(barberFromLink && barberChoice ? 3 : 2);
+            }
+          }}
         />
       )}
 
@@ -634,7 +644,7 @@ export default function BookingWizard({
             </p>
           )}
 
-          <BackButton onClick={() => goToStep(2)} />
+          <BackButton onClick={() => goToStep(singleBarber ? 1 : 2)} />
         </form>
       )}
     </div>

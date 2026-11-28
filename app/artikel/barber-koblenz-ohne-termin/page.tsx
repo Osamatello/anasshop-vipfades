@@ -65,11 +65,11 @@ const content: ArticleContent = {
         },
         {
           title: 'Online-Termin',
-          text: 'Ideal, wenn du eine feste Uhrzeit und deinen Wunsch-Barber sichern möchtest. Online-Termine gibt es Montag bis Donnerstag von 10:00 bis 19:00 Uhr.',
+          text: 'Ideal, wenn du eine feste Uhrzeit sichern möchtest. Online-Termine gibt es Dienstag bis Sonntag von 10:00 bis 19:00 Uhr.',
         },
         {
           title: 'Wunsch-Barber',
-          text: 'Wenn du unbedingt bei Anas oder Abd sitzen möchtest, ist ein Online-Termin die sicherere Wahl.',
+          text: 'Wenn du sicher bei Anas sitzen möchtest, ohne zu warten, ist ein Online-Termin die sicherere Wahl.',
         },
       ],
     },
@@ -80,7 +80,7 @@ const content: ArticleContent = {
       points: [
         'Bargeld mitbringen – Kartenzahlung ist nicht möglich.',
         'Ein Foto deines Wunsch-Looks auf dem Handy hilft bei der Beratung.',
-        'Für einen festen Termin mit deinem Wunsch-Barber lieber online buchen (Mo–Do).',
+        'Für einen festen Termin lieber online buchen (Di–So).',
         'Parken kannst du am Peter-Altmeier-Ufer oder im Parkhaus Görresplatz, rund 3 Gehminuten entfernt.',
       ],
     },
@@ -110,7 +110,7 @@ const content: ArticleContent = {
     },
     {
       question: 'An welchen Tagen kann ich online einen Termin buchen?',
-      answer: 'Online-Termine gibt es von Montag bis Donnerstag zwischen 10:00 und 19:00 Uhr.',
+      answer: 'Online-Termine gibt es von Dienstag bis Sonntag zwischen 10:00 und 19:00 Uhr. Montags kommst du einfach ohne Termin vorbei.',
     },
     {
       question: 'Kann ich bei VIP FADES mit Karte bezahlen?',
@@ -124,7 +124,7 @@ const content: ArticleContent = {
   ],
   ctaHeading: 'Spontan vorbeikommen oder Termin sichern',
   ctaText:
-    'Komm täglich von 10 bis 19 Uhr ohne Termin vorbei – oder sichere dir Montag bis Donnerstag deinen Wunschtermin online.',
+    'Komm täglich von 10 bis 19 Uhr ohne Termin vorbei – oder sichere dir Dienstag bis Sonntag deinen Wunschtermin online.',
 };
 
 export const metadata = buildArticleMetadata(content);

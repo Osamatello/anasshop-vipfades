@@ -37,7 +37,7 @@ export default function Contact() {
 
           <p className="mx-auto mt-8 max-w-lg text-base font-light leading-relaxed text-brand-textPrimary/85">
             Besuch uns im Herzen von Koblenz. Wir haben täglich von 10:00 bis 19:00 geöffnet: Komm spontan
-            vorbei. Online-Termine gibt es nur von Montag bis Donnerstag.
+            vorbei. Online-Termine gibt es jeden Tag außer Montag.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function Contact() {
             label="Öffnungszeiten"
             lines={[
               'Täglich geöffnet, 10:00 – 19:00',
-              'Online-Termine nur Mo–Do, 10:00 – 19:00',
+              'Online-Termine Di–So, 10:00 – 19:00',
               'Walk-ins täglich willkommen',
             ]}
             highlightedLines={2}

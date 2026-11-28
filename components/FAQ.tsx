@@ -23,7 +23,7 @@ const FAQS = [
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer: (
       <>
-        Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern
+        Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit sichern
         möchtest, kannst du deinen Termin direkt über unsere{' '}
         <Link
           href="/booking"
@@ -46,7 +46,7 @@ const FAQS = [
         >
           Buchungsseite
         </Link>{' '}
-        vereinbaren. Dort wählst du deinen Service, deinen Barber und einen verfügbaren
+        vereinbaren. Dort wählst du deinen Service und einen verfügbaren
         Termin.
       </>
     ),
@@ -100,19 +100,14 @@ const FAQS = [
       '.',
   },
   {
-    question: 'Welche Barber arbeiten bei VIP FADES?',
+    question: 'Wer schneidet bei VIP FADES?',
     answer:
+      'Bei VIP FADES schneidet ' +
       BARBERS[0].name +
-      ' ist ' +
+      ' selbst: ' +
       BARBERS[0].title +
       ' mit Fokus auf ' +
       BARBERS[0].specialty +
-      '. ' +
-      BARBERS[1].name +
-      ' ist ' +
-      BARBERS[1].title +
-      ' und spezialisiert auf ' +
-      BARBERS[1].specialty +
       '.',
   },
   {
@@ -143,12 +138,12 @@ const FAQ_TEXT = [
   {
     question: 'Brauche ich bei VIP FADES in Koblenz einen Termin?',
     answer:
-      'Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit und deinen Barber sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
+      'Nein. Wir sind täglich geöffnet und Walk-ins sind willkommen. Wenn du deine Wunschzeit sichern möchtest, kannst du deinen Termin direkt über unsere Online-Buchung reservieren.',
   },
   {
     question: 'Wie kann ich einen Termin bei VIP FADES buchen?',
     answer:
-      'Du kannst deinen Termin online über unsere Buchungsseite vereinbaren. Dort wählst du deinen Service, deinen Barber und einen verfügbaren Termin.',
+      'Du kannst deinen Termin online über unsere Buchungsseite vereinbaren. Dort wählst du deinen Service und einen verfügbaren Termin.',
   },
   {
     question: 'Was kostet ein Haarschnitt bei VIP FADES?',
@@ -194,19 +189,14 @@ const FAQ_TEXT = [
       '.',
   },
   {
-    question: 'Welche Barber arbeiten bei VIP FADES?',
+    question: 'Wer schneidet bei VIP FADES?',
     answer:
+      'Bei VIP FADES schneidet ' +
       BARBERS[0].name +
-      ' ist ' +
+      ' selbst: ' +
       BARBERS[0].title +
       ' mit Fokus auf ' +
       BARBERS[0].specialty +
-      '. ' +
-      BARBERS[1].name +
-      ' ist ' +
-      BARBERS[1].title +
-      ' und spezialisiert auf ' +
-      BARBERS[1].specialty +
       '.',
   },
   {

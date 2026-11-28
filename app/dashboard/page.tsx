@@ -45,11 +45,12 @@ export const metadata = {
 const ANAS_BARBER_ID =
     '9d36a15c-f26f-4e9f-926f-7c5763c1423b';
 
+// Abd left in Nov 2026; kept so his past bookings still show with his colour.
 const ABD_BARBER_ID =
     'd115a860-db00-4904-a906-5c67478cf6d2';
 
 const WORKING_HOURS = '10:00 - 19:00';
-const WORKING_DAYS = 'Mo - Do';
+const WORKING_DAYS = 'Di - So';
 
 const formatTime = (value: string) =>
     value.slice(0, 5);
@@ -305,13 +306,6 @@ export default async function DashboardPage() {
             (booking) =>
                 booking.barber_id ===
                 ANAS_BARBER_ID,
-        );
-
-    const abdTermine =
-        bookings.filter(
-            (booking) =>
-                booking.barber_id ===
-                ABD_BARBER_ID,
         );
 
     const weekUmsatz =
@@ -637,18 +631,6 @@ export default async function DashboardPage() {
                                             }
                                             count={
                                                 anasTermine.length
-                                            }
-                                            total={
-                                                bookings.length
-                                            }
-                                        />
-
-                                        <BarberLoadCard
-                                            barberId={
-                                                ABD_BARBER_ID
-                                            }
-                                            count={
-                                                abdTermine.length
                                             }
                                             total={
                                                 bookings.length

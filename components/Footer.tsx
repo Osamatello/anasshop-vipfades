@@ -14,7 +14,7 @@ import { scrollToTop } from '@/lib/smooth-scroll';
 const NAV = [
   { label: 'Signature Cuts', href: '/#services' },
   { label: 'Das VIP Erlebnis', href: '/#experience' },
-  { label: 'Unsere Barber', href: '/#barbers' },
+  { label: 'Unser Barber', href: '/#barbers' },
   { label: 'Artikel', href: '/artikel' },
   { label: 'Termin buchen', href: '/booking' },
   { label: 'Termin stornieren', href: '/booking?stornieren=1' },

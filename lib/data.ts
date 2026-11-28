@@ -17,7 +17,7 @@ export const BUSINESS = {
     open: "Täglich geöffnet, 10:00 bis 19:00",
     walkins: "Walk-ins täglich willkommen",
     // Online booking only. The shop itself is open daily.
-    onlineDays: "Montag bis Donnerstag",
+    onlineDays: "Dienstag bis Sonntag",
     onlineTime: "10:00 bis 19:00",
   },
 };
@@ -111,12 +111,6 @@ export const BARBERS: Barber[] = [
     name: "Anas",
     title: "Head Barber & Gründer",
     specialty: "Fades, scharfe Konturen & Präzisions-Cuts",
-  },
-  {
-    id: "abd",
-    name: "Abd",
-    title: "Senior Barber",
-    specialty: "Klassische Cuts, Bartstyling & Styling",
   },
 ];
 

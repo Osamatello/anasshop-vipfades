@@ -14,7 +14,7 @@ export default function Statistics() {
     },
     {
       eyebrow: 'TERMINE',
-      value: 'Mo–Do',
+      value: 'Di–So',
       label: 'Online-Termine',
     },
     {

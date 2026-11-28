@@ -36,6 +36,7 @@ export const metadata = {
 const ANAS_BARBER_ID =
     '9d36a15c-f26f-4e9f-926f-7c5763c1423b';
 
+// Abd left in Nov 2026; kept so his past bookings still show with his colour.
 const ABD_BARBER_ID =
     'd115a860-db00-4904-a906-5c67478cf6d2';
 
@@ -278,7 +279,7 @@ export default async function CalendarPage({
                                 </h1>
 
                                 <p className="mt-1 text-sm text-white/50">
-                                    All active appointments for Anas and Abd.
+                                    All active appointments for Anas.
                                 </p>
                             </div>
 
@@ -297,11 +298,6 @@ export default async function CalendarPage({
                                     <Legend
                                         label="Anas"
                                         className="bg-[#f0d9a7]"
-                                    />
-
-                                    <Legend
-                                        label="Abd"
-                                        className="bg-[#be2026]"
                                     />
                                 </div>
                             </div>

@@ -181,7 +181,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Booking page: the shop is open every day, online slots are Mon–Thu only. */}
+      {/* Booking page: the shop is open every day, online slots every day except Monday. */}
       {pathname === '/booking' && (
         <div
           role="note"
@@ -204,11 +204,11 @@ export default function Header() {
           <div className="relative flex flex-col items-center text-[11px] leading-4 sm:flex-row sm:gap-3 sm:text-xs">
             <p>
               <span className="font-semibold text-red-400">Online-Termine:</span>{' '}
-              <span className="text-red-200/85">Mo–Do (empfohlen)</span>
+              <span className="text-red-200/85">Di–So (empfohlen)</span>
             </p>
             <span aria-hidden className="hidden h-3 w-px bg-red-500/40 sm:block" />
             <p>
-              <span className="font-semibold text-red-400">Fr &amp; Sa:</span>{' '}
+              <span className="font-semibold text-red-400">Montag:</span>{' '}
               <span className="text-red-200/85">Einfach vorbeikommen!</span>
             </p>
           </div>

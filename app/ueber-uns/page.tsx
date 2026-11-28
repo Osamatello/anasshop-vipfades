@@ -14,7 +14,7 @@ import { BUSINESS_ID, SITE_URL, serializeJsonLd } from '@/lib/seo/structuredData
 export const metadata: Metadata = {
   title: 'Über uns | VIP FADES – Barbershop Koblenz',
   description:
-    'Lerne VIP FADES BY ANAS kennen: moderner Barbershop in Koblenz für präzise Fades, Herrenhaarschnitte, Bartpflege und VIP-Services. Mit Anas als Inhaber & Head Barber und Abd als Senior Barber.',
+    'Lerne VIP FADES BY ANAS kennen: moderner Barbershop in Koblenz für präzise Fades, Herrenhaarschnitte, Bartpflege und VIP-Services. Mit Anas als Inhaber & Head Barber.',
   keywords: [
     'Barbershop Koblenz',
     'Barber Koblenz',
@@ -92,15 +92,6 @@ const structuredData = {
         '@id': BUSINESS_ID,
       },
     },
-    {
-      '@type': 'Person',
-      name: 'Abd',
-      jobTitle: 'Senior Barber',
-      image: `${SITE_URL}/images/about/abd-senior-barber-koblenz.avif`,
-      worksFor: {
-        '@id': BUSINESS_ID,
-      },
-    },
   ],
 };
 
@@ -158,15 +149,15 @@ export default function UeberUnsPage() {
               Unser Team
             </p>
             <h2 className="mt-4 font-serif text-4xl font-light sm:text-5xl">
-              Die Menschen hinter VIP FADES.
+              Der Barber hinter VIP FADES.
             </h2>
             <p className="mt-5 text-sm font-light leading-7 text-brand-textSecondary sm:text-base">
-              Gemeinsam stehen wir für Präzision, moderne Styles, saubere Fades und ein
+              Anas steht für Präzision, moderne Styles, saubere Fades und ein
               Barber-Erlebnis auf hohem Niveau.
             </p>
           </div>
 
-          <div className="mx-auto grid max-w-[620px] gap-5 sm:grid-cols-2 sm:gap-6">
+          <div className="mx-auto grid max-w-[300px] gap-5">
             <article className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[24px] border border-brand-border/80 bg-black/25 sm:max-w-[300px]">
               <div className="relative aspect-square overflow-hidden bg-white">
                 <Image
@@ -183,24 +174,6 @@ export default function UeberUnsPage() {
                   Inhaber & Head Barber
                 </p>
                 <h3 className="mt-1.5 font-serif text-2xl font-medium">Anas</h3>
-              </div>
-            </article>
-
-            <article className="mx-auto w-full max-w-[280px] overflow-hidden rounded-[24px] border border-brand-border/80 bg-black/25 sm:max-w-[300px]">
-              <div className="relative aspect-square overflow-hidden bg-[#f1f1f1]">
-                <Image
-                  src="/images/about/abd-senior-barber-koblenz.avif"
-                  alt="Abd – Senior Barber bei VIP FADES in Koblenz"
-                  fill
-                  sizes="(max-width: 640px) 280px, 300px"
-                  className="object-cover object-top"
-                />
-              </div>
-              <div className="p-4 sm:p-5">
-                <p className="text-[9px] font-semibold uppercase tracking-[0.24em] text-brand-cream sm:text-[10px]">
-                  Senior Barber
-                </p>
-                <h3 className="mt-1.5 font-serif text-2xl font-medium">Abd</h3>
               </div>
             </article>
           </div>

@@ -1,3 +1,4 @@
+import { isOnlineBookingDay } from "@/lib/booking/onlineDays";
 import { getBusinessHoursByDay } from "@/lib/supabase/business-hours";
 import { getBookingsByBarberAndDate } from "@/lib/supabase/bookings";
 import { getBlockedTimesByBarberAndDate } from "@/lib/supabase/blocked-times";
@@ -124,8 +125,8 @@ export async function getAvailableSlotsForDuration(
     const dayOfWeek =
         javascriptDay === 0 ? 7 : javascriptDay;
 
-    // Online booking is available Monday - Thursday.
-    if (dayOfWeek < 1 || dayOfWeek > 4) {
+    // Online booking is available every day except Monday.
+    if (!isOnlineBookingDay(bookingDate)) {
         return [];
     }
 

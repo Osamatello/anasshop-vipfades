@@ -80,7 +80,7 @@ export default async function BookingPage({
                                     label="Online-Termine"
                                 >
                                     <p className="text-brand-textPrimary">
-                                        Nur Montag bis Donnerstag, 10:00 – 19:00
+                                        Dienstag bis Sonntag, 10:00 – 19:00
                                     </p>
 
                                     <p className="mt-1 text-brand-cream/75">
